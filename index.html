@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>TEAM 1%</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.container{max-width:760px;margin:0 auto;padding:16px;padding-bottom:90px}
+h1{margin:0;font-size:22px}
+h2{margin:20px 0 10px;font-size:14px;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px}
+input,select,textarea{width:100%;padding:12px;margin-bottom:10px;border:1px solid #334155;border-radius:10px;background:#1e293b;color:#e2e8f0;font-size:15px;font-family:inherit}
+textarea{min-height:60px;resize:vertical}
+button{padding:10px 14px;border:1px solid #334155;border-radius:10px;background:#1e293b;color:#e2e8f0;font-size:14px;cursor:pointer;font-weight:600}
+button:hover{background:#334155}
+button.primary{background:#3b82f6;border-color:#3b82f6;color:#fff}
+button.primary:hover{background:#2563eb}
+button.danger{background:#7f1d1d;border-color:#991b1b}
+button.link{background:none;border:none;color:#60a5fa;padding:6px 0;font-weight:500}
+button:disabled{opacity:.45;cursor:not-allowed}
+.error{color:#fca5a5;background:#7f1d1d55;padding:10px;border-radius:8px;margin:8px 0}
+.success{color:#86efac;background:#14532d55;padding:10px;border-radius:8px;margin:8px 0}
+.auth{max-width:400px;margin-top:40px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rank-card{background:linear-gradient(135deg,#1e293b,#334155);padding:16px;border-radius:14px;margin:14px 0;border:1px solid #475569}
+.rank-row{display:flex;align-items:center;gap:12px}
+.rank-icon{font-size:40px}
+.rank-name{font-size:18px;font-weight:700}
+.rank-xp{color:#94a3b8;font-size:13px;margin-top:2px}
+.xp-bar{height:6px;background:#0f172a;border-radius:3px;margin-top:10px;overflow:hidden}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#8b5cf6);transition:width .4s}
+.streak-card{background:linear-gradient(135deg,#7c2d12,#b45309);padding:14px;border-radius:12px;margin-bottom:14px;display:flex;align-items:center;gap:12px;border:1px solid #ea580c}
+.streak-card .num{font-size:32px;font-weight:800;color:#fed7aa}
+.streak-card .lbl{font-size:12px;color:#fed7aa;opacity:.9}
+.nonce{background:#422006;padding:12px;border-radius:10px;margin:14px 0;border:1px solid #854d0e;font-size:14px}
+.nonce .code{font-size:20px;letter-spacing:4px;font-weight:700;color:#fde68a}
+.task{display:flex;align-items:center;gap:10px;padding:12px;background:#1e293b;border-radius:10px;margin-bottom:8px;flex-wrap:wrap}
+.task.done{background:#14532d55;border:1px solid #22c55e55}
+.task .icon{font-size:24px}
+.task .label{flex:1;min-width:100px;font-weight:500;font-size:14px}
+.task input[type="checkbox"]{width:24px;height:24px;accent-color:#22c55e;margin:0}
+.upload{color:#60a5fa;cursor:pointer;font-size:12px;text-decoration:underline}
+.timer{background:#0c4a6e;padding:12px;border-radius:10px;margin:-4px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
+.timer .big{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:#7dd3fc;min-width:70px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:10px 8px;text-align:start;border-bottom:1px solid #334155;font-size:14px}
+th{background:#1e293b;font-size:11px;text-transform:uppercase;color:#94a3b8;letter-spacing:1px}
+.you{background:#1e40af33}
+nav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;display:flex;justify-content:space-around;padding:8px 0;z-index:10}
+nav button{background:none;border:none;color:#94a3b8;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 12px}
+nav button.active{color:#60a5fa}
+nav button span{font-size:20px}
+.card{background:#1e293b;padding:14px;border-radius:10px;margin-bottom:10px;border:1px solid #334155}
+.card .title{font-weight:700;font-size:15px}
+.card .desc{color:#94a3b8;font-size:13px;margin-top:4px}
+.card .meta{color:#64748b;font-size:12px;margin-top:6px}
+.progress-bar{height:8px;background:#0f172a;border-radius:4px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .3s}
+.store-item{background:#1e293b;padding:12px;border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.store-item .info{flex:1;min-width:150px}
+.store-item .name{font-weight:700;font-size:14px}
+.store-item .desc{color:#94a3b8;font-size:12px;margin-top:2px}
+.store-item .price{background:#422006;color:#fbbf24;padding:5px 10px;border-radius:6px;font-weight:700;font-size:12px}
+.store-item .icon{font-size:28px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:0 0 auto}
+.row>input{flex:1 1 auto;min-width:80px}
+.lang-btn{background:#1e293b;border:1px solid #475569;border-radius:8px;padding:6px 10px;font-size:13px;color:#e2e8f0}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { createClient } = supabase;
+const sb = createClient(https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
+
+const STRINGS = {
+  en: {
+    tagline:'82 days. Real change.',
+    email:'Email', password:'Password', login:'Login', signup:'Sign Up',
+    needAccount:'Need an account? Sign Up', haveAccount:'Have an account? Login',
+    loading:'Loading...', loadingProfile:'Loading profile...', welcome:'Welcome',
+    createTeam:'Create a team', joinTeam:'Or join a team',
+    teamName:'Team name', inviteCode:'Invite code',
+    createTeamBtn:'Create Team', joinTeamBtn:'Join Team', logout:'Logout',
+    today:'today', to:'to', max:'MAX', xp:'XP',
+    day:'day', days:'days',
+    currentStreak:'Current streak · complete all tasks daily to keep it',
+    myDailyTasks:'My daily tasks', addNewTask:'Add new task',
+    taskName:'Task name', add:'Add', min:'min',
+    taskHint:'Leave minutes empty for simple checkoff. Set minutes to enable a timer.',
+    todaysProof:"Today's proof code:", proofHint:'Write this on paper and include it in every photo.',
+    todaysTasks:"Today's tasks", noTasks:'No tasks yet. Open ⚙️ to add some.',
+    done:'Done', keepsRunning:'Keeps running if you close the page.',
+    longTermGoals:'Long-term goals', noGoals:'No goals yet. Add one below.',
+    addGoal:'Add a goal', goalTitle:'Goal title (e.g. Finish 3 books)',
+    goalWhy:'Why does this matter? (optional)', addGoalBtn:'Add Goal',
+    markDone:'Mark done', delete:'Delete', dLeft:'d left', dOverdue:'d overdue',
+    store:'Store', buy:'Buy', equip:'Equip', equipped:'✓ Equipped',
+    notEnoughXp:'Not enough XP', purchased:'Purchased',
+    leaderboard:'Leaderboard', member:'Member', rank:'Rank', streak:'Streak',
+    home:'Home', goals:'Goals', ranks:'Ranks',
+    invalidCode:'Invalid invite code', taskAdded:'Task added', goalAdded:'Goal added',
+    deleteTask:'Delete this task?', deleteGoal:'Delete this goal?', resetTimer:'Reset timer?',
+    sport:'Sport', study:'Study', nutrition:'Nutrition', reading:'Reading', nightRoutine:'Night routine',
+    icons:'Icon', task:'Task', active:'On', inactive:'Off'
+  },
+  ar: {
+    tagline:'٨٢ يوم. تغيير حقيقي.',
+    email:'الإيميل', password:'كلمة السر', login:'دخول', signup:'حساب جديد',
+    needAccount:'ما عندك حساب؟ سجّل', haveAccount:'عندك حساب؟ ادخل',
+    loading:'جاري التحميل...', loadingProfile:'جاري تحميل الملف...', welcome:'أهلاً',
+    createTeam:'أنشئ فريق', joinTeam:'أو انضم لفريق',
+    teamName:'اسم الفريق', inviteCode:'كود الدعوة',
+    createTeamBtn:'إنشاء فريق', joinTeamBtn:'انضم', logout:'خروج',
+    today:'اليوم', to:'باقي', max:'الأعلى', xp:'نقطة',
+    day:'يوم', days:'أيام',
+    currentStreak:'السلسلة الحالية · أكمل كل المهام يومياً للحفاظ عليها',
+    myDailyTasks:'مهامي اليومية', addNewTask:'أضف مهمة جديدة',
+    taskName:'اسم المهمة', add:'أضف', min:'دقيقة',
+    taskHint:'اترك الدقائق فارغة للمهام بدون مؤقت. حدد دقائق لتشغيل المؤقت.',
+    todaysProof:'كود الإثبات اليوم:', proofHint:'اكتبه على ورقة وضعها في كل صورة ترفعها.',
+    todaysTasks:'مهام اليوم', noTasks:'ما في مهام. افتح ⚙️ وأضف.',
+    done:'خلص', keepsRunning:'المؤقت يكمل حتى لو سكرت الصفحة.',
+    longTermGoals:'الأهداف طويلة المدى', noGoals:'ما في أهداف. أضف هدف تحت.',
+    addGoal:'أضف هدف', goalTitle:'عنوان الهدف (مثال: أخلص ٣ كتب)',
+    goalWhy:'ليش هذا مهم؟ (اختياري)', addGoalBtn:'إضافة هدف',
+    markDone:'تم', delete:'حذف', dLeft:'يوم باقي', dOverdue:'يوم متأخر',
+    store:'المتجر', buy:'اشتر', equip:'استخدم', equipped:'✓ مستخدم',
+    notEnoughXp:'نقاطك ما تكفي', purchased:'تم الشراء',
+    leaderboard:'المتصدرين', member:'عضو', rank:'الترتيب', streak:'سلسلة',
+    home:'الرئيسية', goals:'الأهداف', ranks:'الترتيب',
+    invalidCode:'كود الدعوة غلط', taskAdded:'تم إضافة المهمة', goalAdded:'تم إضافة الهدف',
+    deleteTask:'احذف هذه المهمة؟', deleteGoal:'احذف هذا الهدف؟', resetTimer:'تصفير المؤقت؟',
+    sport:'رياضة', study:'دراسة', nutrition:'تغذية', reading:'قراءة', nightRoutine:'روتين ليلي',
+    icons:'أيقونة', task:'مهمة', active:'مفعّل', inactive:'موقوف'
+  }
+};
+
+const RANKS = [
+  { name:'Bronze',   nameAr:'برونزي',  icon:'🥉', min:0    },
+  { name:'Silver',   nameAr:'فضي',     icon:'🥈', min:300  },
+  { name:'Gold',     nameAr:'ذهبي',    icon:'🥇', min:800  },
+  { name:'Platinum', nameAr:'بلاتيني', icon:'💎', min:1800 },
+  { name:'Diamond',  nameAr:'ألماسي',  icon:'💠', min:3000 },
+  { name:'Master',   nameAr:'ماستر',   icon:'🏆', min:5000 },
+  { name:'Legend',   nameAr:'أسطورة',  icon:'👑', min:8000 },
+];
+
+const STORE_ITEMS = [
+  { key:'skip_day',         icon:'🎫', price:500,  type:'buff', name:'Skip Day Pass',    nameAr:'تخطي يوم',      desc:'Skip one day, streak safe',        descAr:'تخطى يوم بدون ما تنكسر السلسلة' },
+  { key:'streak_freeze',    icon:'❄️', price:300,  type:'buff', name:'Streak Freeze',    nameAr:'تجميد السلسلة', desc:'Freeze streak for one day',        descAr:'جمّد السلسلة يوم واحد' },
+  { key:'double_xp',        icon:'⚡', price:400,  type:'buff', name:'Double XP Day',    nameAr:'مضاعفة النقاط', desc:'2x XP for 24h',                    descAr:'ضاعف النقاط لمدة ٢٤ ساعة' },
+  { key:'min_day',          icon:'🛌', price:250,  type:'buff', name:'Minimum Day Pass', nameAr:'يوم الحد الأدنى', desc:'Rough day mode',                 descAr:'وضع اليوم الصعب' },
+  { key:'streak_insurance', icon:'🛡️', price:600,  type:'buff', name:'Streak Insurance', nameAr:'تأمين السلسلة', desc:'Protects streak for 2 missed days', descAr:'يحمي السلسلة ليومين مفقودين' },
+  { key:'title_warrior',    icon:'⚔️', price:200,  type:'title',value:'Warrior', name:'Title: Warrior', nameAr:'لقب: محارب', desc:'Cosmetic title', descAr:'لقب شكلي' },
+  { key:'title_beast',      icon:'🔥', price:500,  type:'title',value:'Beast',   name:'Title: Beast',   nameAr:'لقب: وحش',   desc:'Cosmetic title', descAr:'لقب شكلي' },
+  { key:'title_legend',     icon:'👑', price:1000, type:'title',value:'Legend',  name:'Title: Legend',  nameAr:'لقب: أسطورة', desc:'Cosmetic title', descAr:'لقب شكلي' },
+];
+
+function rankFor(xp, lang){ let r=RANKS[0]; for(const k of RANKS) if(xp>=k.min) r=k; return { ...r, display: lang==='ar'?r.nameAr:r.name }; }
+function nextRank(xp){ for(const k of RANKS) if(xp<k.min) return k; return null; }
+function todayStr(){ return new Date().toLocaleDateString('en-CA'); }
+function daysBetween(a,b){ return Math.floor((new Date(b)-new Date(a))/86400000); }
+
+function App(){
+  const [lang,setLang]=React.useState(()=>localStorage.getItem('lang')||'en');
+  const t = (k)=>STRINGS[lang][k]||k;
+  const T = (obj, field) => lang==='ar' && obj[field+'Ar'] ? obj[field+'Ar'] : obj[field];
+
+  const [session,setSession]=React.useState(null);
+  const [profile,setProfile]=React.useState(null);
+  const [team,setTeam]=React.useState(null);
+  const [tasks,setTasks]=React.useState([]);
+  const [customTasks,setCustomTasks]=React.useState([]);
+  const [goals,setGoals]=React.useState([]);
+  const [history,setHistory]=React.useState([]);
+  const [leaderboard,setLeaderboard]=React.useState([]);
+  const [page,setPage]=React.useState('home');
+  const [loading,setLoading]=React.useState(true);
+  const [email,setEmail]=React.useState('');
+  const [password,setPassword]=React.useState('');
+  const [authMode,setAuthMode]=React.useState('login');
+  const [teamName,setTeamName]=React.useState('');
+  const [inviteCode,setInviteCode]=React.useState('');
+  const [error,setError]=React.useState('');
+  const [message,setMessage]=React.useState('');
+  const [showSettings,setShowSettings]=React.useState(false);
+  const [timers,setTimers]=React.useState({});
+  const [newTask,setNewTask]=React.useState({label:'',icon:'✅',duration_min:''});
+  const [newGoal,setNewGoal]=React.useState({title:'',description:'',target_date:''});
+
+  const today = todayStr();
+  const rank = profile ? rankFor(profile.xp||0, lang) : { ...RANKS[0], display: lang==='ar'?RANKS[0].nameAr:RANKS[0].name };
+  const next = profile ? nextRank(profile.xp||0) : RANKS[1];
+  const activeTasks = customTasks.filter(t=>t.active);
+
+  React.useEffect(()=>{
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang==='ar' ? 'rtl' : 'ltr';
+  },[lang]);
+
+  const [nonce] = React.useState(()=>{
+    const key='nonce-'+today;
+    let n=localStorage.getItem(key);
+    if(!n){ n=Math.random().toString(36).substring(2,6).toUpperCase(); localStorage.setItem(key,n); }
+    return n;
+  });
+
+  React.useEffect(()=>{
+    sb.auth.getSession().then(({data:{session}})=>{ setSession(session); setLoading(false); });
+    const {data:{subscription}}=sb.auth.onAuthStateChange((_e,s)=>setSession(s));
+    return ()=>subscription.unsubscribe();
+  },[]);
+
+  React.useEffect(()=>{ if(session?.user) loadProfile(); else reset(); },[session]);
+  React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); else setTeam(null); },[profile]);
+  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadLeaderboard(); } },[team]);
+
+  React.useEffect(()=>{
+    const id=setInterval(()=>{
+      setTimers(prev=>{
+        let changed=false; const n={...prev};
+        for(const k of Object.keys(n)){ if(n[k].running){ n[k]={...n[k],elapsed:n[k].elapsed+1}; changed=true; } }
+        return changed?n:prev;
+      });
+    },1000);
+    return ()=>clearInterval(id);
+  },[]);
+
+  React.useEffect(()=>{
+    const saved=localStorage.getItem('timers-'+today);
+    if(!saved) return;
+    try{
+      const parsed=JSON.parse(saved); const now=Date.now(); const adj={};
+      for(const k of Object.keys(parsed)){
+        const tm=parsed[k];
+        if(tm.running && tm.startedAt){
+          const extra=Math.floor((now-tm.startedAt)/1000);
+          adj[k]={...tm, elapsed:tm.elapsed+extra, startedAt:now};
+        } else adj[k]=tm;
+      }
+      setTimers(adj);
+    }catch{}
+  },[]);
+
+  React.useEffect(()=>{ localStorage.setItem('timers-'+today, JSON.stringify(timers)); },[timers]);
+
+  React.useEffect(()=>{
+    if(!activeTasks.length) return;
+    activeTasks.forEach(task=>{
+      if(!task.duration_min) return;
+      const tm=timers[task.key]; if(!tm) return;
+      const target=task.duration_min*60;
+      if(tm.elapsed>=target && tm.running){
+        setTimers(prev=>({...prev,[task.key]:{...prev[task.key],running:false}}));
+        const dbTask=tasks.find(x=>x.task_key===task.key);
+        if(!dbTask?.done) toggleTask(task.key,true);
+      }
+    });
+  },[timers, activeTasks, tasks]);
+
+  function reset(){ setProfile(null); setTeam(null); setTasks([]); setCustomTasks([]); setGoals([]); setHistory([]); setLeaderboard([]); }
+
+  async function loadProfile(){
+    const {data}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+    setProfile(data);
+  }
+  async function loadTeam(id){
+    const {data}=await sb.from('teams').select('*').eq('id',id).single();
+    setTeam(data);
+  }
+  async function loadTasks(){
+    const {data}=await sb.from('tasks').select('*').eq('user_id',session.user.id).eq('date',today);
+    setTasks(data||[]);
+  }
+  async function loadCustomTasks(){
+    const {data}=await sb.from('custom_tasks').select('*').eq('user_id',session.user.id).order('sort_order');
+    if(data && data.length){ setCustomTasks(data); }
+    else {
+      const seeds=[
+        { key:'sport',     label:STRINGS[lang].sport,        icon:'🥋', duration_min:null },
+        { key:'study',     label:STRINGS[lang].study,        icon:'📚', duration_min:60   },
+        { key:'nutrition', label:STRINGS[lang].nutrition,    icon:'🥗', duration_min:null },
+        { key:'reading',   label:STRINGS[lang].reading,      icon:'📖', duration_min:null },
+        { key:'night',     label:STRINGS[lang].nightRoutine, icon:'🌙', duration_min:null },
+      ];
+      const rows=seeds.map((x,i)=>({user_id:session.user.id, ...x, sort_order:i}));
+      const {data:seeded}=await sb.from('custom_tasks').insert(rows).select();
+      setCustomTasks(seeded||[]);
+    }
+  }
+  async function loadGoals(){
+    const {data}=await sb.from('goals').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false});
+    setGoals(data||[]);
+  }
+  async function loadHistory(){
+    const since=new Date(Date.now()-90*86400000).toLocaleDateString('en-CA');
+    const {data}=await sb.from('tasks').select('date, done').eq('user_id',session.user.id).gte('date',since);
+    setHistory(data||[]);
+  }
+  async function loadLeaderboard(){
+    if(!team) return;
+    const {data:ps}=await sb.from('profiles').select('id, username, xp, title').eq('team_id',team.id);
+    const since=new Date(Date.now()-90*86400000).toLocaleDateString('en-CA');
+    const {data:ts}=await sb.from('tasks').select('user_id, done, date').eq('team_id',team.id).gte('date',since);
+    const {data:cts}=await sb.from('custom_tasks').select('user_id, active').eq('active',true);
+    const rows=(ps||[]).map(p=>{
+      const mine=(ts||[]).filter(x=>x.user_id===p.id);
+      const taskCount=(cts||[]).filter(c=>c.user_id===p.id).length || 5;
+      const byDate={};
+      mine.forEach(x=>{ if(x.done){ byDate[x.date]=(byDate[x.date]||0)+1; } });
+      const completeDates=new Set(Object.entries(byDate).filter(([_,c])=>c>=taskCount).map(([d])=>d));
+      const streak=calcStreak(completeDates, today);
+      return { user_id:p.id, username:p.username||'Anonymous', xp:p.xp||0, title:p.title, days:completeDates.size, streak };
+    });
+    rows.sort((a,b)=> b.xp-a.xp);
+    setLeaderboard(rows);
+  }
+  function calcStreak(completeDates, today){
+    let streak=0; const cursor=new Date(today);
+    if(!completeDates.has(today)) cursor.setDate(cursor.getDate()-1);
+    while(completeDates.has(cursor.toLocaleDateString('en-CA'))){ streak++; cursor.setDate(cursor.getDate()-1); }
+    return streak;
+  }
+
+  const myStreak = React.useMemo(()=>{
+    if(!activeTasks.length || !history.length) return 0;
+    const byDate={};
+    history.forEach(x=>{ if(x.done) byDate[x.date]=(byDate[x.date]||0)+1; });
+    const complete=new Set(Object.entries(byDate).filter(([_,c])=>c>=activeTasks.length).map(([d])=>d));
+    return calcStreak(complete, today);
+  },[history, activeTasks, today]);
+
+  async function awardXP(amount, reason){
+    const newXP=Math.max(0,(profile.xp||0)+amount);
+    const newTotal=(profile.total_xp||0)+Math.max(0,amount);
+    await sb.from('profiles').update({xp:newXP, total_xp:newTotal}).eq('id',session.user.id);
+    await sb.from('xp_events').insert({user_id:session.user.id, amount, reason});
+    await loadProfile();
+  }
+  async function handleAuth(e){
+    e.preventDefault(); setError('');
+    const fn = authMode==='signup' ? sb.auth.signUp : sb.auth.signInWithPassword;
+    const {error}=await fn({email,password});
+    if(error) setError(error.message);
+  }
+  async function handleLogout(){ await sb.auth.signOut(); }
+  async function createTeam(){
+    const code=Math.random().toString(36).substring(2,8).toUpperCase();
+    const {data,error}=await sb.from('teams').insert({name:teamName, invite_code:code, created_by:session.user.id}).select().single();
+    if(error){ setError(error.message); return; }
+    await sb.from('profiles').update({team_id:data.id}).eq('id',session.user.id);
+    setTeam(data); setProfile(p=>p?{...p,team_id:data.id}:p);
+  }
+  async function joinTeam(){
+    const {data,error}=await sb.from('teams').select('*').eq('invite_code',inviteCode.toUpperCase()).single();
+    if(error){ setError(t('invalidCode')); return; }
+    await sb.from('profiles').update({team_id:data.id}).eq('id',session.user.id);
+    setTeam(data); setProfile(p=>p?{...p,team_id:data.id}:p);
+  }
+  async function toggleTask(taskKey, done){
+    const existing=tasks.find(x=>x.task_key===taskKey);
+    const wasDone=existing?.done;
+    if(existing) await sb.from('tasks').update({done}).eq('id',existing.id);
+    else await sb.from('tasks').insert({user_id:session.user.id, team_id:team.id, date:today, task_key:taskKey, done});
+    if(!wasDone && done){
+      await awardXP(10,'task:'+taskKey);
+      const {data:after}=await sb.from('tasks').select('*').eq('user_id',session.user.id).eq('date',today);
+      const count=(after||[]).filter(x=>x.done).length;
+      if(count>=activeTasks.length) await awardXP(25,'perfect-day');
+    } else if(wasDone && !done){ await awardXP(-10,'untask:'+taskKey); }
+    await loadTasks(); await loadHistory(); await loadLeaderboard();
+  }
+  async function uploadProof(taskKey, file){
+    const path=`${team.id}/${session.user.id}/${today}/${taskKey}-${Date.now()}.jpg`;
+    const {error}=await sb.storage.from('proofs').upload(path,file);
+    if(error){ setError(error.message); return; }
+    const {data:{publicUrl}}=sb.storage.from('proofs').getPublicUrl(path);
+    const existing=tasks.find(x=>x.task_key===taskKey);
+    if(existing){
+      await sb.from('tasks').update({proof_url:publicUrl, nonce}).eq('id',existing.id);
+      if(!existing.done){ await sb.from('tasks').update({done:true}).eq('id',existing.id); await awardXP(10,'task:'+taskKey); }
+    } else {
+      await sb.from('tasks').insert({user_id:session.user.id, team_id:team.id, date:today, task_key:taskKey, done:true, proof_url:publicUrl, nonce});
+      await awardXP(10,'task:'+taskKey);
+    }
+    await loadTasks(); await loadHistory(); await loadLeaderboard();
+  }
+  async function addCustomTask(){
+    if(!newTask.label.trim()) return;
+    const key = newTask.label.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]+/g,'_').slice(0,20) + '_' + Math.random().toString(36).slice(2,5);
+    const row={ user_id:session.user.id, key, label:newTask.label.trim(), icon:newTask.icon||'✅',
+      duration_min: newTask.duration_min? parseInt(newTask.duration_min): null, sort_order: customTasks.length };
+    const {data,error}=await sb.from('custom_tasks').insert(row).select().single();
+    if(error){ setError(error.message); return; }
+    setCustomTasks([...customTasks,data]); setNewTask({label:'',icon:'✅',duration_min:''});
+    setMessage(t('taskAdded')); setTimeout(()=>setMessage(''),2000);
+  }
+  async function updateCustomTask(id, patch){
+    await sb.from('custom_tasks').update(patch).eq('id',id);
+    setCustomTasks(customTasks.map(x=>x.id===id?{...x,...patch}:x));
+  }
+  async function deleteCustomTask(id){
+    if(!confirm(t('deleteTask'))) return;
+    await sb.from('custom_tasks').delete().eq('id',id);
+    setCustomTasks(customTasks.filter(x=>x.id!==id));
+  }
+  async function addGoal(){
+    if(!newGoal.title.trim()) return;
+    const row={ user_id:session.user.id, team_id:team.id, title:newGoal.title.trim(),
+      description:newGoal.description.trim()||null, target_date:newGoal.target_date||null };
+    const {data,error}=await sb.from('goals').insert(row).select().single();
+    if(error){ setError(error.message); return; }
+    setGoals([data,...goals]); setNewGoal({title:'',description:'',target_date:''});
+    setMessage(t('goalAdded')); setTimeout(()=>setMessage(''),2000);
+  }
+  async function updateGoal(id, patch){
+    await sb.from('goals').update(patch).eq('id',id);
+    setGoals(goals.map(g=>g.id===id?{...g,...patch}:g));
+  }
+  async function deleteGoal(id){
+    if(!confirm(t('deleteGoal'))) return;
+    await sb.from('goals').delete().eq('id',id);
+    setGoals(goals.filter(g=>g.id!==id));
+  }
+  async function buyItem(item){
+    if(!profile || profile.xp<item.price){ setError(t('notEnoughXp')); return; }
+    setError('');
+    const newInv=[...(profile.inventory||[]), item.key];
+    const updates={ xp: profile.xp-item.price, inventory:newInv };
+    if(item.type==='title') updates.title=item.value;
+    await sb.from('profiles').update(updates).eq('id',session.user.id);
+    await sb.from('purchases').insert({user_id:session.user.id, item_key:item.key, price:item.price});
+    if(item.type==='buff') await sb.from('buffs').insert({user_id:session.user.id, type:item.key, date:today});
+    setMessage(t('purchased')+' · '+T(item,'name')); setTimeout(()=>setMessage(''),2500);
+    await loadProfile();
+  }
+  function startTimer(key){ setTimers(prev=>({...prev,[key]:{ elapsed:prev[key]?.elapsed||0, running:true, startedAt:Date.now() }})); }
+  function pauseTimer(key){ setTimers(prev=>({...prev,[key]:{...prev[key], running:false}})); }
+  function resetTimer(key){ if(!confirm(t('resetTimer'))) return; setTimers(prev=>{ const n={...prev}; delete n[key]; return n; }); }
+
+  // ===== RENDER =====
+  if(loading) return <div className="container"><p>{t('loading')}</p></div>;
+
+  const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
+
+  if(!session){
+    return (
+      <div className="container auth">
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <h1>TEAM 1%</h1>{langBtn}
+        </div>
+        <p style={{color:'#94a3b8'}}>{t('tagline')}</p>
+        <form onSubmit={handleAuth}>
+          <input type="email" placeholder={t('email')} value={email} onChange={e=>setEmail(e.target.value)} required/>
+          <input type="password" placeholder={t('password')} value={password} onChange={e=>setPassword(e.target.value)} required/>
+          <button type="submit" className="primary" style={{width:'100%'}}>{authMode==='login'?t('login'):t('signup')}</button>
+        </form>
+        <button className="link" onClick={()=>setAuthMode(authMode==='login'?'signup':'login')}>
+          {authMode==='login'?t('needAccount'):t('haveAccount')}
+        </button>
+        {error && <p className="error">{error}</p>}
+      </div>
+    );
+  }
+
+  if(!profile) return <div className="container"><p>{t('loadingProfile')}</p></div>;
+
+  if(!profile.team_id){
+    return (
+      <div className="container">
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <h1>TEAM 1%</h1>{langBtn}
+        </div>
+        <p>{t('welcome')} {profile.username}</p>
+        <h2>{t('createTeam')}</h2>
+        <input placeholder={t('teamName')} value={teamName} onChange={e=>setTeamName(e.target.value)}/>
+        <button className="primary" onClick={createTeam}>{t('createTeamBtn')}</button>
+        <h2>{t('joinTeam')}</h2>
+        <input placeholder={t('inviteCode')} value={inviteCode} onChange={e=>setInviteCode(e.target.value)}/>
+        <button className="primary" onClick={joinTeam}>{t('joinTeamBtn')}</button>
+        {error && <p className="error">{error}</p>}
+        <button className="link" onClick={handleLogout}>{t('logout')}</button>
+      </div>
+    );
+  }
+
+  const doneCount = tasks.filter(x=>x.done).length;
+  const xpToNext = next ? next.min-(profile.xp||0) : 0;
+  const progressPct = next ? Math.min(100,(((profile.xp||0)-rank.min)/(next.min-rank.min))*100) : 100;
+  const nextName = next ? (lang==='ar'?next.nameAr:next.name) : '';
+
+  return (
+    <div className="container">
+      <header>
+        <h1>TEAM 1%</h1>
+        <div style={{display:'flex',gap:6,alignItems:'center'}}>
+          {langBtn}
+          <button className="link" onClick={()=>setShowSettings(s=>!s)}>⚙️</button>
+          <button className="link" onClick={handleLogout}>{t('logout')}</button>
+        </div>
+      </header>
+      <p style={{color:'#94a3b8',margin:'4px 0 0',fontSize:13}}>{team.name} • {doneCount}/{activeTasks.length} {t('today')}</p>
+
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
+
+      <div className="rank-card">
+        <div className="rank-row">
+          <div className="rank-icon">{rank.icon}</div>
+          <div style={{flex:1}}>
+            <div className="rank-name">{rank.display}{profile.title&&profile.title!=='Rookie'?' · '+profile.title:''}</div>
+            <div className="rank-xp">{(profile.xp||0).toLocaleString()} {t('xp')} {next?'· '+xpToNext+' '+t('to')+' '+nextName:'· '+t('max')}</div>
+          </div>
+        </div>
+        {next && <div className="xp-bar"><div className="xp-bar-fill" style={{width:progressPct+'%'}}/></div>}
+      </div>
+
+      <div className="streak-card">
+        <div style={{fontSize:36}}>🔥</div>
+        <div style={{flex:1}}>
+          <div className="num">{myStreak} <span style={{fontSize:16,fontWeight:600}}>{myStreak===1?t('day'):t('days')}</span></div>
+          <div className="lbl">{t('currentStreak')}</div>
+        </div>
+      </div>
+
+      {showSettings && (
+        <div className="card">
+          <h2 style={{marginTop:0}}>{t('myDailyTasks')}</h2>
+          {customTasks.map(ct=>(
+            <div key={ct.id} className="row" style={{marginBottom:8, paddingBottom:8, borderBottom:'1px solid #334155'}}>
+              <input value={ct.icon} onChange={e=>updateCustomTask(ct.id,{icon:e.target.value})} style={{width:50, textAlign:'center', marginBottom:0}}/>
+              <input value={ct.label} onChange={e=>updateCustomTask(ct.id,{label:e.target.value})} style={{flex:1, minWidth:120, marginBottom:0}}/>
+              <input type="number" placeholder={t('min')} value={ct.duration_min||''} onChange={e=>updateCustomTask(ct.id,{duration_min:e.target.value?parseInt(e.target.value):null})} style={{width:70, marginBottom:0}}/>
+              <button onClick={()=>updateCustomTask(ct.id,{active:!ct.active})} style={{fontSize:12}}>{ct.active?t('active'):t('inactive')}</button>
+              <button className="danger" onClick={()=>deleteCustomTask(ct.id)} style={{fontSize:12}}>✕</button>
+            </div>
+          ))}
+          <h2>{t('addNewTask')}</h2>
+          <div className="row">
+            <input placeholder="🎯" value={newTask.icon} onChange={e=>setNewTask({...newTask,icon:e.target.value})} style={{width:50, textAlign:'center', marginBottom:0}}/>
+            <input placeholder={t('taskName')} value={newTask.label} onChange={e=>setNewTask({...newTask,label:e.target.value})} style={{flex:1, minWidth:120, marginBottom:0}}/>
+            <input type="number" placeholder={t('min')} value={newTask.duration_min} onChange={e=>setNewTask({...newTask,duration_min:e.target.value})} style={{width:80, marginBottom:0}}/>
+            <button className="primary" onClick={addCustomTask}>{t('add')}</button>
+          </div>
+          <p style={{color:'#64748b',fontSize:12,marginTop:8}}>{t('taskHint')}</p>
+        </div>
+      )}
+
+      {page==='home' && (
+        <>
+          <div className="nonce">
+            <strong>{t('todaysProof')}</strong> <span className="code">{nonce}</span>
+            <div style={{fontSize:12,color:'#fbbf24',marginTop:4}}>{t('proofHint')}</div>
+          </div>
+
+          <h2>{t('todaysTasks')}</h2>
+          {activeTasks.length===0 && <p style={{color:'#94a3b8'}}>{t('noTasks')}</p>}
+          {activeTasks.map(task=>{
+            const dbT=tasks.find(x=>x.task_key===task.key);
+            const done=dbT?.done||false;
+            const timer=timers[task.key];
+            const elapsed=timer?.elapsed||0;
+            const target=(task.duration_min||0)*60;
+            const remaining=Math.max(0,target-elapsed);
+            const mm=String(Math.floor(remaining/60)).padStart(2,'0');
+            const ss=String(remaining%60).padStart(2,'0');
+            return (
+              <React.Fragment key={task.id}>
+                <div className={'task'+(done?' done':'')}>
+                  <span className="icon">{task.icon}</span>
+                  <span className="label">{task.label}{task.duration_min?` (${task.duration_min}${t('min')})`:''}</span>
+                  <input type="checkbox" checked={done} onChange={e=>toggleTask(task.key, e.target.checked)}/>
+                  <label className="upload">
+                    📷
+                    <input type="file" accept="image/*" capture="environment" style={{display:'none'}}
+                      onChange={e=>{const f=e.target.files?.[0]; if(f) uploadProof(task.key,f);}}/>
+                  </label>
+                  {dbT?.proof_url && <a href={dbT.proof_url} target="_blank" rel="noreferrer" style={{color:'#60a5fa',fontSize:12}}>View</a>}
+                </div>
+                {task.duration_min && (
+                  <div className="timer">
+                    <span className="big">{mm}:{ss}</span>
+                    {!timer?.running ? (
+                      <button className="primary" onClick={()=>startTimer(task.key)}>▶</button>
+                    ) : (
+                      <button onClick={()=>pauseTimer(task.key)}>⏸</button>
+                    )}
+                    <button onClick={()=>resetTimer(task.key)}>↺</button>
+                    <span style={{color:'#94a3b8'}}>
+                      {elapsed>=target?'✅ '+t('done'):t('keepsRunning')}
+                    </span>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </>
+      )}
+
+      {page==='goals' && (
+        <>
+          <h2>{t('longTermGoals')}</h2>
+          {goals.length===0 && <p style={{color:'#94a3b8'}}>{t('noGoals')}</p>}
+          {goals.map(g=>{
+            const daysLeft = g.target_date ? daysBetween(today, g.target_date) : null;
+            return (
+              <div className="card" key={g.id}>
+                <div className="title">{g.title}</div>
+                {g.description && <div className="desc">{g.description}</div>}
+                <div className="meta">
+                  {g.target_date && <span>🎯 {g.target_date}{daysLeft!==null?` · ${daysLeft>=0?daysLeft+' '+t('dLeft'):Math.abs(daysLeft)+' '+t('dOverdue')}`:''}</span>}
+                </div>
+                <div className="progress-bar"><div className="progress-fill" style={{width:(g.progress||0)+'%'}}/></div>
+                <div className="row" style={{marginTop:10}}>
+                  <input type="range" min="0" max="100" step="5" value={g.progress||0} onChange={e=>updateGoal(g.id,{progress:parseInt(e.target.value)})} style={{flex:1, padding:0, marginBottom:0}}/>
+                  <span style={{minWidth:40, textAlign:'end'}}>{g.progress||0}%</span>
+                </div>
+                <div className="row" style={{marginTop:8}}>
+                  {g.status==='active' ? (
+                    <button onClick={()=>updateGoal(g.id,{status:'done', progress:100})}>{t('markDone')}</button>
+                  ) : (
+                    <span style={{color:'#4ade80', fontWeight:700}}>✅ {t('done')}</span>
+                  )}
+                  <button className="danger" onClick={()=>deleteGoal(g.id)}>{t('delete')}</button>
+                </div>
+              </div>
+            );
+          })}
+
+          <h2>{t('addGoal')}</h2>
+          <div className="card">
+            <input placeholder={t('goalTitle')} value={newGoal.title} onChange={e=>setNewGoal({...newGoal,title:e.target.value})}/>
+            <textarea placeholder={t('goalWhy')} value={newGoal.description} onChange={e=>setNewGoal({...newGoal,description:e.target.value})}/>
+            <input type="date" value={newGoal.target_date} onChange={e=>setNewGoal({...newGoal,target_date:e.target.value})}/>
+            <button className="primary" onClick={addGoal}>{t('addGoalBtn')}</button>
+          </div>
+        </>
+      )}
+
+      {page==='store' && (
+        <>
+          <h2>{t('store')} · {(profile.xp||0).toLocaleString()} {t('xp')}</h2>
+          {STORE_ITEMS.map(item=>{
+            const owned=(profile.inventory||[]).includes(item.key);
+            const isTitle=item.type==='title';
+            const equipped=isTitle && profile.title===item.value;
+            const canBuy=profile.xp>=item.price && !(owned && isTitle);
+            return (
+              <div className="store-item" key={item.key}>
+                <span className="icon">{item.icon}</span>
+                <div className="info">
+                  <div className="name">{T(item,'name')}</div>
+                  <div className="desc">{T(item,'desc')}</div>
+                </div>
+                <span className="price">{item.price} {t('xp')}</span>
+                {isTitle && owned ? (
+                  <button onClick={()=>{ sb.from('profiles').update({title:item.value}).eq('id',session.user.id).then(loadProfile); }}>
+                    {equipped?t('equipped'):t('equip')}
+                  </button>
+                ) : (
+                  <button className="primary" disabled={!canBuy} onClick={()=>buyItem(item)}>{t('buy')}</button>
+                )}
+              </div>
+            );
+          })}
+        </>
+      )}
+
+      {page==='board' && (
+        <>
+          <h2>{t('leaderboard')}</h2>
+          <table>
+            <thead><tr><th>#</th><th>{t('member')}</th><th>🔥</th><th>{t('days')}</th><th>{t('xp')}</th></tr></thead>
+            <tbody>
+              {leaderboard.map((row,i)=>(
+                <tr key={row.user_id} className={row.user_id===session.user.id?'you':''}>
+                  <td>{i+1}</td>
+                  <td>{row.username}{row.title&&row.title!=='Rookie'?<span style={{color:'#fbbf24',fontSize:11}}> · {row.title}</span>:''}</td>
+                  <td>{row.streak}</td>
+                  <td>{row.days}</td>
+                  <td><strong>{row.xp.toLocaleString()}</strong></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <nav>
+        <button className={page==='home'?'active':''} onClick={()=>setPage('home')}><span>🏠</span>{t('home')}</button>
+        <button className={page==='goals'?'active':''} onClick={()=>setPage('goals')}><span>🎯</span>{t('goals')}</button>
+        <button className={page==='store'?'active':''} onClick={()=>setPage('store')}><span>🛒</span>{t('store')}</button>
+        <button className={page==='board'?'active':''} onClick={()=>setPage('board')}><span>🏆</span>{t('ranks')}</button>
+      </nav>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
