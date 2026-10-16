@@ -345,12 +345,17 @@ function App(){
     await sb.from('xp_events').insert({user_id:session.user.id, amount, reason});
     await loadProfile();
   }
-  async function handleAuth(e){
-    e.preventDefault(); setError('');
+async function handleAuth(e){
+  e.preventDefault(); setError('');
+  try {
     const fn = authMode==='signup' ? sb.auth.signUp : sb.auth.signInWithPassword;
-    const {error}=await fn({email,password});
-    if(error) setError(error.message);
+    const res = await fn({ email, password });
+    if (res.error) { alert('SUPABASE ERROR:\n' + res.error.message); setError(res.error.message); return; }
+    alert('SUCCESS!\nUser: ' + (res.data.user ? res.data.user.email : 'none') + '\nSession: ' + (res.data.session ? 'yes' : 'no'));
+  } catch (err) {
+    alert('JS EXCEPTION:\n' + (err && err.message ? err.message : String(err)));
   }
+}
   async function handleLogout(){ await sb.auth.signOut(); }
   async function createTeam(){
     const code=Math.random().toString(36).substring(2,8).toUpperCase();
