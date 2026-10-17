@@ -106,30 +106,30 @@ function App(){
   const [inviteCode, setInviteCode] = React.useState('');
   const [newTaskLabel, setNewTaskLabel] = React.useState('');
 
-  // Study Stopwatch State
   const [studyTime, setStudyTime] = React.useState(0);
   const [studyRunning, setStudyRunning] = React.useState(false);
-
-  // Quran Stopwatch State
   const [quranTime, setQuranTime] = React.useState(0);
   const [quranRunning, setQuranRunning] = React.useState(false);
 
   const today = new Date().toLocaleDateString('en-CA');
   const nonce = React.useMemo(()=>{ let n=localStorage.getItem('nonce-'+today); if(!n){n=Math.random().toString(36).substring(2,6).toUpperCase();localStorage.setItem('nonce-'+today,n);} return n; },[today]);
 
-  React.useEffect(()=>{ const s=localStorage.getItem('team_user_id'); if(s) setUser(s); else setLoading(false); },[]);
+  React.useEffect(()=>{ 
+    const s=localStorage.getItem('team_user_id'); 
+    if(s) setUser(s); 
+    else setLoading(false); 
+  },[]);
+
   React.useEffect(()=>{ if(user) loadProfile(); },[user]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); },[profile]);
   React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
 
-  // Study Stopwatch Tick
   React.useEffect(()=>{
     let int;
     if(studyRunning) int = setInterval(()=>setStudyTime(t=>t+1), 1000);
     return ()=>clearInterval(int);
   },[studyRunning]);
 
-  // Auto-complete Study at 30 mins
   React.useEffect(()=>{
     if(studyTime === 1800 && !tasks.find(t=>t.task_key==='study')?.done) {
       alert('🔥 30 Minutes Reached! Study task complete.');
@@ -137,14 +137,12 @@ function App(){
     }
   }, [studyTime]);
 
-  // Quran Stopwatch Tick
   React.useEffect(()=>{
     let int;
     if(quranRunning) int = setInterval(()=>setQuranTime(t=>t+1), 1000);
     return ()=>clearInterval(int);
   },[quranRunning]);
 
-  // Auto-complete Quran at 10 mins
   React.useEffect(()=>{
     if(quranTime === 600 && !tasks.find(t=>t.task_key==='quran')?.done) {
       alert('📖 10 Minutes Reached! Quran task complete.');
@@ -152,8 +150,28 @@ function App(){
     }
   }, [quranTime]);
 
-  async function loadProfile(){ const {data}=await sb.from('profiles').select('*').eq('id',user).maybeSingle(); if(data) setProfile(data); else handleLogout(); setLoading(false); }
-  async function loadTeam(id){ const {data}=await sb.from('teams').select('*').eq('id',id).single(); setTeam(data); }
+  async function loadProfile(){ 
+    const {data}=await sb.from('profiles').select('*').eq('id',user).maybeSingle(); 
+    if(data) {
+      setProfile(data);
+      if(data.team_id) loadTeam(data.team_id);
+    } else {
+      localStorage.removeItem('team_user_id');
+      setUser(null);
+    }
+    setLoading(false); 
+  }
+
+  async function loadTeam(id){ 
+    const {data} = await sb.from('teams').select('*').eq('id',id).maybeSingle(); 
+    if(data) setTeam(data);
+    else {
+      // Team was deleted, reset user's team_id
+      await sb.from('profiles').update({team_id: null}).eq('id', user);
+      setProfile(p => ({...p, team_id: null}));
+    }
+  }
+
   async function loadTasks(){ const {data}=await sb.from('tasks').select('*').eq('user_id',user).eq('date',today); setTasks(data||[]); }
   async function loadHistory(){ const {data}=await sb.from('tasks').select('date, done, task_key').eq('user_id',user); setHistory(data||[]); }
   async function loadFeed(){ const {data}=await sb.from('feed').select('*').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
@@ -201,15 +219,8 @@ function App(){
   }
 
   async function toggleTask(key, checked){
-    // Time Constraints
-    if(key === 'study' && checked && studyTime < 1800) {
-      alert("You must study for at least 30 minutes to check this task!");
-      return;
-    }
-    if(key === 'quran' && checked && quranTime < 600) {
-      alert("You must read Quran for at least 10 minutes to check this task!");
-      return;
-    }
+    if(key === 'study' && checked && studyTime < 1800) return alert("You must study for at least 30 minutes to check this task!");
+    if(key === 'quran' && checked && quranTime < 600) return alert("You must read Quran for at least 10 minutes to check this task!");
 
     const existing=tasks.find(t=>t.task_key===key);
     if(existing) await sb.from('tasks').update({done:checked}).eq('id',existing.id);
@@ -315,7 +326,7 @@ function App(){
     </div>
   );
 
-  if(!profile) return <div className="container">Loading...</div>;
+  if(!profile) return <div className="container">Loading Profile...</div>;
 
   if(!profile.team_id) return (
     <div className="container" style={{marginTop:50}}>
@@ -328,6 +339,8 @@ function App(){
       <button onClick={handleLogout} style={{marginTop:30,background:'none',color:'#ff4f4f'}}>Logout</button>
     </div>
   );
+
+  if(!team) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>LOADING TEAM...</div>;
 
   const rank = RANKS.slice().reverse().find(r => (profile.xp||0) >= r.min) || RANKS[0];
   const nextRank = RANKS.find(r => (profile.xp||0) < r.min);
@@ -494,4 +507,4 @@ function App(){
 ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App /></ErrorBoundary>);
 </script>
 </body>
-</html>6y
+</html>
