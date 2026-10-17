@@ -21,8 +21,9 @@ button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;fon
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
 button:disabled{opacity:0.5;}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.header-actions{display:flex;align-items:center;gap:10px;}
+.header-actions{display:flex;align-items:center;gap:8px;}
 .lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:20px;}
 .box{aspect-ratio:1;background:#111;border-radius:3px;border:1px solid #222;}
@@ -48,6 +49,7 @@ nav button span{font-size:20px;}
 .add-task input{margin-bottom:0;flex:1;}
 .add-task button{width:auto;padding:0 15px;background:#7CFF4F;color:#000;}
 .delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;}
+.invite-box{background:#111; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #333; text-align:center;}
 </style>
 </head>
 <body>
@@ -92,7 +94,8 @@ const STRINGS = {
     minReq:'MIN REQUIRED', startBtn:'START', pauseBtn:'PAUSE', resetBtn:'RESET',
     mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA XP', addTaskPlaceholder:'Add your own task... (Max 8)',
     currentRank:'CURRENT RANK', buy:'BUY', post:'+ POST', teamFeed:'TEAM FEED', user:'USER',
-    home:'HOME', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP'
+    home:'HOME', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP',
+    inviteTitle:'TEAM INVITE CODE', inviteHint:'Share this code with your friends to let them join!'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', start:'ابدأ',
@@ -103,7 +106,8 @@ const STRINGS = {
     minReq:'دقيقة مطلوبة', startBtn:'ابدأ', pauseBtn:'إيقاف', resetBtn:'تصفير',
     mandatory:'غير قابل للتفاوض', extraXp:'نقاط إضافية', addTaskPlaceholder:'أضف مهمتك... (حد أقصى ٨)',
     currentRank:'الرتبة الحالية', buy:'شراء', post:'+ نشر', teamFeed:'منشورات الفريق', user:'مستخدم',
-    home:'الرئيسية', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة'
+    home:'الرئيسية', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة',
+    inviteTitle:'كود دعوة الفريق', inviteHint:'شارك هذا الكود مع أصدقائك للانضمام!'
   }
 };
 
@@ -159,6 +163,9 @@ function App(){
   React.useEffect(()=>{ if(user) loadProfile(); },[user]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); },[profile]);
   React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
+
+  // Refresh leaderboard when tab is clicked
+  React.useEffect(()=>{ if(page==='ranks' && team) loadLeaderboard(); }, [page]);
 
   React.useEffect(()=>{
     let int;
@@ -219,12 +226,13 @@ function App(){
       const seedMandatory = MANDATORY_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:true}));
       const seedExtras = EXTRA_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:false}));
       const {data:s} = await sb.from('custom_tasks').insert([...seedMandatory, ...seedExtras]).select();
-      setCustomTasks(s||[]);
+      if(s) setCustomTasks(s);
     }
   }
 
   async function loadLeaderboard(){
-    const {data:ps}=await sb.from('profiles').select('id, username, xp, title').eq('team_id',team.id);
+    const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title').eq('team_id',team.id);
+    if(error) return console.log(error);
     const rows=(ps||[]).map(p=>({ user_id:p.id, username:p.username, xp:p.xp||0, title:p.title }));
     rows.sort((a,b)=>b.xp-a.xp); setLeaderboard(rows);
   }
@@ -241,6 +249,13 @@ function App(){
   }
 
   function handleLogout(){ localStorage.removeItem('team_user_id'); window.location.reload(); }
+
+  async function leaveTeam() {
+    if(!confirm(lang==='ar'?"هل أنت متأكد من مغادرة الفريق؟":"Are you sure you want to leave this team?")) return;
+    await sb.from('profiles').update({team_id: null}).eq('id', user);
+    setProfile(p => ({...p, team_id: null}));
+    setTeam(null);
+  }
 
   async function createTeam(){
     const code=Math.random().toString(36).substring(2,8).toUpperCase();
@@ -285,9 +300,14 @@ function App(){
     if (extraTasks.length >= 8) return alert(lang==='ar'?"الحد الأقصى ٨ مهام إضافية":"Max 8 custom tasks allowed.");
     
     const key = 'custom_' + Date.now();
-    const {data} = await sb.from('custom_tasks').insert({
+    const {data, error} = await sb.from('custom_tasks').insert({
       user_id: user, key: key, label: newTaskLabel.trim(), icon: '⭐', active: true, is_mandatory: false
     }).select().single();
+
+    if (error || !data) {
+      alert("Database Error: " + (error ? error.message : "Unknown error"));
+      return;
+    }
     
     setCustomTasks([...customTasks, data]);
     setNewTaskLabel('');
@@ -394,17 +414,19 @@ function App(){
         <h1>TEAM <span>1%</span></h1>
         <div className="header-actions">
           {langBtn}
+          <button className="leave-btn" onClick={leaveTeam}>{lang==='ar'?'مغادرة':'Leave'}</button>
           <div className="streak">🔥 {streak}</div>
         </div>
       </div>
 
       {page === 'home' && (
         <>
-          <div style={{background:'#111', padding:'12px', borderRadius:'8px', marginBottom:'15px', border:'1px solid #333', textAlign:'center'}}>
-  <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>TEAM INVITE CODE</div>
-  <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
-  <div style={{fontSize:'11px', color:'#666'}}>Share this code with your friends to let them join!</div>
-</div>
+          <div className="invite-box">
+            <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>{t('inviteTitle')}</div>
+            <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
+            <div style={{fontSize:'11px', color:'#666'}}>{t('inviteHint')}</div>
+          </div>
+
           <div className="nonce">
             <div style={{fontSize:10,color:'#888',marginBottom:5}}>{t('proofCode')}</div>
             <div className="nonce-code">{nonce}</div>
@@ -473,8 +495,6 @@ function App(){
           <h2 style={{color:'#888'}}>{t('extraXp')}</h2>
           {extraTasks.map(task=>{
             const isDone = tasks.find(x=>x.task_key===task.key)?.done;
-            
-            // Translate default extras if they match the keys, otherwise use custom label
             let label = task.label;
             if (lang==='ar') {
               const found = EXTRA_TASKS.find(x=>x.key===task.key);
