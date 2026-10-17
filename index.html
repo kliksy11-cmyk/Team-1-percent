@@ -265,7 +265,6 @@ function App(){
     setTimeout(() => setToast(null), 3500);
   };
 
-  // Deterministic reward function based on day number
   const getRewardForDay = (day) => {
     if (day % 30 === 0) return { type: 'monthly', amount: 500 };
     if (day % 7 === 0) return { type: 'weekly', amount: 100 + (Math.floor(day/7) * 20) };
@@ -824,7 +823,11 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  const teamStartDate = team ? new Date(team.created_at || Date.now()).toLocaleDateString('en-CA') : today;
+  // NEW LOGIC: Start date is the first day you actually did something
+  const allDoneDates = history.filter(h => h.done).map(h => h.date).sort();
+  const teamStartDate = allDoneDates.length > 0 ? allDoneDates[0] : today;
+  const teamStartDateObj = new Date(teamStartDate);
+
   const missedYesterday = team && !completeDates.has(yesterday) && yesterday >= teamStartDate;
   
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
@@ -994,7 +997,7 @@ function App(){
             <div className="timeline" onTouchStart={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()}>
               {Array.from({length:82}).map((_,i)=>{
                 const dayNum = i + 1;
-                const d = new Date(team?.created_at || Date.now()); d.setDate(d.getDate() + i);
+                const d = new Date(teamStartDateObj); d.setDate(d.getDate() + i);
                 const ds = d.toLocaleDateString('en-CA');
                 const isDone = completeDates.has(ds);
                 const isFreeze = freezesUsed.has(ds);
@@ -1236,4 +1239,4 @@ function App(){
 ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App /></ErrorBoundary>);
 </script>
 </body>
-  </html>
+</html>
