@@ -102,7 +102,9 @@ const STRINGS = {
     goalSetupTitle:'WHAT IS YOUR ULTIMATE GOAL?', goalSetupSub:'What do you want to achieve by the end of these 82 days?',
     goalPlaceholder:'e.g., Lose 10kg, Finish 3 books, Memorize Juz 30...', addGoal:'Add Goal', startChallenge:'START CHALLENGE',
     myGoals:'MY 82-DAY GOALS', noGoals:'No goals set yet.', markDone:'Mark Done', deleteGoal:'Delete',
-    wrongPass:'Wrong password', enterBoth:'Please enter a name and password'
+    wrongPass:'Wrong password', enterBoth:'Please enter a name and password',
+    welcomeBack:'Welcome back,', setupPassMsg:'You need to create a password to secure your account.',
+    newPass:'New Password', saveLogin:'Save & Login'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -120,7 +122,9 @@ const STRINGS = {
     goalSetupTitle:'ما هو هدفك الأسمى؟', goalSetupSub:'ماذا تريد أن تحقق بنهاية هذه الـ ٨٢ يوم؟',
     goalPlaceholder:'مثال: أخسر ١٠ كيلو، أخلص ٣ كتب، أحفظ جزء عم...', addGoal:'إضافة هدف', startChallenge:'ابدأ التحدي',
     myGoals:'أهدافي لـ ٨٢ يوم', noGoals:'لم يتم تعيين أهداف بعد.', markDone:'تم الإنجاز', deleteGoal:'حذف',
-    wrongPass:'كلمة المرور غير صحيحة', enterBoth:'الرجاء إدخال الاسم وكلمة المرور'
+    wrongPass:'كلمة المرور غير صحيحة', enterBoth:'الرجاء إدخال الاسم وكلمة المرور',
+    welcomeBack:'أهلاً بعودتك،', setupPassMsg:'تحتاج إلى إنشاء كلمة مرور لتأمين حسابك.',
+    newPass:'كلمة مرور جديدة', saveLogin:'حفظ ودخول'
   }
 };
 
@@ -159,10 +163,18 @@ function App(){
   const [newTaskLabel, setNewTaskLabel] = React.useState('');
   const [newGoalLabel, setNewGoalLabel] = React.useState('');
 
+  // Forced Password Setup for old accounts
+  const [setupPassUser, setSetupPassUser] = React.useState(null);
+  const [newPassSetup, setNewPassSetup] = React.useState('');
+
+  // Background-Proof Timer States
   const [studyTime, setStudyTime] = React.useState(0);
   const [studyRunning, setStudyRunning] = React.useState(false);
+  const [studyStartTime, setStudyStartTime] = React.useState(null);
+
   const [quranTime, setQuranTime] = React.useState(0);
   const [quranRunning, setQuranRunning] = React.useState(false);
+  const [quranStartTime, setQuranStartTime] = React.useState(null);
 
   const today = new Date().toLocaleDateString('en-CA');
   const nonce = React.useMemo(()=>{ let n=localStorage.getItem('nonce-'+today); if(!n){n=Math.random().toString(36).substring(2,6).toUpperCase();localStorage.setItem('nonce-'+today,n);} return n; },[today]);
@@ -184,31 +196,92 @@ function App(){
   React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
   React.useEffect(()=>{ if(page==='ranks') loadLeaderboard(); }, [page]);
 
-  React.useEffect(()=>{
-    let int;
-    if(studyRunning) int = setInterval(()=>setStudyTime(t=>t+1), 1000);
-    return ()=>clearInterval(int);
-  },[studyRunning]);
+  React.useEffect(() => {
+    const sDate = localStorage.getItem('studyDate');
+    if (sDate === today) {
+      const accum = parseInt(localStorage.getItem('studyAccum') || '0');
+      const start = localStorage.getItem('studyStart');
+      if (start) {
+        setStudyTime(accum + Math.floor((Date.now() - parseInt(start)) / 1000));
+        setStudyRunning(true);
+        setStudyStartTime(parseInt(start));
+      } else {
+        setStudyTime(accum);
+      }
+    } else {
+      localStorage.setItem('studyDate', today);
+      localStorage.setItem('studyAccum', '0');
+      localStorage.removeItem('studyStart');
+    }
+    
+    const qDate = localStorage.getItem('quranDate');
+    if (qDate === today) {
+      const accum = parseInt(localStorage.getItem('quranAccum') || '0');
+      const start = localStorage.getItem('quranStart');
+      if (start) {
+        setQuranTime(accum + Math.floor((Date.now() - parseInt(start)) / 1000));
+        setQuranRunning(true);
+        setQuranStartTime(parseInt(start));
+      } else {
+        setQuranTime(accum);
+      }
+    } else {
+      localStorage.setItem('quranDate', today);
+      localStorage.setItem('quranAccum', '0');
+      localStorage.removeItem('quranStart');
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const handleVis = () => {
+      if (document.visibilityState === 'visible') {
+        if (studyRunning && studyStartTime) {
+          const accum = parseInt(localStorage.getItem('studyAccum') || '0');
+          setStudyTime(accum + Math.floor((Date.now() - studyStartTime) / 1000));
+        }
+        if (quranRunning && quranStartTime) {
+          const accum = parseInt(localStorage.getItem('quranAccum') || '0');
+          setQuranTime(accum + Math.floor((Date.now() - quranStartTime) / 1000));
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVis);
+    return () => document.removeEventListener('visibilitychange', handleVis);
+  }, [studyRunning, studyStartTime, quranRunning, quranStartTime]);
 
   React.useEffect(()=>{
-    if(studyTime === 1800 && !tasks.find(t=>t.task_key==='study')?.done) {
+    let int;
+    if(studyRunning) int = setInterval(()=> {
+      const accum = parseInt(localStorage.getItem('studyAccum') || '0');
+      setStudyTime(accum + Math.floor((Date.now() - studyStartTime) / 1000));
+    }, 1000);
+    return ()=>clearInterval(int);
+  },[studyRunning, studyStartTime]);
+
+  React.useEffect(()=>{
+    let int;
+    if(quranRunning) int = setInterval(()=> {
+      const accum = parseInt(localStorage.getItem('quranAccum') || '0');
+      setQuranTime(accum + Math.floor((Date.now() - quranStartTime) / 1000));
+    }, 1000);
+    return ()=>clearInterval(int);
+  },[quranRunning, quranStartTime]);
+
+  React.useEffect(()=>{
+    if(studyTime >= 1800 && studyRunning && !tasks.find(t=>t.task_key==='study')?.done) {
+      pauseStudy();
       alert(lang==='ar' ? '🔥 وصلت ٣٠ دقيقة! تم إكمال مهمة الدراسة.' : '🔥 30 Minutes Reached! Study task complete.');
       toggleTask('study', true);
     }
-  }, [studyTime]);
+  }, [studyTime, studyRunning]);
 
   React.useEffect(()=>{
-    let int;
-    if(quranRunning) int = setInterval(()=>setQuranTime(t=>t+1), 1000);
-    return ()=>clearInterval(int);
-  },[quranRunning]);
-
-  React.useEffect(()=>{
-    if(quranTime === 600 && !tasks.find(t=>t.task_key==='quran')?.done) {
+    if(quranTime >= 600 && quranRunning && !tasks.find(t=>t.task_key==='quran')?.done) {
+      pauseQuran();
       alert(lang==='ar' ? '📖 وصلت ١٠ دقائق! تم إكمال مهمة القرآن.' : '📖 10 Minutes Reached! Quran task complete.');
       toggleTask('quran', true);
     }
-  }, [quranTime]);
+  }, [quranTime, quranRunning]);
 
   async function loadProfile(){ 
     const {data}=await sb.from('profiles').select('*').eq('id',user).maybeSingle(); 
@@ -277,16 +350,15 @@ function App(){
     
     if(!uname || !pass) return alert(t('enterBoth'));
 
-    const {data:exists, error}=await sb.from('profiles').select('id, password').eq('username',uname).maybeSingle();
+    const {data:exists, error}=await sb.from('profiles').select('id, password, username').eq('username',uname).maybeSingle();
 
     if(exists){
-      // If user exists and has a password, check it
-      if(exists.password && exists.password !== pass) {
-        return alert(t('wrongPass'));
-      }
-      // If user exists but has NO password (legacy account), set it now
       if(!exists.password) {
-        await sb.from('profiles').update({password: pass}).eq('id', exists.id);
+        setSetupPassUser(exists);
+        return;
+      }
+      if(exists.password !== pass) {
+        return alert(t('wrongPass'));
       }
       localStorage.setItem('team_user_id',exists.id); 
       setUser(exists.id); 
@@ -297,6 +369,14 @@ function App(){
       localStorage.setItem('team_user_id',id); 
       setUser(id);
     }
+  }
+
+  async function handleSaveSetupPass() {
+    if(!newPassSetup.trim()) return alert(t('enterBoth'));
+    await sb.from('profiles').update({password: newPassSetup.trim()}).eq('id', setupPassUser.id);
+    localStorage.setItem('team_user_id',setupPassUser.id); 
+    setUser(setupPassUser.id);
+    setSetupPassUser(null);
   }
 
   function handleLogout(){ localStorage.removeItem('team_user_id'); window.location.reload(); }
@@ -429,6 +509,50 @@ function App(){
     loadFeed();
   }
 
+  function startStudy() {
+    const now = Date.now();
+    setStudyStartTime(now);
+    setStudyRunning(true);
+    localStorage.setItem('studyStart', now.toString());
+    localStorage.setItem('studyAccum', studyTime.toString());
+  }
+  function pauseStudy() {
+    setStudyRunning(false);
+    setStudyStartTime(null);
+    localStorage.removeItem('studyStart');
+    localStorage.setItem('studyAccum', studyTime.toString());
+  }
+  function resetStudy() {
+    if(!confirm(t('resetBtn') + '?')) return;
+    setStudyRunning(false);
+    setStudyStartTime(null);
+    setStudyTime(0);
+    localStorage.removeItem('studyStart');
+    localStorage.setItem('studyAccum', '0');
+  }
+
+  function startQuran() {
+    const now = Date.now();
+    setQuranStartTime(now);
+    setQuranRunning(true);
+    localStorage.setItem('quranStart', now.toString());
+    localStorage.setItem('quranAccum', quranTime.toString());
+  }
+  function pauseQuran() {
+    setQuranRunning(false);
+    setQuranStartTime(null);
+    localStorage.removeItem('quranStart');
+    localStorage.setItem('quranAccum', quranTime.toString());
+  }
+  function resetQuran() {
+    if(!confirm(t('resetBtn') + '?')) return;
+    setQuranRunning(false);
+    setQuranStartTime(null);
+    setQuranTime(0);
+    localStorage.removeItem('quranStart');
+    localStorage.setItem('quranAccum', '0');
+  }
+
   const mandatoryKeys = MANDATORY_TASKS.map(t=>t.key);
   const doneMandatoryByDate = {};
   history.forEach(h => {
@@ -452,6 +576,21 @@ function App(){
   const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
 
   if(loading) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loading')}</div>;
+
+  // FORCED PASSWORD SETUP SCREEN
+  if (setupPassUser) {
+    return (
+      <div className="container" style={{marginTop:80}}>
+        <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
+        <h1>TEAM <span>1%</span></h1>
+        <p style={{color:'#7CFF4F', fontSize:16, marginTop:20}}>{t('welcomeBack')} {setupPassUser.username}!</p>
+        <p style={{color:'#888', fontSize:14, marginBottom:30}}>{t('setupPassMsg')}</p>
+        
+        <input type="password" placeholder={t('newPass')} value={newPassSetup} onChange={e=>setNewPassSetup(e.target.value)}/>
+        <button className="primary" onClick={handleSaveSetupPass} style={{width:'100%'}}>{t('saveLogin')}</button>
+      </div>
+    );
+  }
 
   if(!user) return (
     <div className="container" style={{marginTop:80}}>
@@ -482,7 +621,6 @@ function App(){
 
   if(!team) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loadingTeam')}</div>;
 
-  // ONBOARDING SCREEN
   if (isOnboarding) {
     return (
       <div className="container" style={{marginTop:40}}>
@@ -511,7 +649,6 @@ function App(){
     );
   }
 
-  // MAIN APP
   const rank = RANKS.slice().reverse().find(r => (profile.xp||0) >= r.min) || RANKS[0];
   const nextRank = RANKS.find(r => (profile.xp||0) < r.min);
   const progress = nextRank ? (((profile.xp||0)-rank.min)/(nextRank.min-rank.min))*100 : 100;
@@ -564,10 +701,10 @@ function App(){
             </div>
             <div className="timer-val">{formatTime(studyTime)}</div>
             <div style={{display:'flex',gap:10}}>
-              <button onClick={()=>setStudyRunning(!studyRunning)} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000'}}>
+              <button onClick={studyRunning ? pauseStudy : startStudy} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000'}}>
                 {studyRunning?t('pauseBtn'):t('startBtn')}
               </button>
-              <button onClick={()=>{setStudyRunning(false); setStudyTime(0);}} style={{flex:1}}>{t('resetBtn')}</button>
+              <button onClick={resetStudy} style={{flex:1}}>{t('resetBtn')}</button>
             </div>
           </div>
 
@@ -580,10 +717,10 @@ function App(){
             </div>
             <div className="timer-val">{formatTime(quranTime)}</div>
             <div style={{display:'flex',gap:10}}>
-              <button onClick={()=>setQuranRunning(!quranRunning)} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000'}}>
+              <button onClick={quranRunning ? pauseQuran : startQuran} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000'}}>
                 {quranRunning?t('pauseBtn'):t('startBtn')}
               </button>
-              <button onClick={()=>{setQuranRunning(false); setQuranTime(0);}} style={{flex:1}}>{t('resetBtn')}</button>
+              <button onClick={resetQuran} style={{flex:1}}>{t('resetBtn')}</button>
             </div>
           </div>
 
