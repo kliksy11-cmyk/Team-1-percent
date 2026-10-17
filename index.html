@@ -87,7 +87,7 @@ const STORE = [
 
 const STRINGS = {
   en: {
-    tagline:'82-DAY TRANSFORMATION', enterName:'ENTER YOUR NAME', start:'START',
+    tagline:'82-DAY TRANSFORMATION', enterName:'ENTER YOUR NAME', enterPass:'PASSWORD', start:'START',
     createTeam:'CREATE A TEAM', joinTeam:'JOIN A TEAM', teamName:'TEAM NAME', inviteCode:'INVITE CODE',
     create:'CREATE', join:'JOIN', logout:'Logout', loading:'LOADING...', loadingTeam:'LOADING TEAM...', loadingProfile:'Loading Profile...',
     proofCode:"TODAY'S PROOF CODE", proofHint:'Write this in your photos!', grid:'82-DAY GRID',
@@ -101,10 +101,11 @@ const STRINGS = {
     
     goalSetupTitle:'WHAT IS YOUR ULTIMATE GOAL?', goalSetupSub:'What do you want to achieve by the end of these 82 days?',
     goalPlaceholder:'e.g., Lose 10kg, Finish 3 books, Memorize Juz 30...', addGoal:'Add Goal', startChallenge:'START CHALLENGE',
-    myGoals:'MY 82-DAY GOALS', noGoals:'No goals set yet.', markDone:'Mark Done', deleteGoal:'Delete'
+    myGoals:'MY 82-DAY GOALS', noGoals:'No goals set yet.', markDone:'Mark Done', deleteGoal:'Delete',
+    wrongPass:'Wrong password', enterBoth:'Please enter a name and password'
   },
   ar: {
-    tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', start:'ابدأ',
+    tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
     createTeam:'أنشئ فريق', joinTeam:'انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
     create:'إنشاء', join:'انضمام', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
     proofCode:"كود الإثبات اليوم", proofHint:'اكتب هذا في صورك!', grid:'شبكة ٨٢ يوم',
@@ -118,7 +119,8 @@ const STRINGS = {
     
     goalSetupTitle:'ما هو هدفك الأسمى؟', goalSetupSub:'ماذا تريد أن تحقق بنهاية هذه الـ ٨٢ يوم؟',
     goalPlaceholder:'مثال: أخسر ١٠ كيلو، أخلص ٣ كتب، أحفظ جزء عم...', addGoal:'إضافة هدف', startChallenge:'ابدأ التحدي',
-    myGoals:'أهدافي لـ ٨٢ يوم', noGoals:'لم يتم تعيين أهداف بعد.', markDone:'تم الإنجاز', deleteGoal:'حذف'
+    myGoals:'أهدافي لـ ٨٢ يوم', noGoals:'لم يتم تعيين أهداف بعد.', markDone:'تم الإنجاز', deleteGoal:'حذف',
+    wrongPass:'كلمة المرور غير صحيحة', enterBoth:'الرجاء إدخال الاسم وكلمة المرور'
   }
 };
 
@@ -148,10 +150,10 @@ function App(){
   const [page, setPage] = React.useState('home');
   const [loading, setLoading] = React.useState(true);
   
-  // Onboarding state
   const [isOnboarding, setIsOnboarding] = React.useState(false);
 
   const [nameInput, setNameInput] = React.useState('');
+  const [passInput, setPassInput] = React.useState('');
   const [teamName, setTeamName] = React.useState('');
   const [inviteCode, setInviteCode] = React.useState('');
   const [newTaskLabel, setNewTaskLabel] = React.useState('');
@@ -236,7 +238,6 @@ function App(){
   async function loadGoals() {
     const {data} = await sb.from('goals').select('*').eq('user_id', user).order('created_at', {ascending: true});
     setGoals(data || []);
-    // If they have no goals and haven't seen onboarding, show it
     if((!data || data.length === 0) && !localStorage.getItem('onboarding_done_'+user)) {
       setIsOnboarding(true);
     }
@@ -271,13 +272,30 @@ function App(){
   }
 
   async function handleAuth(){
-    const uname=nameInput.trim(); if(!uname) return;
-    const {data:exists}=await sb.from('profiles').select('id').eq('username',uname).maybeSingle();
-    if(exists){ localStorage.setItem('team_user_id',exists.id); setUser(exists.id); }
+    const uname=nameInput.trim(); 
+    const pass=passInput.trim();
+    
+    if(!uname || !pass) return alert(t('enterBoth'));
+
+    const {data:exists, error}=await sb.from('profiles').select('id, password').eq('username',uname).maybeSingle();
+
+    if(exists){
+      // If user exists and has a password, check it
+      if(exists.password && exists.password !== pass) {
+        return alert(t('wrongPass'));
+      }
+      // If user exists but has NO password (legacy account), set it now
+      if(!exists.password) {
+        await sb.from('profiles').update({password: pass}).eq('id', exists.id);
+      }
+      localStorage.setItem('team_user_id',exists.id); 
+      setUser(exists.id); 
+    }
     else {
       const id='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);return v.toString(16);});
-      await sb.from('profiles').insert({id, username:uname});
-      localStorage.setItem('team_user_id',id); setUser(id);
+      await sb.from('profiles').insert({id, username:uname, password: pass});
+      localStorage.setItem('team_user_id',id); 
+      setUser(id);
     }
   }
 
@@ -439,7 +457,10 @@ function App(){
     <div className="container" style={{marginTop:80}}>
       <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
       <h1>TEAM <span>1%</span></h1><p style={{color:'#666',fontSize:12,marginBottom:30}}>{t('tagline')}</p>
+      
       <input placeholder={t('enterName')} value={nameInput} onChange={e=>setNameInput(e.target.value)}/>
+      <input type="password" placeholder={t('enterPass')} value={passInput} onChange={e=>setPassInput(e.target.value)}/>
+      
       <button className="primary" onClick={handleAuth} style={{width:'100%'}}>{t('start')}</button>
     </div>
   );
