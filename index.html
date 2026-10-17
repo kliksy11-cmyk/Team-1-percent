@@ -59,6 +59,25 @@ button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
 
+/* LOCK BANNER */
+.lock-banner {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px solid #7CFF4F;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(124,255,79,0.15);
+  animation: pulseGlow 2s infinite;
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px rgba(124,255,79,0.1); }
+  50% { box-shadow: 0 0 25px rgba(124,255,79,0.3); }
+  100% { box-shadow: 0 0 10px rgba(124,255,79,0.1); }
+}
+.lock-icon { font-size: 48px; margin-bottom: 10px; filter: drop-shadow(0 0 10px #7CFF4F); }
+.countdown { font-family: monospace; font-size: 28px; font-weight: 900; color: #7CFF4F; letter-spacing: 2px; margin-top: 10px; }
+
 /* NEW TIMELINE GRID */
 .timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:thin; scrollbar-color: #7CFF4F #111;}
 .timeline::-webkit-scrollbar{height:8px;}
@@ -88,6 +107,7 @@ button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
 
 .timer-box{background:#0a0a0a;padding:18px;border-radius:12px;margin-bottom:15px;border:1px dashed #7CFF4F44;position:relative;overflow:hidden;transition:0.3s;}
 .timer-box.active{border-color:#7CFF4F;box-shadow:0 0 15px rgba(124,255,79,0.1);}
+.timer-box.locked { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
 .timer-val{font-family:monospace;font-size:40px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;letter-spacing:2px; text-shadow:0 0 10px rgba(124,255,79,0.3);}
 
 .rank-card{background:#0a0a0a;padding:20px;border-radius:16px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
@@ -156,6 +176,9 @@ const { createClient } = supabase;
 // ⚠️ YOUR KEYS
 const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
 
+// ⚠️ SET YOUR CHALLENGE START DATE HERE (YYYY-MM-DD)
+const CHALLENGE_START_DATE = '2026-10-18'; 
+
 const MANDATORY_TASKS = [
   { key:'fajr', label:'Fajr Prayer', labelAr:'صلاة الفجر', icon:'🕌' },
   { key:'dhuhr', label:'Dhuhr Prayer', labelAr:'صلاة الظهر', icon:'🕌' },
@@ -181,7 +204,6 @@ const STORE = [
   { id:'title_machine', name:'Title: The Machine 🤖', nameAr:'لقب: الآلة 🤖', price:800, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' }
 ];
 
-// TUTORIAL CONTENT
 const TUTORIAL_STEPS = [
   { 
     icon: '🚀', 
@@ -259,7 +281,9 @@ const STRINGS = {
     skipApplied:'Skip Day used! Enjoy your break.', alreadyUsed:'Already applied.', notEnoughItems:'You don\'t have this item. Buy it in the Store!',
     uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!', perfectDay:'🔥 PERFECT DAY! +25 Bonus XP & Coins',
     dailyReward:'Daily Login Reward', weeklyReward:'Weekly Bonus!', monthlyReward:'Monthly Mega Bonus!', claim:'CLAIM REWARD',
-    loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!', back:'BACK'
+    loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!', back:'BACK',
+    notStartedYet: 'The challenge has not started yet! Get ready.', startsOn: 'The challenge officially starts on',
+    locked: 'LOCKED'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -285,7 +309,9 @@ const STRINGS = {
     skipApplied:'تم استخدام التخطي! استمتع بالراحة.', alreadyUsed:'تم الاستخدام بالفعل.', notEnoughItems:'ليس لديك هذا العنصر. اشتره من المتجر!',
     uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!', perfectDay:'🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية',
     dailyReward:'مكافأة الدخول اليومية', weeklyReward:'مكافأة أسبوعية!', monthlyReward:'مكافأة شهرية ضخمة!', claim:'استلام المكافأة',
-    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!', back:'رجوع'
+    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!', back:'رجوع',
+    notStartedYet: 'التحدي لم يبدأ بعد! استعد.', startsOn: 'التحدي يبدأ رسمياً في',
+    locked: 'مغلق'
   }
 };
 
@@ -344,6 +370,8 @@ function App(){
   const [quranRunning, setQuranRunning] = React.useState(false);
   const [quranStartTime, setQuranStartTime] = React.useState(null);
 
+  const [countdown, setCountdown] = React.useState('00:00:00');
+
   const [toast, setToast] = React.useState(null);
   const showToast = (msg) => {
     setToast(msg);
@@ -390,6 +418,34 @@ function App(){
 
   const today = new Date().toLocaleDateString('en-CA');
   const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
+  const isLocked = today < CHALLENGE_START_DATE;
+
+  // COUNTDOWN TIMER LOGIC
+  React.useEffect(() => {
+    if (!isLocked) return;
+    
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const target = new Date(CHALLENGE_START_DATE + 'T00:00:00').getTime();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        clearInterval(interval);
+        setCountdown('00:00:00');
+        window.location.reload(); // Reload to unlock the app
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setCountdown(`${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isLocked]);
 
   React.useEffect(()=>{
     localStorage.setItem('lang', lang);
@@ -420,7 +476,7 @@ function App(){
 
   React.useEffect(() => {
     let interval;
-    if (notifEnabled && team) {
+    if (notifEnabled && team && !isLocked) {
       interval = setInterval(() => {
         const doneCount = tasks.filter(t => t.done && MANDATORY_TASKS.some(m => m.key === t.task_key)).length;
         if (doneCount < MANDATORY_TASKS.length) {
@@ -431,7 +487,7 @@ function App(){
       }, 60 * 60 * 1000);
     }
     return () => clearInterval(interval);
-  }, [notifEnabled, tasks, team, lang]);
+  }, [notifEnabled, tasks, team, lang, isLocked]);
 
   async function enableNotifications() {
     if (!("Notification" in window)) return showToast("This browser does not support notifications.");
@@ -517,20 +573,20 @@ function App(){
   },[quranRunning, quranStartTime]);
 
   React.useEffect(()=>{
-    if(studyTime >= 1800 && studyRunning && !tasks.find(t=>t.task_key==='study')?.done) {
+    if(studyTime >= 1800 && studyRunning && !tasks.find(t=>t.task_key==='study')?.done && !isLocked) {
       pauseStudy();
       showToast(lang==='ar' ? '🔥 وصلت ٣٠ دقيقة! تم إكمال مهمة الدراسة.' : '🔥 30 Minutes Reached! Study task complete.');
       toggleTask('study', true);
     }
-  }, [studyTime, studyRunning]);
+  }, [studyTime, studyRunning, isLocked]);
 
   React.useEffect(()=>{
-    if(quranTime >= 600 && quranRunning && !tasks.find(t=>t.task_key==='quran')?.done) {
+    if(quranTime >= 600 && quranRunning && !tasks.find(t=>t.task_key==='quran')?.done && !isLocked) {
       pauseQuran();
       showToast(lang==='ar' ? '📖 وصلت ١٠ دقائق! تم إكمال مهمة القرآن.' : '📖 10 Minutes Reached! Quran task complete.');
       toggleTask('quran', true);
     }
-  }, [quranTime, quranRunning]);
+  }, [quranTime, quranRunning, isLocked]);
 
   async function loadProfile(){ 
     const {data}=await sb.from('profiles').select('*').eq('id',user).maybeSingle(); 
@@ -538,7 +594,8 @@ function App(){
       setProfile(data);
       if(data.team_id) loadTeam(data.team_id);
 
-      if (data.last_claimed !== today) {
+      // REWARD LOGIC (Locked before start date)
+      if (data.last_claimed !== today && today >= CHALLENGE_START_DATE) {
         let newStreak = 1;
         if (data.last_claimed === yesterday) newStreak = (data.login_streak || 0) + 1;
         
@@ -708,6 +765,8 @@ function App(){
   }
 
   async function toggleTask(key, checked){
+    if(isLocked) return showToast(t('notStartedYet'));
+    
     if(key === 'study' && checked && studyTime < 1800) return showToast(lang==='ar'?"يجب أن تدرس ٣٠ دقيقة على الأقل!":"You must study for at least 30 minutes!");
     if(key === 'quran' && checked && quranTime < 600) return showToast(lang==='ar'?"يجب أن تقرأ القرآن ١٠ دقائق على الأقل!":"You must read Quran for at least 10 minutes!");
 
@@ -744,7 +803,7 @@ function App(){
   }
 
   async function addTask() {
-    if (!newTaskLabel.trim()) return;
+    if (!newTaskLabel.trim() || isLocked) return;
     const key = 'custom_' + Date.now();
     const {data, error} = await sb.from('custom_tasks').insert({
       user_id: user, key: key, label: newTaskLabel.trim(), icon: '⭐', active: true, is_mandatory: false
@@ -796,6 +855,7 @@ function App(){
   }
 
   async function uploadProof(key, file){
+    if(isLocked) return showToast(t('notStartedYet'));
     const path=`${team.id}/${user}/${today}/${key}.jpg`;
     const {error: uploadError} = await sb.storage.from('proofs').upload(path,file,{upsert:true});
     if(uploadError) return showToast("Upload Error: " + uploadError.message);
@@ -831,6 +891,7 @@ function App(){
   }
 
   async function useItem(itemId, targetDate) {
+    if(isLocked) return showToast(t('notStartedYet'));
     const inv = [...(profile.inventory||[])];
     const idx = inv.indexOf(itemId);
     if(idx === -1) return showToast(t('notEnoughItems'));
@@ -853,6 +914,7 @@ function App(){
   }
 
   function startStudy() {
+    if(isLocked) return showToast(t('notStartedYet'));
     const now = Date.now();
     setStudyStartTime(now);
     setStudyRunning(true);
@@ -875,6 +937,7 @@ function App(){
   }
 
   function startQuran() {
+    if(isLocked) return showToast(t('notStartedYet'));
     const now = Date.now();
     setQuranStartTime(now);
     setQuranRunning(true);
@@ -928,11 +991,10 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  const allDoneDates = history.filter(h => h.done).map(h => h.date).sort();
-  const teamStartDate = allDoneDates.length > 0 ? allDoneDates[0] : today;
+  const teamStartDate = CHALLENGE_START_DATE;
   const teamStartDateObj = new Date(teamStartDate);
 
-  const missedYesterday = team && !completeDates.has(yesterday) && yesterday >= teamStartDate;
+  const missedYesterday = !isLocked && !completeDates.has(yesterday) && yesterday >= teamStartDate;
   
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
   const hasSkip = (profile?.inventory||[]).includes('skip');
@@ -1033,8 +1095,7 @@ function App(){
     >
       {toast && <div className="toast-container"><div className="toast">{toast}</div></div>}
       
-      {/* REWARD MODAL */}
-      {showReward && (
+      {showReward && !isLocked && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="reward-icon">
@@ -1054,7 +1115,6 @@ function App(){
         </div>
       )}
 
-      {/* TUTORIAL MODAL */}
       {showTutorial && (
         <div className="modal-overlay">
           <div className="modal-content" style={{padding:'40px 25px'}}>
@@ -1123,7 +1183,16 @@ function App(){
               <div className="streak" style={{background:'#fff', color:'#000'}}>{profile.xp || 0} {t('xp')}</div>
             </div>
 
-            {!notifEnabled && (
+            {isLocked && (
+              <div className="lock-banner">
+                <div className="lock-icon">🔒</div>
+                <div style={{fontSize:16, fontWeight:'bold', color:'#fff'}}>{t('notStartedYet')}</div>
+                <div style={{fontSize:12, color:'#aaa', marginTop:5}}>{t('startsOn')} {CHALLENGE_START_DATE}</div>
+                <div className="countdown">{countdown}</div>
+              </div>
+            )}
+
+            {!notifEnabled && !isLocked && (
               <div style={{textAlign:'center', marginBottom:20}}>
                 <button className="notify-btn" onClick={enableNotifications}>{t('enableNotify')}</button>
               </div>
@@ -1169,7 +1238,7 @@ function App(){
               })}
             </div>
 
-            <div className={`timer-box ${studyRunning ? 'active' : ''}`}>
+            <div className={`timer-box ${studyRunning ? 'active' : ''} ${isLocked ? 'locked' : ''}`}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('studyTimer')}</div>
                 <div style={{fontSize:10,color:studyTime>=1800?'#7CFF4F':'#ff4f4f'}}>
@@ -1185,7 +1254,7 @@ function App(){
               </div>
             </div>
 
-            <div className={`timer-box ${quranRunning ? 'active' : ''}`}>
+            <div className={`timer-box ${quranRunning ? 'active' : ''} ${isLocked ? 'locked' : ''}`}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('quranTimer')}</div>
                 <div style={{fontSize:10,color:quranTime>=600?'#7CFF4F':'#ff4f4f'}}>
@@ -1207,13 +1276,13 @@ function App(){
               const isDone = taskData?.done;
               const label = lang==='ar' ? task.labelAr : task.label;
               return (
-                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`}}>
+                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`, opacity: isLocked ? 0.5 : 1}}>
                   <span className="icon">{task.icon}</span><span className="label">{label}</span>
                   {taskData?.proof_url && (
                     <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
                   )}
-                  <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
-                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)}>
+                  {!isLocked && <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>}
+                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)} style={{pointerEvents: isLocked ? 'none' : 'auto'}}>
                     {isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}
                   </div>
                 </div>
@@ -1233,27 +1302,29 @@ function App(){
               const reward = index < 8 ? 10 : 2;
 
               return (
-                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`}}>
+                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`, opacity: isLocked ? 0.5 : 1}}>
                   <span className="icon">{task.icon}</span>
                   <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{reward})</span></span>
                   {taskData?.proof_url && (
                     <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
                   )}
-                  <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
-                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)}>
+                  {!isLocked && <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>}
+                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)} style={{pointerEvents: isLocked ? 'none' : 'auto'}}>
                     {isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}
                   </div>
-                  {task.key.startsWith('custom_') && (
+                  {task.key.startsWith('custom_') && !isLocked && (
                     <button className="delete-btn" onClick={()=>deleteTask(task.id)}>✕</button>
                   )}
                 </div>
               );
             })}
 
-            <div className="add-task">
-              <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
-              <button onClick={addTask}>+</button>
-            </div>
+            {!isLocked && (
+              <div className="add-task">
+                <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
+                <button onClick={addTask}>+</button>
+              </div>
+            )}
           </>
         )}
 
@@ -1298,7 +1369,7 @@ function App(){
               <div className="card" key={item.id} style={{animationDelay: `${i*0.05}s`}}>
                 <div style={{fontWeight:'bold',color:'#7CFF4F'}}>{lang==='ar'?item.nameAr:item.name}</div>
                 <div style={{fontSize:12,color:'#888',margin:'5px 0'}}>{lang==='ar'?item.descAr:item.desc}</div>
-                <button onClick={()=>buyItem(item)} disabled={(profile.coins||0)<item.price} style={{width:'100%',marginTop:10}}>
+                <button onClick={()=>buyItem(item)} disabled={(profile.coins||0)<item.price || isLocked} style={{width:'100%',marginTop:10}}>
                   {t('buy')} {item.price} 🪙 {t('coins')}
                 </button>
               </div>
