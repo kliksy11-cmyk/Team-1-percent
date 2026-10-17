@@ -400,6 +400,11 @@ function App(){
 
       {page === 'home' && (
         <>
+          <div style={{background:'#111', padding:'12px', borderRadius:'8px', marginBottom:'15px', border:'1px solid #333', textAlign:'center'}}>
+  <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>TEAM INVITE CODE</div>
+  <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
+  <div style={{fontSize:'11px', color:'#666'}}>Share this code with your friends to let them join!</div>
+</div>
           <div className="nonce">
             <div style={{fontSize:10,color:'#888',marginBottom:5}}>{t('proofCode')}</div>
             <div className="nonce-code">{nonce}</div>
