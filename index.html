@@ -11,158 +11,74 @@
 <style>
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;}
-
-/* Desktop Container */
 .container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;position:relative;background:#000;min-height:100vh;transition:0.3s;}
-
-@media (min-width: 768px) {
-  .container { max-width: 700px; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 40px 30px; padding-bottom: 120px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-  .header h1 { font-size: 28px; }
-}
-
-/* Page Animations */
+@media (min-width: 768px) { .container { max-width: 700px; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 40px 30px; padding-bottom: 120px; box-shadow: 0 0 50px rgba(0,0,0,0.8); } }
 .page-wrapper { animation-duration: 0.35s; animation-fill-mode: both; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-.slide-left { animation-name: slideLeft; }
-.slide-right { animation-name: slideRight; }
+.slide-left { animation-name: slideLeft; } .slide-right { animation-name: slideRight; }
 @keyframes slideLeft { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-
-/* Staggered Tasks */
 .task, .card, .goal-card { animation: fadeInUp 0.4s ease-out both; transition: background 0.2s, transform 0.2s; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;}
-h1 span{color:#7CFF4F;}
+h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;} h1 span{color:#7CFF4F;}
 h2{margin:24px 0 12px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:2px;font-family:monospace;}
-input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;transition:0.2s;}
-input:focus,select:focus{border-color:#7CFF4F;box-shadow:0 0 8px rgba(124,255,79,0.2);}
-
-button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:transform 0.1s, background 0.2s, border-color 0.2s;}
-button:active{transform:scale(0.94);}
-button:hover{background:#1a1a1a; border-color:#333;}
+input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;}
+input:focus{border-color:#7CFF4F; box-shadow:0 0 8px rgba(124,255,79,0.2);}
+button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:0.2s;}
+button:active{transform:scale(0.94);} button:hover{background:#1a1a1a;}
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
-button.primary:hover{background:#95ff70;}
 button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
-
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .header-actions{display:flex;align-items:center;gap:5px;}
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;transition:0.2s;}
-.avatar:hover{transform:scale(1.05); border-color:#7CFF4F;}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;}
 .avatar-sm{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#222;border:1px solid #444;margin-right:8px;vertical-align:middle;}
-.lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
-.lang-btn:hover{background:#333;}
-.leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
-.leave-btn:hover{background:#ff4f4f44;}
-.logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
-.logout-btn:hover{background:#444;}
-
+.lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
-
-/* LOCK BANNER */
-.lock-banner {
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  border: 2px solid #7CFF4F;
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(124,255,79,0.15);
-  animation: pulseGlow 2s infinite;
-}
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 10px rgba(124,255,79,0.1); }
-  50% { box-shadow: 0 0 25px rgba(124,255,79,0.3); }
-  100% { box-shadow: 0 0 10px rgba(124,255,79,0.1); }
-}
-.lock-icon { font-size: 48px; margin-bottom: 10px; filter: drop-shadow(0 0 10px #7CFF4F); }
-.countdown { font-family: monospace; font-size: 28px; font-weight: 900; color: #7CFF4F; letter-spacing: 2px; margin-top: 10px; }
-
-/* NEW TIMELINE GRID */
+.lock-banner{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #7CFF4F;border-radius:16px;padding:40px 20px;text-align:center;margin-bottom:20px;box-shadow:0 0 30px rgba(124,255,79,0.15); animation:pulseGlow 2s infinite;}
+@keyframes pulseGlow{0%{box-shadow:0 0 10px rgba(124,255,79,0.1);}50%{box-shadow:0 0 30px rgba(124,255,79,0.3);}100%{box-shadow:0 0 10px rgba(124,255,79,0.1);}}
+.lock-icon{font-size:80px;margin-bottom:15px;filter:drop-shadow(0 0 10px #7CFF4F);}
+.countdown{font-family:monospace;font-size:32px;font-weight:900;color:#7CFF4F;letter-spacing:2px;margin-top:15px;}
 .timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:thin; scrollbar-color: #7CFF4F #111;}
-.timeline::-webkit-scrollbar{height:8px;}
-.timeline::-webkit-scrollbar-track{background:#111;border-radius:4px;}
-.timeline::-webkit-scrollbar-thumb{background:#7CFF4F;border-radius:4px;}
-.day-box{min-width:48px;height:56px;background:#111;border-radius:8px;border:1px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:14px;font-weight:bold;color:#666;transition:0.3s;flex-shrink:0; cursor:default;}
-.day-box.done{background:#7CFF4F;border-color:#7CFF4F;color:#000;animation: pulseGreen 2s infinite;}
-.day-box.freeze{background:#3b82f6;border-color:#60a5fa;color:#fff;animation: pulseBlue 2s infinite;}
-@keyframes pulseGreen { 0% { box-shadow: 0 0 0px #7CFF4F; } 50% { box-shadow: 0 0 12px #7CFF4F; } 100% { box-shadow: 0 0 0px #7CFF4F; } }
-@keyframes pulseBlue { 0% { box-shadow: 0 0 0px #3b82f6; } 50% { box-shadow: 0 0 12px #3b82f6; } 100% { box-shadow: 0 0 0px #3b82f6; } }
+.timeline::-webkit-scrollbar{height:8px;} .timeline::-webkit-scrollbar-track{background:#111;border-radius:4px;} .timeline::-webkit-scrollbar-thumb{background:#7CFF4F;border-radius:4px;}
+.day-box{min-width:48px;height:56px;background:#111;border-radius:8px;border:1px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:14px;font-weight:bold;color:#666;flex-shrink:0;}
+.day-box.done{background:#7CFF4F;border-color:#7CFF4F;color:#000;animation:pulseGreen 2s infinite;}
+.day-box.freeze{background:#3b82f6;border-color:#60a5fa;color:#fff;animation:pulseBlue 2s infinite;}
+@keyframes pulseGreen{0%{box-shadow:0 0 0px #7CFF4F;}50%{box-shadow:0 0 12px #7CFF4F;}100%{box-shadow:0 0 0px #7CFF4F;}}
+@keyframes pulseBlue{0%{box-shadow:0 0 0px #3b82f6;}50%{box-shadow:0 0 12px #3b82f6;}100%{box-shadow:0 0 0px #3b82f6;}}
 .day-reward{font-size:10px;margin-top:2px;opacity:0.8;}
-
-/* Custom Checkbox */
 .task{display:flex;align-items:center;gap:12px;padding:16px;background:#0a0a0a;border-radius:12px;margin-bottom:12px;border:1px solid #222;}
-.task:hover{background:#111; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.5);}
 .task.done{border-color:#7CFF4F44;background:#7CFF4F0a;}
-.task .icon{font-size:22px;}
-.task .label{flex:1;font-weight:600;font-size:15px; transition: color 0.3s; cursor:pointer;}
-.task.done .label{color:#888; text-decoration: line-through;}
-.custom-check{width:28px;height:28px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-.custom-check:hover{border-color:#7CFF4F;}
+.task .icon{font-size:22px;} .task .label{flex:1;font-weight:600;font-size:15px;} .task.done .label{color:#888; text-decoration: line-through;}
+.custom-check{width:28px;height:28px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;}
 .custom-check.checked{background:#7CFF4F;border-color:#7CFF4F;transform:scale(1.1);}
-.custom-check:active{transform:scale(0.8);}
-
-.upload-btn{background:#111;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid #333;transition:0.2s;}
-.upload-btn:hover{background:#222; border-color:#555;}
-
-.timer-box{background:#0a0a0a;padding:18px;border-radius:12px;margin-bottom:15px;border:1px dashed #7CFF4F44;position:relative;overflow:hidden;transition:0.3s;}
+.upload-btn{background:#111;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid #333;}
+.timer-box{background:#0a0a0a;padding:18px;border-radius:12px;margin-bottom:15px;border:1px dashed #7CFF4F44;transition:0.3s;}
 .timer-box.active{border-color:#7CFF4F;box-shadow:0 0 15px rgba(124,255,79,0.1);}
-.timer-box.locked { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
-.timer-val{font-family:monospace;font-size:40px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;letter-spacing:2px; text-shadow:0 0 10px rgba(124,255,79,0.3);}
-
+.timer-val{font-family:monospace;font-size:40px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;text-shadow:0 0 10px rgba(124,255,79,0.3);}
 .rank-card{background:#0a0a0a;padding:20px;border-radius:16px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
-.xp-bar{height:8px;background:#111;border-radius:4px;margin-top:12px;overflow:hidden;}
-.xp-bar-fill{height:100%;background:#7CFF4F;transition:width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);box-shadow:0 0 10px #7CFF4F;}
-
-/* Glassmorphism Nav */
-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px 0;z-index:10; transition:0.3s;}
-@media (min-width: 768px) {
-  nav { max-width: 600px; left: 50%; transform: translateX(-50%); bottom: 20px; border: 1px solid #222; border-radius: 30px; padding: 10px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background:rgba(10,10,10,0.95); }
-}
-nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;transition:0.2s; position:relative; cursor:pointer;}
-nav button:hover{color:#aaa;}
-nav button.active{color:#7CFF4F;}
-nav button span{font-size:22px; transition: transform 0.2s;}
-nav button.active span { transform: scale(1.15); text-shadow: 0 0 8px rgba(124,255,79,0.6); }
+.xp-bar{height:8px;background:#111;border-radius:4px;margin-top:12px;overflow:hidden;} .xp-bar-fill{height:100%;background:#7CFF4F;transition:width 0.8s;box-shadow:0 0 10px #7CFF4F;}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(15px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px 0;z-index:10;}
+@media (min-width: 768px) { nav { max-width: 600px; left: 50%; transform: translateX(-50%); bottom: 20px; border: 1px solid #222; border-radius: 30px; padding: 10px 0; background:rgba(10,10,10,0.95); } }
+nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;position:relative;}
+nav button.active{color:#7CFF4F;} nav button span{font-size:22px;} nav button.active span { text-shadow: 0 0 8px rgba(124,255,79,0.6); }
 nav button.active::after { content:''; position:absolute; bottom:-8px; width:4px; height:4px; border-radius:50%; background:#7CFF4F; box-shadow:0 0 8px #7CFF4F; }
-
-.add-task{display:flex;gap:5px;margin-top:15px;}
-.add-task input{margin-bottom:0;flex:1;}
-.add-task button{width:auto;padding:0 20px;background:#7CFF4F;color:#000;font-size:18px;}
-.add-task button:hover{background:#95ff70;}
-
-.delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;transition:0.2s;}
-.delete-btn:hover{color:#ff7777; transform:scale(1.1);}
-.delete-btn:active{transform:scale(0.8);}
-
+.add-task{display:flex;gap:5px;margin-top:15px;} .add-task input{margin-bottom:0;flex:1;} .add-task button{width:auto;padding:0 20px;background:#7CFF4F;color:#000;font-size:18px;}
+.delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;}
 .invite-box{background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333; text-align:center;}
 .goal-card{background:#111; padding:16px; border-radius:12px; margin-bottom:12px; border-left:3px solid #7CFF4F;}
-.goal-card:hover{background:#1a1a1a;}
-
-.notify-btn{background:#1e293b; color:#7CFF4F; border:1px solid #7CFF4F; padding:8px 12px; border-radius:20px; font-size:12px; cursor:pointer; font-weight:bold; margin-bottom:20px; transition:0.2s;}
-.notify-btn:hover{background:#334155;}
+.notify-btn{background:#1e293b; color:#7CFF4F; border:1px solid #7CFF4F; padding:8px 12px; border-radius:20px; font-size:12px; cursor:pointer; font-weight:bold; margin-bottom:20px;}
 .proof-card{background:#111; border-radius:12px; overflow:hidden; margin-bottom:15px; border:1px solid #333;}
-.proof-img{width:100%; height:auto; max-height:300px; object-fit:cover; display:block; cursor:pointer; transition:0.2s;}
-.proof-img:hover{opacity:0.8;}
-.proof-info{padding:12px; display:flex; justify-content:space-between; align-items:center;}
-.freeze-alert{background:#3b82f622; border:1px solid #3b82f6; padding:15px; border-radius:12px; margin-bottom:20px; text-align:center; font-size:13px;}
-
-/* Toast Notifications */
+.proof-img{width:100%; height:auto; max-height:300px; object-fit:cover; display:block;} .proof-info{padding:12px; display:flex; justify-content:space-between; align-items:center;}
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;width:90%;max-width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
-.toast{background:#1e293b;color:#fff;padding:14px 20px;border-radius:10px;border-left:4px solid #7CFF4F;font-weight:bold;font-size:14px;box-shadow:0 10px 25px rgba(0,0,0,0.8);animation: slideDown 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;}
+.toast{background:#1e293b;color:#fff;padding:14px 20px;border-radius:10px;border-left:4px solid #7CFF4F;font-weight:bold;font-size:14px;animation: slideDown 0.3s forwards;}
 @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-/* Modal Popup (Reward & Tutorial) */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);animation:fadeIn 0.3s ease-out;}
-.modal-content{background:#0a0a0a;border:2px solid #7CFF4F;border-radius:20px;padding:30px 20px;width:100%;max-width:350px;text-align:center;position:relative;box-shadow:0 0 40px rgba(124,255,79,0.2);animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-@keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);}
+.modal-content{background:#0a0a0a;border:2px solid #7CFF4F;border-radius:20px;padding:30px 20px;width:100%;max-width:350px;text-align:center;box-shadow:0 0 40px rgba(124,255,79,0.2);}
 .reward-icon{font-size:60px;margin-bottom:15px;animation: float 2s infinite ease-in-out;}
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-/* Tutorial Specific */
-.tutorial-step-icon { font-size: 64px; margin-bottom: 20px; animation: popIn 0.5s ease-out; }
-@keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+.tutorial-step-icon { font-size: 64px; margin-bottom: 20px; }
 .tutorial-dots { display: flex; justify-content: center; gap: 6px; margin: 20px 0; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
 .dot.active { background: #7CFF4F; width: 20px; border-radius: 4px; }
@@ -172,8 +88,6 @@ nav button.active::after { content:''; position:absolute; bottom:-8px; width:4px
 <div id="root"></div>
 <script type="text/babel">
 const { createClient } = supabase;
-
-// ⚠️ YOUR KEYS
 const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
 
 // ⚠️ SET YOUR CHALLENGE START DATE HERE (YYYY-MM-DD)
@@ -205,55 +119,13 @@ const STORE = [
 ];
 
 const TUTORIAL_STEPS = [
-  { 
-    icon: '🚀', 
-    enTitle: 'Welcome to TEAM 1%!', 
-    arTitle: 'مرحباً بك في TEAM 1%!', 
-    enText: 'Your 82-day transformation starts now. Let us show you how to navigate the app.', 
-    arText: 'تحولك لمدة ٨٢ يوم يبدأ الآن. دعنا نريك كيف تتنقل في التطبيق.' 
-  },
-  { 
-    icon: '📱', 
-    enTitle: 'The Navigation Bar', 
-    arTitle: 'شريط التنقل', 
-    enText: 'At the bottom, you have 5 tabs: Home (tasks), Goals (long-term), Store (buy items), Feed (team proofs), and Ranks (global leaderboard). Swipe left/right to move between them!', 
-    arText: 'في الأسفل، لديك 5 علامات تبويب: الرئيسية (المهام)، الأهداف (طويلة المدى)، المتجر (شراء العناصر)، المنشورات (إثباتات الفريق)، والترتيب (لوحة الصدارة). اسحب يميناً/يساراً للتنقل بينها!' 
-  },
-  { 
-    icon: '🏠', 
-    enTitle: 'Home Tab', 
-    arTitle: 'قسم الرئيسية', 
-    enText: 'This is where you check off your daily mandatory tasks (5 prayers, exercise, study, Quran) and use the stopwatches.', 
-    arText: 'هنا تقوم بتحديد مهامك اليومية الإلزامية (5 صلوات، رياضة، دراسة، قرآن) وتستخدم المؤقتات.' 
-  },
-  { 
-    icon: '🎯', 
-    enTitle: 'Goals Tab', 
-    arTitle: 'قسم الأهداف', 
-    enText: 'Write down what you want to achieve by the end of the 82 days. Check them off as you complete them.', 
-    arText: 'اكتب ما تريد تحقيقه بنهاية الـ 82 يوماً. ضع علامة صح عند إنجازها.' 
-  },
-  { 
-    icon: '🛒', 
-    enTitle: 'Store Tab', 
-    arTitle: 'قسم المتجر', 
-    enText: 'Use your Coins to buy Streak Freezes (save your streak if you miss a day) and Epic Titles. Your XP Rank is unaffected by purchases.', 
-    arText: 'استخدم عملاتك لشراء تجميد السلسلة (لحفظ سلسلتك إذا فوّت يوماً) وألقاب ملحمية. رتبتك لا تتأثر بالمشتريات.' 
-  },
-  { 
-    icon: '💬', 
-    enTitle: 'Feed Tab', 
-    arTitle: 'قسم المنشورات', 
-    enText: 'Tap the camera icon on any task to upload proof. You and your team can see all the photos here to keep each other accountable.', 
-    arText: 'اضغط على أيقونة الكاميرا في أي مهمة لرفع الإثبات. يمكنك أنت وفريقك رؤية جميع الصور هنا لتحفيز بعضكم البعض.' 
-  },
-  { 
-    icon: '🏆', 
-    enTitle: 'Ranks Tab', 
-    arTitle: 'قسم الترتيب', 
-    enText: 'See how you compare to everyone else using the app globally. Your rank is based on Lifetime XP, not Coins.', 
-    arText: 'شاهد كيف تقارن مع كل من يستخدم التطبيق عالمياً. رتبتك مبنية على مجموع النقاط، وليس العملات.' 
-  }
+  { icon: '🚀', enTitle: 'Welcome to TEAM 1%!', arTitle: 'مرحباً بك في TEAM 1%!', enText: 'Your 82-day transformation starts now. Let us show you how to navigate the app.', arText: 'تحولك لمدة ٨٢ يوم يبدأ الآن. دعنا نريك كيف تتنقل في التطبيق.' },
+  { icon: '📱', enTitle: 'The Navigation Bar', arTitle: 'شريط التنقل', enText: 'At the bottom, you have 5 tabs: Home (tasks), Goals (long-term), Store (buy items), Feed (team proofs), and Ranks (global leaderboard). Swipe left/right to move between them!', arText: 'في الأسفل، لديك 5 علامات تبويب: الرئيسية (المهام)، الأهداف (طويلة المدى)، المتجر (شراء العناصر)، المنشورات (إثباتات الفريق)، والترتيب (لوحة الصدارة). اسحب يميناً/يساراً للتنقل بينها!' },
+  { icon: '🏠', enTitle: 'Home Tab', arTitle: 'قسم الرئيسية', enText: 'This is where you check off your daily mandatory tasks (5 prayers, exercise, study, Quran) and use the stopwatches.', arText: 'هنا تقوم بتحديد مهامك اليومية الإلزامية (5 صلوات، رياضة، دراسة، قرآن) وتستخدم المؤقتات.' },
+  { icon: '🎯', enTitle: 'Goals Tab', arTitle: 'قسم الأهداف', enText: 'Write down what you want to achieve by the end of the 82 days. Check them off as you complete them.', arText: 'اكتب ما تريد تحقيقه بنهاية الـ 82 يوماً. ضع علامة صح عند إنجازها.' },
+  { icon: '🛒', enTitle: 'Store Tab', arTitle: 'قسم المتجر', enText: 'Use your Coins to buy Streak Freezes (save your streak if you miss a day) and Epic Titles. Your XP Rank is unaffected by purchases.', arText: 'استخدم عملاتك لشراء تجميد السلسلة (لحفظ سلسلتك إذا فوّت يوماً) وألقاب ملحمية. رتبتك لا تتأثر بالمشتريات.' },
+  { icon: '💬', enTitle: 'Feed Tab', arTitle: 'قسم المنشورات', enText: 'Tap the camera icon on any task to upload proof. You and your team can see all the photos here to keep each other accountable.', arText: 'اضغط على أيقونة الكاميرا في أي مهمة لرفع الإثبات. يمكنك أنت وفريقك رؤية جميع الصور هنا لتحفيز بعضكم البعض.' },
+  { icon: '🏆', enTitle: 'Ranks Tab', arTitle: 'قسم الترتيب', enText: 'See how you compare to everyone else using the app globally. Your rank is based on Lifetime XP, not Coins.', arText: 'شاهد كيف تقارن مع كل من يستخدم التطبيق عالمياً. رتبتك مبنية على مجموع النقاط، وليس العملات.' }
 ];
 
 const STRINGS = {
@@ -282,8 +154,7 @@ const STRINGS = {
     uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!', perfectDay:'🔥 PERFECT DAY! +25 Bonus XP & Coins',
     dailyReward:'Daily Login Reward', weeklyReward:'Weekly Bonus!', monthlyReward:'Monthly Mega Bonus!', claim:'CLAIM REWARD',
     loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!', back:'BACK',
-    notStartedYet: 'The challenge has not started yet! Get ready.', startsOn: 'The challenge officially starts on',
-    locked: 'LOCKED'
+    notStartedYet: 'The challenge has not started yet! Get ready.', startsOn: 'The challenge officially starts on'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -310,8 +181,7 @@ const STRINGS = {
     uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!', perfectDay:'🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية',
     dailyReward:'مكافأة الدخول اليومية', weeklyReward:'مكافأة أسبوعية!', monthlyReward:'مكافأة شهرية ضخمة!', claim:'استلام المكافأة',
     loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!', back:'رجوع',
-    notStartedYet: 'التحدي لم يبدأ بعد! استعد.', startsOn: 'التحدي يبدأ رسمياً في',
-    locked: 'مغلق'
+    notStartedYet: 'التحدي لم يبدأ بعد! استعد.', startsOn: 'التحدي يبدأ رسمياً في'
   }
 };
 
@@ -420,7 +290,7 @@ function App(){
   const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
   const isLocked = today < CHALLENGE_START_DATE;
 
-  // COUNTDOWN TIMER LOGIC
+  // COUNTDOWN TIMER
   React.useEffect(() => {
     if (!isLocked) return;
     
@@ -432,7 +302,7 @@ function App(){
       if (diff <= 0) {
         clearInterval(interval);
         setCountdown('00:00:00');
-        window.location.reload(); // Reload to unlock the app
+        window.location.reload(); 
         return;
       }
 
@@ -594,8 +464,8 @@ function App(){
       setProfile(data);
       if(data.team_id) loadTeam(data.team_id);
 
-      // REWARD LOGIC (Locked before start date)
-      if (data.last_claimed !== today && today >= CHALLENGE_START_DATE) {
+      // DO NOT give reward if locked
+      if (data.last_claimed !== today && !isLocked) {
         let newStreak = 1;
         if (data.last_claimed === yesterday) newStreak = (data.login_streak || 0) + 1;
         
@@ -613,12 +483,7 @@ function App(){
 
   async function claimReward() {
     const newCoins = (profile.coins || 0) + rewardInfo.amount;
-    await sb.from('profiles').update({
-      coins: newCoins,
-      last_claimed: today,
-      login_streak: rewardInfo.streak
-    }).eq('id', user);
-    
+    await sb.from('profiles').update({ coins: newCoins, last_claimed: today, login_streak: rewardInfo.streak }).eq('id', user);
     setProfile(p => ({...p, coins: newCoins, last_claimed: today, login_streak: rewardInfo.streak}));
     setShowReward(false);
     showToast(`Claimed ${rewardInfo.amount} Coins!`);
@@ -639,25 +504,16 @@ function App(){
   async function loadFeed(){ 
     const {data:fd} = await sb.from('feed').select('*').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); 
     const {data:ps} = await sb.from('profiles').select('id, username, avatar_url').eq('team_id', team.id);
-    
     const pMap = (ps||[]).reduce((acc,p)=>{ acc[p.id]=p; return acc; }, {});
     const merged = (fd||[]).map(f => ({...f, profile: pMap[f.user_id] || {username: 'User', avatar_url: null}}));
     setFeed(merged);
   }
   
   async function loadTeamProofs(){
-    const {data:pr, error} = await sb.from('tasks')
-      .select('*')
-      .eq('team_id', team.id)
-      .eq('date', today)
-      .not('proof_url', 'is', null)
-      .order('id', {ascending: false});
-      
+    const {data:pr, error} = await sb.from('tasks').select('*').eq('team_id', team.id).eq('date', today).not('proof_url', 'is', null).order('id', {ascending: false});
     if(error) console.log(error);
-    
     const {data:ps} = await sb.from('profiles').select('id, username, avatar_url').eq('team_id', team.id);
     const pMap = (ps||[]).reduce((acc,p)=>{ acc[p.id]=p; return acc; }, {});
-    
     const merged = (pr||[]).map(p => ({...p, profile: pMap[p.user_id] || {username: 'User', avatar_url: null}}));
     setTeamProofs(merged);
   }
@@ -665,16 +521,13 @@ function App(){
   async function loadGoals() {
     const {data} = await sb.from('goals').select('*').eq('user_id', user).order('created_at', {ascending: true});
     setGoals(data || []);
-    if((!data || data.length === 0) && !localStorage.getItem('onboarding_done_'+user)) {
-      setIsOnboarding(true);
-    }
+    if((!data || data.length === 0) && !localStorage.getItem('onboarding_done_'+user)) setIsOnboarding(true);
   }
 
   async function loadCustomTasks(){
     const {data}=await sb.from('custom_tasks').select('*').eq('user_id',user).order('id', {ascending: true});
-    if(data && data.length > 0) {
-      setCustomTasks(data);
-    } else {
+    if(data && data.length > 0) setCustomTasks(data);
+    else {
       const seedMandatory = MANDATORY_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:true}));
       const seedExtras = EXTRA_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:false}));
       const {data:s} = await sb.from('custom_tasks').insert([...seedMandatory, ...seedExtras]).select();
@@ -685,18 +538,8 @@ function App(){
   async function loadLeaderboard(){
     const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title, avatar_url, teams(name)');
     if(error) return console.log(error);
-    
-    const rows=(ps||[]).map(p=>({ 
-      user_id: p.id, 
-      username: p.username, 
-      xp: p.xp || 0, 
-      title: p.title,
-      avatar_url: p.avatar_url,
-      team_name: p.teams?.name || 'No Team'
-    }));
-    
-    rows.sort((a,b)=>b.xp-a.xp); 
-    setLeaderboard(rows);
+    const rows=(ps||[]).map(p=>({ user_id: p.id, username: p.username, xp: p.xp || 0, title: p.title, avatar_url: p.avatar_url, team_name: p.teams?.name || 'No Team' }));
+    rows.sort((a,b)=>b.xp-a.xp); setLeaderboard(rows);
   }
 
   async function uploadAvatar(file) {
@@ -710,38 +553,24 @@ function App(){
   }
 
   async function handleAuth(){
-    const uname=nameInput.trim(); 
-    const pass=passInput.trim();
-    
+    const uname=nameInput.trim(); const pass=passInput.trim();
     if(!uname || !pass) return showToast(t('enterBoth'));
-
     const {data:exists, error}=await sb.from('profiles').select('id, password, username').eq('username',uname).maybeSingle();
-
     if(exists){
-      if(!exists.password) {
-        setSetupPassUser(exists);
-        return;
-      }
-      if(exists.password !== pass) {
-        return showToast(t('wrongPass'));
-      }
-      localStorage.setItem('team_user_id',exists.id); 
-      setUser(exists.id); 
-    }
-    else {
+      if(!exists.password) { setSetupPassUser(exists); return; }
+      if(exists.password !== pass) return showToast(t('wrongPass'));
+      localStorage.setItem('team_user_id',exists.id); setUser(exists.id); 
+    } else {
       const id='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);return v.toString(16);});
       await sb.from('profiles').insert({id, username:uname, password: pass});
-      localStorage.setItem('team_user_id',id); 
-      setUser(id);
+      localStorage.setItem('team_user_id',id); setUser(id);
     }
   }
 
   async function handleSaveSetupPass() {
     if(!newPassSetup.trim()) return showToast(t('enterBoth'));
     await sb.from('profiles').update({password: newPassSetup.trim()}).eq('id', setupPassUser.id);
-    localStorage.setItem('team_user_id',setupPassUser.id); 
-    setUser(setupPassUser.id);
-    setSetupPassUser(null);
+    localStorage.setItem('team_user_id',setupPassUser.id); setUser(setupPassUser.id); setSetupPassUser(null);
   }
 
   function handleLogout(){ localStorage.removeItem('team_user_id'); window.location.reload(); }
@@ -749,8 +578,7 @@ function App(){
   async function leaveTeam() {
     if(!confirm(lang==='ar'?"هل أنت متأكد من مغادرة الفريق؟":"Are you sure you want to leave this team?")) return;
     await sb.from('profiles').update({team_id: null}).eq('id', user);
-    setProfile(p => ({...p, team_id: null}));
-    setTeam(null);
+    setProfile(p => ({...p, team_id: null})); setTeam(null);
   }
 
   async function createTeam(){
@@ -766,7 +594,6 @@ function App(){
 
   async function toggleTask(key, checked){
     if(isLocked) return showToast(t('notStartedYet'));
-    
     if(key === 'study' && checked && studyTime < 1800) return showToast(lang==='ar'?"يجب أن تدرس ٣٠ دقيقة على الأقل!":"You must study for at least 30 minutes!");
     if(key === 'quran' && checked && quranTime < 600) return showToast(lang==='ar'?"يجب أن تقرأ القرآن ١٠ دقائق على الأقل!":"You must read Quran for at least 10 minutes!");
 
@@ -776,7 +603,6 @@ function App(){
     
     const isMandatory = MANDATORY_TASKS.some(t=>t.key===key);
     let xpChange = 10;
-
     if (key.startsWith('custom_')) {
       const userCustoms = customTasks.filter(t => !t.is_mandatory);
       const taskIndex = userCustoms.findIndex(t => t.key === key);
@@ -787,16 +613,13 @@ function App(){
     let bonus = 0;
     if(checked && isMandatory) {
       const newDoneTasks = [...tasks.filter(t=>t.done).map(t=>t.task_key), key];
-      const allMandatoryDone = MANDATORY_TASKS.every(t => newDoneTasks.includes(t.key));
-      if(allMandatoryDone && !existing?.done) {
-        bonus = 25;
-        showToast(t('perfectDay'));
+      if(MANDATORY_TASKS.every(t => newDoneTasks.includes(t.key)) && !existing?.done) {
+        bonus = 25; showToast(t('perfectDay'));
       }
     }
 
     const newXp = Math.max(0, (profile.xp||0) + xpChange + bonus);
     const newCoins = Math.max(0, (profile.coins||0) + xpChange + bonus);
-
     await sb.from('profiles').update({xp: newXp, coins: newCoins}).eq('id',user);
     setProfile(p=>({...p, xp: newXp, coins: newCoins}));
     await loadTasks(); loadHistory(); loadLeaderboard();
@@ -805,13 +628,9 @@ function App(){
   async function addTask() {
     if (!newTaskLabel.trim() || isLocked) return;
     const key = 'custom_' + Date.now();
-    const {data, error} = await sb.from('custom_tasks').insert({
-      user_id: user, key: key, label: newTaskLabel.trim(), icon: '⭐', active: true, is_mandatory: false
-    }).select().single();
-
+    const {data, error} = await sb.from('custom_tasks').insert({ user_id: user, key: key, label: newTaskLabel.trim(), icon: '⭐', active: true, is_mandatory: false }).select().single();
     if (error || !data) return showToast("Error: " + error?.message);
-    setCustomTasks([...customTasks, data]);
-    setNewTaskLabel('');
+    setCustomTasks([...customTasks, data]); setNewTaskLabel('');
   }
 
   async function deleteTask(id) {
@@ -822,12 +641,9 @@ function App(){
 
   async function addGoal(){
     if(!newGoalLabel.trim()) return;
-    const {data, error} = await sb.from('goals').insert({
-      user_id: user, title: newGoalLabel.trim()
-    }).select().single();
+    const {data, error} = await sb.from('goals').insert({ user_id: user, title: newGoalLabel.trim() }).select().single();
     if(error) return showToast(error.message);
-    setGoals([...goals, data]);
-    setNewGoalLabel('');
+    setGoals([...goals, data]); setNewGoalLabel('');
   }
 
   async function completeGoal(id) {
@@ -843,14 +659,11 @@ function App(){
 
   function finishOnboarding() {
     if(goals.length === 0) return showToast(lang==='ar'?"الرجاء إضافة هدف واحد على الأقل.":"Please add at least one goal.");
-    localStorage.setItem('onboarding_done_'+user, 'true');
-    setIsOnboarding(false);
+    localStorage.setItem('onboarding_done_'+user, 'true'); setIsOnboarding(false);
   }
 
   function formatTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
+    const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); const s = seconds % 60;
     return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
   }
 
@@ -859,21 +672,12 @@ function App(){
     const path=`${team.id}/${user}/${today}/${key}.jpg`;
     const {error: uploadError} = await sb.storage.from('proofs').upload(path,file,{upsert:true});
     if(uploadError) return showToast("Upload Error: " + uploadError.message);
-
     const {data:{publicUrl}}=sb.storage.from('proofs').getPublicUrl(path);
     const existing=tasks.find(t=>t.task_key===key);
-    
     let dbError;
-    if(existing) {
-      const {error} = await sb.from('tasks').update({proof_url:publicUrl,done:true}).eq('id',existing.id);
-      dbError = error;
-    } else {
-      const {error} = await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, proof_url:publicUrl, done:true});
-      dbError = error;
-    }
-    
+    if(existing) dbError = (await sb.from('tasks').update({proof_url:publicUrl,done:true}).eq('id',existing.id)).error;
+    else dbError = (await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, proof_url:publicUrl, done:true})).error;
     if(dbError) return showToast("Database Error: " + dbError.message);
-
     loadTasks(); loadHistory(); loadTeamProofs();
   }
 
@@ -881,10 +685,8 @@ function App(){
     if((profile.coins||0) < item.price) return showToast(t('notEnoughCoins'));
     const newInv=[...(profile.inventory||[]), item.id];
     const updates = {coins: profile.coins-item.price, inventory: newInv};
-    
     if(item.id === 'title_beast') updates.title = 'The Beast 🔥';
     if(item.id === 'title_machine') updates.title = 'The Machine 🤖';
-    
     await sb.from('profiles').update(updates).eq('id',user);
     setProfile(p=>({...p,...updates}));
     showToast(lang==='ar'?`تم شراء ${item.nameAr}!`:`Purchased ${item.name}!`);
@@ -892,97 +694,66 @@ function App(){
 
   async function useItem(itemId, targetDate) {
     if(isLocked) return showToast(t('notStartedYet'));
-    const inv = [...(profile.inventory||[])];
-    const idx = inv.indexOf(itemId);
+    const inv = [...(profile.inventory||[])]; const idx = inv.indexOf(itemId);
     if(idx === -1) return showToast(t('notEnoughItems'));
-    
     inv.splice(idx, 1);
     await sb.from('profiles').update({inventory: inv}).eq('id', user);
-    
     await sb.from('tasks').insert({user_id:user, team_id:team.id, date:targetDate, task_key:itemId, done:true});
-    
-    setProfile(p => ({...p, inventory: inv}));
-    loadHistory(); loadTasks();
+    setProfile(p => ({...p, inventory: inv})); loadHistory(); loadTasks();
     showToast(itemId === 'freeze' ? t('freezeApplied') : t('skipApplied'));
   }
 
   async function sendNudge(){
     const msg = prompt(lang==='ar'?"اكتب رسالة للفريق:":"Enter a message to your team:");
     if(!msg) return;
-    await sb.from('feed').insert({team_id:team.id, user_id:user, message:msg});
-    loadFeed();
+    await sb.from('feed').insert({team_id:team.id, user_id:user, message:msg}); loadFeed();
   }
 
   function startStudy() {
     if(isLocked) return showToast(t('notStartedYet'));
-    const now = Date.now();
-    setStudyStartTime(now);
-    setStudyRunning(true);
-    localStorage.setItem('studyStart', now.toString());
-    localStorage.setItem('studyAccum', studyTime.toString());
+    const now = Date.now(); setStudyStartTime(now); setStudyRunning(true);
+    localStorage.setItem('studyStart', now.toString()); localStorage.setItem('studyAccum', studyTime.toString());
   }
   function pauseStudy() {
-    setStudyRunning(false);
-    setStudyStartTime(null);
-    localStorage.removeItem('studyStart');
-    localStorage.setItem('studyAccum', studyTime.toString());
+    setStudyRunning(false); setStudyStartTime(null);
+    localStorage.removeItem('studyStart'); localStorage.setItem('studyAccum', studyTime.toString());
   }
   function resetStudy() {
     if(!confirm(t('resetBtn') + '?')) return;
-    setStudyRunning(false);
-    setStudyStartTime(null);
-    setStudyTime(0);
-    localStorage.removeItem('studyStart');
-    localStorage.setItem('studyAccum', '0');
+    setStudyRunning(false); setStudyStartTime(null); setStudyTime(0);
+    localStorage.removeItem('studyStart'); localStorage.setItem('studyAccum', '0');
   }
 
   function startQuran() {
     if(isLocked) return showToast(t('notStartedYet'));
-    const now = Date.now();
-    setQuranStartTime(now);
-    setQuranRunning(true);
-    localStorage.setItem('quranStart', now.toString());
-    localStorage.setItem('quranAccum', quranTime.toString());
+    const now = Date.now(); setQuranStartTime(now); setQuranRunning(true);
+    localStorage.setItem('quranStart', now.toString()); localStorage.setItem('quranAccum', quranTime.toString());
   }
   function pauseQuran() {
-    setQuranRunning(false);
-    setQuranStartTime(null);
-    localStorage.removeItem('quranStart');
-    localStorage.setItem('quranAccum', quranTime.toString());
+    setQuranRunning(false); setQuranStartTime(null);
+    localStorage.removeItem('quranStart'); localStorage.setItem('quranAccum', quranTime.toString());
   }
   function resetQuran() {
     if(!confirm(t('resetBtn') + '?')) return;
-    setQuranRunning(false);
-    setQuranStartTime(null);
-    setQuranTime(0);
-    localStorage.removeItem('quranStart');
-    localStorage.setItem('quranAccum', '0');
+    setQuranRunning(false); setQuranStartTime(null); setQuranTime(0);
+    localStorage.removeItem('quranStart'); localStorage.setItem('quranAccum', '0');
   }
 
   const mandatoryKeys = MANDATORY_TASKS.map(t=>t.key);
   const doneMandatoryByDate = {};
-  
-  const freezesUsed = new Set();
-  const skipsUsed = new Set();
+  const freezesUsed = new Set(); const skipsUsed = new Set();
 
   history.forEach(h => {
     if(h.done) {
       if(h.task_key === 'freeze') freezesUsed.add(h.date);
       if(h.task_key === 'skip') skipsUsed.add(h.date);
-      
-      if(mandatoryKeys.includes(h.task_key)) {
-        doneMandatoryByDate[h.date] = (doneMandatoryByDate[h.date] || 0) + 1;
-      }
+      if(mandatoryKeys.includes(h.task_key)) doneMandatoryByDate[h.date] = (doneMandatoryByDate[h.date] || 0) + 1;
     }
   });
   
   const completeDates = new Set();
-  Object.entries(doneMandatoryByDate).forEach(([date,count])=>{
-    if(count === mandatoryKeys.length) completeDates.add(date);
-  });
-  
-  freezesUsed.forEach(d => completeDates.add(d));
-  skipsUsed.forEach(d => completeDates.add(d));
+  Object.entries(doneMandatoryByDate).forEach(([date,count])=>{ if(count === mandatoryKeys.length) completeDates.add(date); });
+  freezesUsed.forEach(d => completeDates.add(d)); skipsUsed.forEach(d => completeDates.add(d));
 
   let streak=0; let d=new Date();
   while(true){ 
@@ -993,14 +764,9 @@ function App(){
 
   const teamStartDate = CHALLENGE_START_DATE;
   const teamStartDateObj = new Date(teamStartDate);
-
   const missedYesterday = !isLocked && !completeDates.has(yesterday) && yesterday >= teamStartDate;
-  
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
   const hasSkip = (profile?.inventory||[]).includes('skip');
-  
-  const todayIsSkipped = skipsUsed.has(today);
-  const todayIsFrozen = freezesUsed.has(today);
 
   const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
 
@@ -1013,7 +779,6 @@ function App(){
         <h1>TEAM <span>1%</span></h1>
         <p style={{color:'#7CFF4F', fontSize:16, marginTop:20}}>{t('welcomeBack')} {setupPassUser.username}!</p>
         <p style={{color:'#888', fontSize:14, marginBottom:30}}>{t('setupPassMsg')}</p>
-        
         <input type="password" placeholder={t('newPass')} value={newPassSetup} onChange={e=>setNewPassSetup(e.target.value)}/>
         <button className="primary" onClick={handleSaveSetupPass} style={{width:'100%'}}>{t('saveLogin')}</button>
       </div>
@@ -1024,10 +789,8 @@ function App(){
     <div className="container" style={{marginTop:80}}>
       <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
       <h1>TEAM <span>1%</span></h1><p style={{color:'#666',fontSize:12,marginBottom:30}}>{t('tagline')}</p>
-      
       <input placeholder={t('enterName')} value={nameInput} onChange={e=>setNameInput(e.target.value)}/>
       <input type="password" placeholder={t('enterPass')} value={passInput} onChange={e=>setPassInput(e.target.value)}/>
-      
       <button className="primary" onClick={handleAuth} style={{width:'100%'}}>{t('start')}</button>
     </div>
   );
@@ -1055,24 +818,18 @@ function App(){
         <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
         <h1 style={{textAlign:'center',color:'#7CFF4F',fontSize:20}}>{t('goalSetupTitle')}</h1>
         <p style={{textAlign:'center',color:'#888',marginBottom:30}}>{t('goalSetupSub')}</p>
-        
         <div style={{marginBottom:20}}>
           {goals.map(g => (
             <div key={g.id} className="goal-card" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <span>{g.title}</span>
-              <button className="delete-btn" onClick={()=>deleteGoal(g.id)}>✕</button>
+              <span>{g.title}</span><button className="delete-btn" onClick={()=>deleteGoal(g.id)}>✕</button>
             </div>
           ))}
         </div>
-
         <div className="add-task" style={{marginBottom:40}}>
           <input placeholder={t('goalPlaceholder')} value={newGoalLabel} onChange={e=>setNewGoalLabel(e.target.value)} />
           <button onClick={addGoal}>+</button>
         </div>
-
-        <button className="primary" onClick={finishOnboarding} style={{width:'100%',padding:20,fontSize:16}}>
-          {t('startChallenge')} 🚀
-        </button>
+        <button className="primary" onClick={finishOnboarding} style={{width:'100%',padding:20,fontSize:16}}>{t('startChallenge')} 🚀</button>
       </div>
     );
   }
@@ -1080,37 +837,21 @@ function App(){
   const rank = RANKS.slice().reverse().find(r => (profile.xp||0) >= r.min) || RANKS[0];
   const nextRank = RANKS.find(r => (profile.xp||0) < r.min);
   const progress = nextRank ? (((profile.xp||0)-rank.min)/(nextRank.min-rank.min))*100 : 100;
-  
   const mandatoryDoneCount = tasks.filter(t => t.done && mandatoryKeys.includes(t.task_key)).length;
   const extraTasks = customTasks.filter(t => !t.is_mandatory && t.active);
 
   return (
-    <div 
-      className="container" 
-      onTouchStart={handleDragStart} 
-      onTouchEnd={handleDragEnd}
-      onMouseDown={handleDragStart}
-      onMouseUp={handleDragEnd}
-      onMouseLeave={() => isDragging.current = false}
-    >
+    <div className="container" onTouchStart={handleDragStart} onTouchEnd={handleDragEnd} onMouseDown={handleDragStart} onMouseUp={handleDragEnd} onMouseLeave={() => isDragging.current = false}>
       {toast && <div className="toast-container"><div className="toast">{toast}</div></div>}
       
       {showReward && !isLocked && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <div className="reward-icon">
-              {rewardInfo.type === 'monthly' ? '👑' : rewardInfo.type === 'weekly' ? '💎' : '🪙'}
-            </div>
-            <h2 style={{color:'#7CFF4F', fontSize:18, margin:'0 0 10px 0'}}>
-              {rewardInfo.type === 'monthly' ? t('monthlyReward') : rewardInfo.type === 'weekly' ? t('weeklyReward') : t('dailyReward')}
-            </h2>
+            <div className="reward-icon">{rewardInfo.type === 'monthly' ? '👑' : rewardInfo.type === 'weekly' ? '💎' : '🪙'}</div>
+            <h2 style={{color:'#7CFF4F', fontSize:18, margin:'0 0 10px 0'}}>{rewardInfo.type === 'monthly' ? t('monthlyReward') : rewardInfo.type === 'weekly' ? t('weeklyReward') : t('dailyReward')}</h2>
             <p style={{color:'#aaa', fontSize:14, marginBottom:20}}>You logged in for {rewardInfo.streak} days in a row!</p>
-            <div style={{fontSize:36, fontWeight:'900', color:'#fff', marginBottom:30}}>
-              +{rewardInfo.amount} <span style={{fontSize:16, color:'#7CFF4F'}}>Coins</span>
-            </div>
-            <button className="primary" onClick={claimReward} style={{width:'100%', padding:15, fontSize:16}}>
-              {t('claim')}
-            </button>
+            <div style={{fontSize:36, fontWeight:'900', color:'#fff', marginBottom:30}}>+{rewardInfo.amount} <span style={{fontSize:16, color:'#7CFF4F'}}>Coins</span></div>
+            <button className="primary" onClick={claimReward} style={{width:'100%', padding:15, fontSize:16}}>{t('claim')}</button>
           </div>
         </div>
       )}
@@ -1119,38 +860,18 @@ function App(){
         <div className="modal-overlay">
           <div className="modal-content" style={{padding:'40px 25px'}}>
             <div className="tutorial-step-icon">{TUTORIAL_STEPS[tutorialStep].icon}</div>
-            <h2 style={{color:'#7CFF4F', fontSize:22, margin:'0 0 15px 0', textTransform:'none', letterSpacing:0}}>
-              {lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arTitle : TUTORIAL_STEPS[tutorialStep].enTitle}
-            </h2>
-            <p style={{color:'#ccc', fontSize:15, lineHeight:1.5, marginBottom:30, minHeight:70}}>
-              {lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arText : TUTORIAL_STEPS[tutorialStep].enText}
-            </p>
-            
-            <div className="tutorial-dots">
-              {TUTORIAL_STEPS.map((_, i) => (
-                <div key={i} className={`dot ${i === tutorialStep ? 'active' : ''}`} />
-              ))}
-            </div>
-
+            <h2 style={{color:'#7CFF4F', fontSize:22, margin:'0 0 15px 0', textTransform:'none', letterSpacing:0}}>{lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arTitle : TUTORIAL_STEPS[tutorialStep].enTitle}</h2>
+            <p style={{color:'#ccc', fontSize:15, lineHeight:1.5, marginBottom:30, minHeight:70}}>{lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arText : TUTORIAL_STEPS[tutorialStep].enText}</p>
+            <div className="tutorial-dots">{TUTORIAL_STEPS.map((_, i) => <div key={i} className={`dot ${i === tutorialStep ? 'active' : ''}`} />)}</div>
             <div style={{display:'flex', gap:10, marginTop:20}}>
-              {tutorialStep > 0 && (
-                <button style={{flex:1, background:'#222', border:'none'}} onClick={() => setTutorialStep(s => s - 1)}>
-                  {t('back')}
-                </button>
-              )}
+              {tutorialStep > 0 && <button style={{flex:1, background:'#222', border:'none'}} onClick={() => setTutorialStep(s => s - 1)}>{t('back')}</button>}
               {tutorialStep < TUTORIAL_STEPS.length - 1 ? (
                 <>
-                  <button style={{flex:1, background:'#111', color:'#888', border:'1px solid #333'}} onClick={() => {
-                    localStorage.setItem('tutorial_done_'+user, 'true');
-                    setShowTutorial(false);
-                  }}>{t('skip')}</button>
+                  <button style={{flex:1, background:'#111', color:'#888', border:'1px solid #333'}} onClick={() => { localStorage.setItem('tutorial_done_'+user, 'true'); setShowTutorial(false); }}>{t('skip')}</button>
                   <button className="primary" style={{flex:2}} onClick={() => setTutorialStep(s => s + 1)}>{t('next')}</button>
                 </>
               ) : (
-                <button className="primary" style={{flex:1, padding:16}} onClick={() => {
-                  localStorage.setItem('tutorial_done_'+user, 'true');
-                  setShowTutorial(false);
-                }}>{t('letsGo')} 🚀</button>
+                <button className="primary" style={{flex:1, padding:16}} onClick={() => { localStorage.setItem('tutorial_done_'+user, 'true'); setShowTutorial(false); }}>{t('letsGo')} 🚀</button>
               )}
             </div>
           </div>
@@ -1183,147 +904,117 @@ function App(){
               <div className="streak" style={{background:'#fff', color:'#000'}}>{profile.xp || 0} {t('xp')}</div>
             </div>
 
-            {isLocked && (
+            {isLocked ? (
               <div className="lock-banner">
                 <div className="lock-icon">🔒</div>
-                <div style={{fontSize:16, fontWeight:'bold', color:'#fff'}}>{t('notStartedYet')}</div>
+                <div style={{fontSize:18, fontWeight:'bold', color:'#fff'}}>{t('notStartedYet')}</div>
                 <div style={{fontSize:12, color:'#aaa', marginTop:5}}>{t('startsOn')} {CHALLENGE_START_DATE}</div>
                 <div className="countdown">{countdown}</div>
+                <div style={{fontSize:10, color:'#666', marginTop:10}}>Today is {today}</div>
               </div>
-            )}
-
-            {!notifEnabled && !isLocked && (
-              <div style={{textAlign:'center', marginBottom:20}}>
-                <button className="notify-btn" onClick={enableNotifications}>{t('enableNotify')}</button>
-              </div>
-            )}
-
-            {missedYesterday && !hasFreeze && (
-               <div className="freeze-alert" style={{borderColor:'#ff4f4f', background:'#ff4f4f22', color:'#fca5a5'}}>
-                 ⚠️ {t('missedYesterday')} {lang==='ar'?'(تحتاج إلى شراء تجميد)':'(Buy a Freeze in Store)'}
-               </div>
-            )}
-
-            {missedYesterday && hasFreeze && (
-              <div className="freeze-alert">
-                ⚠️ {t('missedYesterday')} {t('useFreeze')}
-                <button onClick={()=>useItem('freeze', yesterday)} style={{background:'#3b82f6', color:'#fff', padding:'6px 10px', marginTop:10, width:'100%'}}>{t('useFreezeBtn')}</button>
-              </div>
-            )}
-
-            <div className="invite-box">
-              <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>{t('inviteTitle')}</div>
-              <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
-              <div style={{fontSize:'11px', color:'#666'}}>{t('inviteHint')}</div>
-            </div>
-
-            <h2>{t('grid')}</h2>
-            <div className="timeline" onTouchStart={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()} onMouseDown={(e)=>e.stopPropagation()}>
-              {Array.from({length:82}).map((_,i)=>{
-                const dayNum = i + 1;
-                const d = new Date(teamStartDateObj); d.setDate(d.getDate() + i);
-                const ds = d.toLocaleDateString('en-CA');
-                const isDone = completeDates.has(ds);
-                const isFreeze = freezesUsed.has(ds);
-                const reward = getRewardForDay(dayNum);
-                
-                return (
-                  <div key={i} className={`day-box ${isDone?(isFreeze?'freeze':'done'):''}`} title={ds}>
-                    <span>{dayNum}</span>
-                    <span className="day-reward">
-                      {reward.type === 'monthly' ? '👑' : reward.type === 'weekly' ? '💎' : '🪙'}
-                    </span>
+            ) : (
+              <>
+                {!notifEnabled && (
+                  <div style={{textAlign:'center', marginBottom:20}}>
+                    <button className="notify-btn" onClick={enableNotifications}>{t('enableNotify')}</button>
                   </div>
-                );
-              })}
-            </div>
+                )}
 
-            <div className={`timer-box ${studyRunning ? 'active' : ''} ${isLocked ? 'locked' : ''}`}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('studyTimer')}</div>
-                <div style={{fontSize:10,color:studyTime>=1800?'#7CFF4F':'#ff4f4f'}}>
-                  {studyTime>=1800 ? t('targetReached') : '30 ' + t('minReq')}
+                {missedYesterday && !hasFreeze && (
+                   <div className="freeze-alert" style={{borderColor:'#ff4f4f', background:'#ff4f4f22', color:'#fca5a5'}}>
+                     ⚠️ {t('missedYesterday')} {lang==='ar'?'(تحتاج إلى شراء تجميد)':'(Buy a Freeze in Store)'}
+                   </div>
+                )}
+
+                {missedYesterday && hasFreeze && (
+                  <div className="freeze-alert">
+                    ⚠️ {t('missedYesterday')} {t('useFreeze')}
+                    <button onClick={()=>useItem('freeze', yesterday)} style={{background:'#3b82f6', color:'#fff', padding:'6px 10px', marginTop:10, width:'100%'}}>{t('useFreezeBtn')}</button>
+                  </div>
+                )}
+
+                <div className="invite-box">
+                  <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>{t('inviteTitle')}</div>
+                  <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
+                  <div style={{fontSize:'11px', color:'#666'}}>{t('inviteHint')}</div>
                 </div>
-              </div>
-              <div className="timer-val">{formatTime(studyTime)}</div>
-              <div style={{display:'flex',gap:10}}>
-                <button onClick={studyRunning ? pauseStudy : startStudy} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000', transition:'0.3s'}}>
-                  {studyRunning?t('pauseBtn'):t('startBtn')}
-                </button>
-                <button onClick={resetStudy} style={{flex:1}}>{t('resetBtn')}</button>
-              </div>
-            </div>
 
-            <div className={`timer-box ${quranRunning ? 'active' : ''} ${isLocked ? 'locked' : ''}`}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('quranTimer')}</div>
-                <div style={{fontSize:10,color:quranTime>=600?'#7CFF4F':'#ff4f4f'}}>
-                  {quranTime>=600 ? t('targetReached') : '10 ' + t('minReq')}
+                <h2>{t('grid')}</h2>
+                <div className="timeline" onTouchStart={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()} onMouseDown={(e)=>e.stopPropagation()}>
+                  {Array.from({length:82}).map((_,i)=>{
+                    const dayNum = i + 1; const d = new Date(teamStartDateObj); d.setDate(d.getDate() + i);
+                    const ds = d.toLocaleDateString('en-CA'); const isDone = completeDates.has(ds); const isFreeze = freezesUsed.has(ds);
+                    const reward = getRewardForDay(dayNum);
+                    return (
+                      <div key={i} className={`day-box ${isDone?(isFreeze?'freeze':'done'):''}`} title={ds}>
+                        <span>{dayNum}</span>
+                        <span className="day-reward">{reward.type === 'monthly' ? '👑' : reward.type === 'weekly' ? '💎' : '🪙'}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
-              <div className="timer-val">{formatTime(quranTime)}</div>
-              <div style={{display:'flex',gap:10}}>
-                <button onClick={quranRunning ? pauseQuran : startQuran} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000', transition:'0.3s'}}>
-                  {quranRunning?t('pauseBtn'):t('startBtn')}
-                </button>
-                <button onClick={resetQuran} style={{flex:1}}>{t('resetBtn')}</button>
-              </div>
-            </div>
 
-            <h2 style={{color:'#ff4f4f'}}>{t('mandatory')} ({mandatoryDoneCount}/{MANDATORY_TASKS.length})</h2>
-            {MANDATORY_TASKS.map((task, i)=>{
-              const taskData = tasks.find(x=>x.task_key===task.key); 
-              const isDone = taskData?.done;
-              const label = lang==='ar' ? task.labelAr : task.label;
-              return (
-                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`, opacity: isLocked ? 0.5 : 1}}>
-                  <span className="icon">{task.icon}</span><span className="label">{label}</span>
-                  {taskData?.proof_url && (
-                    <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
-                  )}
-                  {!isLocked && <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>}
-                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)} style={{pointerEvents: isLocked ? 'none' : 'auto'}}>
-                    {isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}
+                <div className={`timer-box ${studyRunning ? 'active' : ''}`}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('studyTimer')}</div>
+                    <div style={{fontSize:10,color:studyTime>=1800?'#7CFF4F':'#ff4f4f'}}>{studyTime>=1800 ? t('targetReached') : '30 ' + t('minReq')}</div>
+                  </div>
+                  <div className="timer-val">{formatTime(studyTime)}</div>
+                  <div style={{display:'flex',gap:10}}>
+                    <button onClick={studyRunning ? pauseStudy : startStudy} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000', transition:'0.3s'}}>{studyRunning?t('pauseBtn'):t('startBtn')}</button>
+                    <button onClick={resetStudy} style={{flex:1}}>{t('resetBtn')}</button>
                   </div>
                 </div>
-              );
-            })}
 
-            <h2 style={{color:'#888'}}>{t('extraXp')}</h2>
-            {extraTasks.map((task, i)=>{
-              const taskData = tasks.find(x=>x.task_key===task.key); 
-              const isDone = taskData?.done;
-              let label = task.label;
-              if (lang==='ar') {
-                const found = EXTRA_TASKS.find(x=>x.key===task.key);
-                if (found) label = found.labelAr;
-              }
-              const index = extraTasks.findIndex(t => t.key === task.key);
-              const reward = index < 8 ? 10 : 2;
-
-              return (
-                <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`, opacity: isLocked ? 0.5 : 1}}>
-                  <span className="icon">{task.icon}</span>
-                  <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{reward})</span></span>
-                  {taskData?.proof_url && (
-                    <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
-                  )}
-                  {!isLocked && <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>}
-                  <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)} style={{pointerEvents: isLocked ? 'none' : 'auto'}}>
-                    {isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}
+                <div className={`timer-box ${quranRunning ? 'active' : ''}`}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('quranTimer')}</div>
+                    <div style={{fontSize:10,color:quranTime>=600?'#7CFF4F':'#ff4f4f'}}>{quranTime>=600 ? t('targetReached') : '10 ' + t('minReq')}</div>
                   </div>
-                  {task.key.startsWith('custom_') && !isLocked && (
-                    <button className="delete-btn" onClick={()=>deleteTask(task.id)}>✕</button>
-                  )}
+                  <div className="timer-val">{formatTime(quranTime)}</div>
+                  <div style={{display:'flex',gap:10}}>
+                    <button onClick={quranRunning ? pauseQuran : startQuran} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000', transition:'0.3s'}}>{quranRunning?t('pauseBtn'):t('startBtn')}</button>
+                    <button onClick={resetQuran} style={{flex:1}}>{t('resetBtn')}</button>
+                  </div>
                 </div>
-              );
-            })}
 
-            {!isLocked && (
-              <div className="add-task">
-                <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
-                <button onClick={addTask}>+</button>
-              </div>
+                <h2 style={{color:'#ff4f4f'}}>{t('mandatory')} ({mandatoryDoneCount}/{MANDATORY_TASKS.length})</h2>
+                {MANDATORY_TASKS.map((task, i)=>{
+                  const taskData = tasks.find(x=>x.task_key===task.key); const isDone = taskData?.done;
+                  const label = lang==='ar' ? task.labelAr : task.label;
+                  return (
+                    <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`}}>
+                      <span className="icon">{task.icon}</span><span className="label">{label}</span>
+                      {taskData?.proof_url && <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>}
+                      <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                      <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)}>{isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}</div>
+                    </div>
+                  );
+                })}
+
+                <h2 style={{color:'#888'}}>{t('extraXp')}</h2>
+                {extraTasks.map((task, i)=>{
+                  const taskData = tasks.find(x=>x.task_key===task.key); const isDone = taskData?.done;
+                  let label = task.label;
+                  if (lang==='ar') { const found = EXTRA_TASKS.find(x=>x.key===task.key); if (found) label = found.labelAr; }
+                  const index = extraTasks.findIndex(t => t.key === task.key); const reward = index < 8 ? 10 : 2;
+                  return (
+                    <div className={`task ${isDone?'done':''}`} key={task.key} style={{animationDelay: `${i*0.04}s`}}>
+                      <span className="icon">{task.icon}</span>
+                      <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{reward})</span></span>
+                      {taskData?.proof_url && <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>}
+                      <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                      <div className={`custom-check ${isDone?'checked':''}`} onClick={()=>toggleTask(task.key, !isDone)}>{isDone && <span style={{color:'#000', fontWeight:'bold', fontSize:16}}>✓</span>}</div>
+                      {task.key.startsWith('custom_') && <button className="delete-btn" onClick={()=>deleteTask(task.id)}>✕</button>}
+                    </div>
+                  );
+                })}
+
+                <div className="add-task">
+                  <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
+                  <button onClick={addTask}>+</button>
+                </div>
+              </>
             )}
           </>
         )}
@@ -1332,23 +1023,15 @@ function App(){
           <>
             <h2 style={{color:'#7CFF4F', textAlign:'center'}}>{t('myGoals')}</h2>
             {goals.length === 0 && <p style={{textAlign:'center',color:'#888'}}>{t('noGoals')}</p>}
-            
             {goals.map((g, i) => (
               <div key={g.id} className="goal-card" style={{borderLeftColor: g.status === 'done' ? '#7CFF4F' : '#ff4f4f', animationDelay: `${i*0.05}s`}}>
                 <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:10}}>
-                  <span style={{fontSize:15, fontWeight:'bold', textDecoration: g.status === 'done' ? 'line-through' : 'none', color: g.status === 'done' ? '#888' : '#fff'}}>
-                    {g.title}
-                  </span>
+                  <span style={{fontSize:15, fontWeight:'bold', textDecoration: g.status === 'done' ? 'line-through' : 'none', color: g.status === 'done' ? '#888' : '#fff'}}>{g.title}</span>
                   <button className="delete-btn" onClick={()=>deleteGoal(g.id)}>✕</button>
                 </div>
-                {g.status !== 'done' && (
-                  <button onClick={()=>completeGoal(g.id)} style={{marginTop:10, background:'#7CFF4F', color:'#000', padding:'6px 12px', fontSize:12, border:'none'}}>
-                    {t('markDone')}
-                  </button>
-                )}
+                {g.status !== 'done' && <button onClick={()=>completeGoal(g.id)} style={{marginTop:10, background:'#7CFF4F', color:'#000', padding:'6px 12px', fontSize:12, border:'none'}}>{t('markDone')}</button>}
               </div>
             ))}
-
             <div className="add-task" style={{marginTop:20}}>
               <input placeholder={t('goalPlaceholder')} value={newGoalLabel} onChange={e=>setNewGoalLabel(e.target.value)} />
               <button onClick={addGoal}>+</button>
@@ -1369,9 +1052,7 @@ function App(){
               <div className="card" key={item.id} style={{animationDelay: `${i*0.05}s`}}>
                 <div style={{fontWeight:'bold',color:'#7CFF4F'}}>{lang==='ar'?item.nameAr:item.name}</div>
                 <div style={{fontSize:12,color:'#888',margin:'5px 0'}}>{lang==='ar'?item.descAr:item.desc}</div>
-                <button onClick={()=>buyItem(item)} disabled={(profile.coins||0)<item.price || isLocked} style={{width:'100%',marginTop:10}}>
-                  {t('buy')} {item.price} 🪙 {t('coins')}
-                </button>
+                <button onClick={()=>buyItem(item)} disabled={(profile.coins||0)<item.price || isLocked} style={{width:'100%',marginTop:10}}>{t('buy')} {item.price} 🪙 {t('coins')}</button>
               </div>
             ))}
           </>
@@ -1392,7 +1073,6 @@ function App(){
                 <div>{f.message}</div>
               </div>
             ))}
-
             <h2 style={{marginTop:30}}>{t('teamProofs')}</h2>
             {teamProofs.length === 0 && <p style={{textAlign:'center',color:'#888'}}>{t('noProofs')}</p>}
             {teamProofs.map((p, i) => {
@@ -1404,7 +1084,6 @@ function App(){
                 if (eTask) taskLabel = lang==='ar' ? eTask.labelAr : eTask.label;
                 else taskLabel = p.task_key.replace('custom_', 'Custom Task ');
               }
-
               return (
                 <div className="proof-card" key={p.id} style={{animationDelay: `${i*0.05}s`}}>
                   <img src={p.proof_url} alt="Proof" className="proof-img" onClick={()=>window.open(p.proof_url, '_blank')} />
@@ -1435,11 +1114,7 @@ function App(){
                     <td style={{padding:15,fontWeight:r.user_id===user?'bold':'normal',color:r.user_id===user?'#7CFF4F':'#fff'}}>
                       <div style={{display:'flex', alignItems:'center'}}>
                         <img src={r.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+r.username} className="avatar-sm" alt="avatar" />
-                        <div>
-                          {r.username}
-                          <br/>
-                          <span style={{fontSize:10,color:'#888'}}>{r.team_name} • {r.title||'Rookie'}</span>
-                        </div>
+                        <div>{r.username}<br/><span style={{fontSize:10,color:'#888'}}>{r.team_name} • {r.title||'Rookie'}</span></div>
                       </div>
                     </td>
                     <td style={{padding:15,textAlign:lang==='ar'?'left':'right'}}>{r.xp}</td>
