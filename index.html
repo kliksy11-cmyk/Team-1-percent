@@ -10,8 +10,15 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;}
-.container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;position:relative;}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;}
+
+/* Desktop Container */
+.container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;position:relative;background:#000;min-height:100vh;transition:0.3s;}
+
+@media (min-width: 768px) {
+  .container { max-width: 700px; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 40px 30px; padding-bottom: 120px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+  .header h1 { font-size: 28px; }
+}
 
 /* Page Animations */
 .page-wrapper { animation-duration: 0.35s; animation-fill-mode: both; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -21,7 +28,7 @@ body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#000;col
 @keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
 
 /* Staggered Tasks */
-.task, .card, .goal-card { animation: fadeInUp 0.4s ease-out both; }
+.task, .card, .goal-card { animation: fadeInUp 0.4s ease-out both; transition: background 0.2s, transform 0.2s; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
 h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;}
@@ -30,28 +37,34 @@ h2{margin:24px 0 12px;font-size:12px;color:#888;text-transform:uppercase;letter-
 input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;transition:0.2s;}
 input:focus,select:focus{border-color:#7CFF4F;box-shadow:0 0 8px rgba(124,255,79,0.2);}
 
-button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:transform 0.1s, background 0.2s;}
+button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:transform 0.1s, background 0.2s, border-color 0.2s;}
 button:active{transform:scale(0.94);}
+button:hover{background:#1a1a1a; border-color:#333;}
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
-button:disabled{opacity:0.5; transform:none;}
+button.primary:hover{background:#95ff70;}
+button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
 
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .header-actions{display:flex;align-items:center;gap:5px;}
 .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;transition:0.2s;}
-.avatar:active{transform:scale(0.9);}
+.avatar:hover{transform:scale(1.05); border-color:#7CFF4F;}
 .avatar-sm{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#222;border:1px solid #444;margin-right:8px;vertical-align:middle;}
 .lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
-.lang-btn:active{background:#333;}
+.lang-btn:hover{background:#333;}
 .leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
+.leave-btn:hover{background:#ff4f4f44;}
 .logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
+.logout-btn:hover{background:#444;}
 
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
 
 /* NEW TIMELINE GRID */
-.timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:none;}
-.timeline::-webkit-scrollbar{display:none;}
-.day-box{min-width:48px;height:56px;background:#111;border-radius:8px;border:1px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:14px;font-weight:bold;color:#666;transition:0.3s;flex-shrink:0;}
+.timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:thin; scrollbar-color: #7CFF4F #111;}
+.timeline::-webkit-scrollbar{height:8px;}
+.timeline::-webkit-scrollbar-track{background:#111;border-radius:4px;}
+.timeline::-webkit-scrollbar-thumb{background:#7CFF4F;border-radius:4px;}
+.day-box{min-width:48px;height:56px;background:#111;border-radius:8px;border:1px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:14px;font-weight:bold;color:#666;transition:0.3s;flex-shrink:0; cursor:default;}
 .day-box.done{background:#7CFF4F;border-color:#7CFF4F;color:#000;animation: pulseGreen 2s infinite;}
 .day-box.freeze{background:#3b82f6;border-color:#60a5fa;color:#fff;animation: pulseBlue 2s infinite;}
 @keyframes pulseGreen { 0% { box-shadow: 0 0 0px #7CFF4F; } 50% { box-shadow: 0 0 12px #7CFF4F; } 100% { box-shadow: 0 0 0px #7CFF4F; } }
@@ -59,30 +72,35 @@ button:disabled{opacity:0.5; transform:none;}
 .day-reward{font-size:10px;margin-top:2px;opacity:0.8;}
 
 /* Custom Checkbox */
-.task{display:flex;align-items:center;gap:12px;padding:16px;background:#0a0a0a;border-radius:12px;margin-bottom:12px;border:1px solid #222;transition:0.2s;}
-.task:active{background:#111;}
+.task{display:flex;align-items:center;gap:12px;padding:16px;background:#0a0a0a;border-radius:12px;margin-bottom:12px;border:1px solid #222;}
+.task:hover{background:#111; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.5);}
 .task.done{border-color:#7CFF4F44;background:#7CFF4F0a;}
 .task .icon{font-size:22px;}
-.task .label{flex:1;font-weight:600;font-size:15px; transition: color 0.3s;}
+.task .label{flex:1;font-weight:600;font-size:15px; transition: color 0.3s; cursor:pointer;}
 .task.done .label{color:#888; text-decoration: line-through;}
 .custom-check{width:28px;height:28px;border-radius:50%;border:2px solid #444;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+.custom-check:hover{border-color:#7CFF4F;}
 .custom-check.checked{background:#7CFF4F;border-color:#7CFF4F;transform:scale(1.1);}
 .custom-check:active{transform:scale(0.8);}
 
 .upload-btn{background:#111;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid #333;transition:0.2s;}
-.upload-btn:active{background:#222;}
+.upload-btn:hover{background:#222; border-color:#555;}
 
 .timer-box{background:#0a0a0a;padding:18px;border-radius:12px;margin-bottom:15px;border:1px dashed #7CFF4F44;position:relative;overflow:hidden;transition:0.3s;}
 .timer-box.active{border-color:#7CFF4F;box-shadow:0 0 15px rgba(124,255,79,0.1);}
 .timer-val{font-family:monospace;font-size:40px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;letter-spacing:2px; text-shadow:0 0 10px rgba(124,255,79,0.3);}
 
-.rank-card{background:#0a0a0a;padding:20px;border-radius:16px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;animation: fadeInUp 0.4s ease-out;}
+.rank-card{background:#0a0a0a;padding:20px;border-radius:16px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
 .xp-bar{height:8px;background:#111;border-radius:4px;margin-top:12px;overflow:hidden;}
 .xp-bar-fill{height:100%;background:#7CFF4F;transition:width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);box-shadow:0 0 10px #7CFF4F;}
 
 /* Glassmorphism Nav */
-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px 0;z-index:10;}
-nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;transition:0.2s; position:relative;}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px 0;z-index:10; transition:0.3s;}
+@media (min-width: 768px) {
+  nav { max-width: 600px; left: 50%; transform: translateX(-50%); bottom: 20px; border: 1px solid #222; border-radius: 30px; padding: 10px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background:rgba(10,10,10,0.95); }
+}
+nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;transition:0.2s; position:relative; cursor:pointer;}
+nav button:hover{color:#aaa;}
 nav button.active{color:#7CFF4F;}
 nav button span{font-size:22px; transition: transform 0.2s;}
 nav button.active span { transform: scale(1.15); text-shadow: 0 0 8px rgba(124,255,79,0.6); }
@@ -91,18 +109,23 @@ nav button.active::after { content:''; position:absolute; bottom:-8px; width:4px
 .add-task{display:flex;gap:5px;margin-top:15px;}
 .add-task input{margin-bottom:0;flex:1;}
 .add-task button{width:auto;padding:0 20px;background:#7CFF4F;color:#000;font-size:18px;}
+.add-task button:hover{background:#95ff70;}
 
 .delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;transition:0.2s;}
+.delete-btn:hover{color:#ff7777; transform:scale(1.1);}
 .delete-btn:active{transform:scale(0.8);}
 
-.invite-box{background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333; text-align:center; animation: fadeInUp 0.4s ease-out;}
-.goal-card{background:#111; padding:16px; border-radius:12px; margin-bottom:12px; border-left:3px solid #7CFF4F; animation: fadeInUp 0.4s ease-out;}
+.invite-box{background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333; text-align:center;}
+.goal-card{background:#111; padding:16px; border-radius:12px; margin-bottom:12px; border-left:3px solid #7CFF4F;}
+.goal-card:hover{background:#1a1a1a;}
 
 .notify-btn{background:#1e293b; color:#7CFF4F; border:1px solid #7CFF4F; padding:8px 12px; border-radius:20px; font-size:12px; cursor:pointer; font-weight:bold; margin-bottom:20px; transition:0.2s;}
-.proof-card{background:#111; border-radius:12px; overflow:hidden; margin-bottom:15px; border:1px solid #333; animation: fadeInUp 0.4s ease-out;}
-.proof-img{width:100%; height:auto; max-height:300px; object-fit:cover; display:block;}
+.notify-btn:hover{background:#334155;}
+.proof-card{background:#111; border-radius:12px; overflow:hidden; margin-bottom:15px; border:1px solid #333;}
+.proof-img{width:100%; height:auto; max-height:300px; object-fit:cover; display:block; cursor:pointer; transition:0.2s;}
+.proof-img:hover{opacity:0.8;}
 .proof-info{padding:12px; display:flex; justify-content:space-between; align-items:center;}
-.freeze-alert{background:#3b82f622; border:1px solid #3b82f6; padding:15px; border-radius:12px; margin-bottom:20px; text-align:center; font-size:13px; animation: fadeInUp 0.4s ease-out;}
+.freeze-alert{background:#3b82f622; border:1px solid #3b82f6; padding:15px; border-radius:12px; margin-bottom:20px; text-align:center; font-size:13px;}
 
 /* Toast Notifications */
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;width:90%;max-width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
@@ -271,11 +294,26 @@ function App(){
     return { type: 'daily', amount: 10 };
   };
 
+  // Swipe & Drag Logic
   const touchStart = React.useRef({ x: 0, y: 0 });
-  const handleTouchStart = (e) => { touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
-  const handleTouchEnd = (e) => {
-    const dx = e.changedTouches[0].clientX - touchStart.current.x;
-    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+  const isDragging = React.useRef(false);
+
+  const handleDragStart = (e) => {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    touchStart.current = { x: clientX, y: clientY };
+    isDragging.current = true;
+  };
+
+  const handleDragEnd = (e) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+    
+    const dx = clientX - touchStart.current.x;
+    const dy = clientY - touchStart.current.y;
+    
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
       const idx = pagesOrder.indexOf(page);
       if (dx > 0 && idx > 0) { setSlideDir('slide-right'); setPage(pagesOrder[idx - 1]); }
@@ -823,7 +861,6 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  // NEW LOGIC: Start date is the first day you actually did something
   const allDoneDates = history.filter(h => h.done).map(h => h.date).sort();
   const teamStartDate = allDoneDates.length > 0 ? allDoneDates[0] : today;
   const teamStartDateObj = new Date(teamStartDate);
@@ -919,7 +956,14 @@ function App(){
   const extraTasks = customTasks.filter(t => !t.is_mandatory && t.active);
 
   return (
-    <div className="container" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+    <div 
+      className="container" 
+      onTouchStart={handleDragStart} 
+      onTouchEnd={handleDragEnd}
+      onMouseDown={handleDragStart}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={() => isDragging.current = false}
+    >
       {toast && <div className="toast-container"><div className="toast">{toast}</div></div>}
       
       {showReward && (
@@ -994,7 +1038,7 @@ function App(){
             </div>
 
             <h2>{t('grid')}</h2>
-            <div className="timeline" onTouchStart={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()}>
+            <div className="timeline" onTouchStart={(e)=>e.stopPropagation()} onTouchEnd={(e)=>e.stopPropagation()} onMouseDown={(e)=>e.stopPropagation()}>
               {Array.from({length:82}).map((_,i)=>{
                 const dayNum = i + 1;
                 const d = new Date(teamStartDateObj); d.setDate(d.getDate() + i);
