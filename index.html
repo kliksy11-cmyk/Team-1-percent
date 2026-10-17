@@ -7,7 +7,6 @@
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<!-- Changed to unpkg to fix the mobile loading issue -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
@@ -84,8 +83,7 @@ const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJ
 
 const STRINGS = {
   en: {
-    tagline:'82 days. Real change.', name:'Name', password:'Password', login:'Login', signup:'Sign Up',
-    needAccount:'Need an account? Sign Up', haveAccount:'Have an account? Login',
+    tagline:'82 days. Real change.', name:'Your Name', login:'Enter', signup:'Start',
     loading:'Loading...', loadingProfile:'Loading profile...', welcome:'Welcome',
     createTeam:'Create a team', joinTeam:'Or join a team', teamName:'Team name', inviteCode:'Invite code',
     createTeamBtn:'Create Team', joinTeamBtn:'Join Team', logout:'Logout', today:'today', to:'to', max:'MAX', xp:'XP',
@@ -102,8 +100,7 @@ const STRINGS = {
     resetTimer:'Reset timer?', sport:'Sport', study:'Study', nutrition:'Nutrition', reading:'Reading', nightRoutine:'Night routine', active:'On', inactive:'Off'
   },
   ar: {
-    tagline:'٨٢ يوم. تغيير حقيقي.', name:'الاسم', password:'كلمة السر', login:'دخول', signup:'حساب جديد',
-    needAccount:'ما عندك حساب؟ سجّل', haveAccount:'عندك حساب؟ ادخل',
+    tagline:'٨٢ يوم. تغيير حقيقي.', name:'اسمك', login:'دخول', signup:'ابدأ',
     loading:'جاري التحميل...', loadingProfile:'جاري تحميل الملف...', welcome:'أهلاً',
     createTeam:'أنشئ فريق', joinTeam:'أو انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
     createTeamBtn:'إنشاء فريق', joinTeamBtn:'انضم', logout:'خروج', today:'اليوم', to:'باقي', max:'الأعلى', xp:'نقطة',
@@ -160,10 +157,8 @@ function App(){
   const [page,setPage]=React.useState('home');
   const [loading,setLoading]=React.useState(true);
   
-  // Auth fields
+  // Simplified Auth (Name only)
   const [nameInput,setNameInput]=React.useState('');
-  const [passwordInput,setPasswordInput]=React.useState('');
-  const [isSignup,setIsSignup]=React.useState(false);
 
   const [teamName,setTeamName]=React.useState('');
   const [inviteCode,setInviteCode]=React.useState('');
@@ -192,7 +187,7 @@ function App(){
     return n;
   });
 
-  // Restore simple auth session
+  // Restore user
   React.useEffect(()=>{
     const saved = localStorage.getItem('team_user_id');
     if(saved) setCurrentUser(saved);
@@ -249,8 +244,8 @@ function App(){
   function reset(){ setProfile(null); setTeam(null); setTasks([]); setCustomTasks([]); setGoals([]); setHistory([]); setLeaderboard([]); }
 
   async function loadProfile(){
-    const {data}=await sb.from('profiles').select('*').eq('id',currentUser).single();
-    if(data) setProfile(data); else setCurrentUser(null); // user doesn't exist anymore
+    const {data} = await sb.from('profiles').select('*').eq('id',currentUser).maybeSingle();
+    if(data) setProfile(data); else setCurrentUser(null); 
   }
   async function loadTeam(id){
     const {data}=await sb.from('teams').select('*').eq('id',id).single();
@@ -326,34 +321,35 @@ function App(){
     await loadProfile();
   }
 
-  // NEW SIMPLE AUTH LOGIC
+  // NO PASSWORD AUTH
   async function handleAuth(e) {
-    e.preventDefault(); 
+    if (e) e.preventDefault(); 
     setError('');
     const uname = nameInput.trim();
-    const pass = passwordInput.trim();
-    if(!uname || !pass) { setError('Enter name and password'); return; }
+    if(!uname) { alert('Please enter a name'); return; }
 
-    if (isSignup) {
-      // Check if exists
-      const {data: exists} = await sb.from('profiles').select('id').eq('username', uname).single();
-      if (exists) { setError('Name already taken. Try logging in.'); return; }
+    try {
+      // Check if user exists
+      const { data: exists, error: findErr } = await sb.from('profiles').select('id').eq('username', uname).maybeSingle();
       
-      // Create
-      const newId = crypto.randomUUID();
-      const { error } = await sb.from('profiles').insert({ id: newId, username: uname, password: pass });
-      if (error) { setError('Error: ' + error.message); return; }
-      
-      localStorage.setItem('team_user_id', newId);
-      setCurrentUser(newId);
-    } else {
-      // Login
-      const { data, error } = await sb.from('profiles').select('id, password').eq('username', uname).single();
-      if (error || !data) { setError('Name not found.'); return; }
-      if (data.password !== pass) { setError('Wrong password.'); return; }
-      
-      localStorage.setItem('team_user_id', data.id);
-      setCurrentUser(data.id);
+      if (findErr) { alert('Error checking name: ' + findErr.message); return; }
+
+      if (exists) {
+        // Log in
+        localStorage.setItem('team_user_id', exists.id);
+        setCurrentUser(exists.id);
+      } else {
+        // Create
+        const newId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+        const { error: insErr } = await sb.from('profiles').insert({ id: newId, username: uname });
+        
+        if (insErr) { alert('Database Error: ' + insErr.message); setError(insErr.message); return; }
+        
+        localStorage.setItem('team_user_id', newId);
+        setCurrentUser(newId);
+      }
+    } catch(err) {
+      alert('JS Crash: ' + err.message);
     }
   }
 
@@ -468,14 +464,12 @@ function App(){
           <h1>TEAM 1%</h1>{langBtn}
         </div>
         <p style={{color:'#94a3b8'}}>{t('tagline')}</p>
-        <form onSubmit={handleAuth}>
-          <input type="text" placeholder={t('name')} value={nameInput} onChange={e=>setNameInput(e.target.value)} required/>
-          <input type="password" placeholder={t('password')} value={passwordInput} onChange={e=>setPasswordInput(e.target.value)} required/>
-          <button type="submit" className="primary" style={{width:'100%'}}>{isSignup?t('signup'):t('login')}</button>
-        </form>
-        <button className="link" onClick={()=>setIsSignup(!isSignup)}>
-          {isSignup?t('haveAccount'):t('needAccount')}
-        </button>
+        
+        <div>
+          <input type="text" placeholder={t('name')} value={nameInput} onChange={e=>setNameInput(e.target.value)} />
+          <button type="button" onClick={handleAuth} className="primary" style={{width:'100%'}}>{t('signup')}</button>
+        </div>
+        
         {error && <p className="error">{error}</p>}
       </div>
     );
