@@ -21,6 +21,8 @@ button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;fon
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
 button:disabled{opacity:0.5;}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.header-actions{display:flex;align-items:center;gap:10px;}
+.lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:20px;}
 .box{aspect-ratio:1;background:#111;border-radius:3px;border:1px solid #222;}
@@ -57,28 +59,53 @@ const { createClient } = supabase;
 const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
 
 const MANDATORY_TASKS = [
-  { key:'fajr', label:'Fajr Prayer', icon:'🕌' },
-  { key:'dhuhr', label:'Dhuhr Prayer', icon:'🕌' },
-  { key:'asr', label:'Asr Prayer', icon:'🕌' },
-  { key:'maghrib', label:'Maghrib Prayer', icon:'🕌' },
-  { key:'isha', label:'Isha Prayer', icon:'🕌' },
-  { key:'sport', label:'Exercise', icon:'🥋' },
-  { key:'study', label:'Study', icon:'📚' },
-  { key:'quran', label:'Quran Reading', icon:'📖' }
+  { key:'fajr', label:'Fajr Prayer', labelAr:'صلاة الفجر', icon:'🕌' },
+  { key:'dhuhr', label:'Dhuhr Prayer', labelAr:'صلاة الظهر', icon:'🕌' },
+  { key:'asr', label:'Asr Prayer', labelAr:'صلاة العصر', icon:'🕌' },
+  { key:'maghrib', label:'Maghrib Prayer', labelAr:'صلاة المغرب', icon:'🕌' },
+  { key:'isha', label:'Isha Prayer', labelAr:'صلاة العشاء', icon:'🕌' },
+  { key:'sport', label:'Exercise', labelAr:'رياضة', icon:'🥋' },
+  { key:'study', label:'Study', labelAr:'دراسة', icon:'📚' },
+  { key:'quran', label:'Quran Reading', labelAr:'قراءة قرآن', icon:'📖' }
 ];
 
 const EXTRA_TASKS = [
-  { key:'reading', label:'Reading', icon:'📘' },
-  { key:'nutrition', label:'Nutrition', icon:'🥗' },
-  { key:'night', label:'Night Routine', icon:'🌙' }
+  { key:'reading', label:'Reading', labelAr:'قراءة', icon:'📘' },
+  { key:'nutrition', label:'Nutrition', labelAr:'تغذية', icon:'🥗' },
+  { key:'night', label:'Night Routine', labelAr:'روتين ليلي', icon:'🌙' }
 ];
 
 const RANKS = [{ name:'BRONZE', min:0 },{ name:'SILVER', min:300 },{ name:'GOLD', min:800 },{ name:'PLATINUM', min:1800 },{ name:'DIAMOND', min:3000 },{ name:'MASTER', min:5000 }];
 const STORE = [
-  { id:'freeze', name:'Streak Freeze ❄️', price:300, desc:'Protects streak if you miss a day.' },
-  { id:'title_beast', name:'Title: The Beast 🔥', price:500, desc:'Shows on leaderboard.' },
-  { id:'title_machine', name:'Title: The Machine 🤖', price:800, desc:'Shows on leaderboard.' }
+  { id:'freeze', name:'Streak Freeze ❄️', nameAr:'تجميد السلسلة ❄️', price:300, desc:'Protects streak if you miss a day.', descAr:'يحمي السلسلة إذا فوّت يوم.' },
+  { id:'title_beast', name:'Title: The Beast 🔥', nameAr:'لقب: الوحش 🔥', price:500, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' },
+  { id:'title_machine', name:'Title: The Machine 🤖', nameAr:'لقب: الآلة 🤖', price:800, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' }
 ];
+
+const STRINGS = {
+  en: {
+    tagline:'82-DAY TRANSFORMATION', enterName:'ENTER YOUR NAME', start:'START',
+    createTeam:'CREATE A TEAM', joinTeam:'JOIN A TEAM', teamName:'TEAM NAME', inviteCode:'INVITE CODE',
+    create:'CREATE', join:'JOIN', logout:'Logout', loading:'LOADING...', loadingTeam:'LOADING TEAM...', loadingProfile:'Loading Profile...',
+    proofCode:"TODAY'S PROOF CODE", proofHint:'Write this in your photos!', grid:'82-DAY GRID',
+    studyTimer:'📚 STUDY STOPWATCH', quranTimer:'📖 QURAN STOPWATCH', targetReached:'✅ TARGET REACHED', 
+    minReq:'MIN REQUIRED', startBtn:'START', pauseBtn:'PAUSE', resetBtn:'RESET',
+    mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA XP', addTaskPlaceholder:'Add your own task... (Max 8)',
+    currentRank:'CURRENT RANK', buy:'BUY', post:'+ POST', teamFeed:'TEAM FEED', user:'USER',
+    home:'HOME', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP'
+  },
+  ar: {
+    tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', start:'ابدأ',
+    createTeam:'أنشئ فريق', joinTeam:'انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
+    create:'إنشاء', join:'انضمام', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
+    proofCode:"كود الإثبات اليوم", proofHint:'اكتب هذا في صورك!', grid:'شبكة ٨٢ يوم',
+    studyTimer:'📚 مؤقت الدراسة', quranTimer:'📖 مؤقت القرآن', targetReached:'✅ تم الوصول للهدف', 
+    minReq:'دقيقة مطلوبة', startBtn:'ابدأ', pauseBtn:'إيقاف', resetBtn:'تصفير',
+    mandatory:'غير قابل للتفاوض', extraXp:'نقاط إضافية', addTaskPlaceholder:'أضف مهمتك... (حد أقصى ٨)',
+    currentRank:'الرتبة الحالية', buy:'شراء', post:'+ نشر', teamFeed:'منشورات الفريق', user:'مستخدم',
+    home:'الرئيسية', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة'
+  }
+};
 
 class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { hasError: false, error: null }; }
@@ -90,6 +117,9 @@ class ErrorBoundary extends React.Component {
 }
 
 function App(){
+  const [lang, setLang] = React.useState(()=>localStorage.getItem('lang') || 'en');
+  const t = (k) => STRINGS[lang][k] || k;
+
   const [user, setUser] = React.useState(null);
   const [profile, setProfile] = React.useState(null);
   const [team, setTeam] = React.useState(null);
@@ -114,6 +144,12 @@ function App(){
   const today = new Date().toLocaleDateString('en-CA');
   const nonce = React.useMemo(()=>{ let n=localStorage.getItem('nonce-'+today); if(!n){n=Math.random().toString(36).substring(2,6).toUpperCase();localStorage.setItem('nonce-'+today,n);} return n; },[today]);
 
+  React.useEffect(()=>{
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  },[lang]);
+
   React.useEffect(()=>{ 
     const s=localStorage.getItem('team_user_id'); 
     if(s) setUser(s); 
@@ -132,7 +168,7 @@ function App(){
 
   React.useEffect(()=>{
     if(studyTime === 1800 && !tasks.find(t=>t.task_key==='study')?.done) {
-      alert('🔥 30 Minutes Reached! Study task complete.');
+      alert(lang==='ar' ? '🔥 وصلت ٣٠ دقيقة! تم إكمال مهمة الدراسة.' : '🔥 30 Minutes Reached! Study task complete.');
       toggleTask('study', true);
     }
   }, [studyTime]);
@@ -145,7 +181,7 @@ function App(){
 
   React.useEffect(()=>{
     if(quranTime === 600 && !tasks.find(t=>t.task_key==='quran')?.done) {
-      alert('📖 10 Minutes Reached! Quran task complete.');
+      alert(lang==='ar' ? '📖 وصلت ١٠ دقائق! تم إكمال مهمة القرآن.' : '📖 10 Minutes Reached! Quran task complete.');
       toggleTask('quran', true);
     }
   }, [quranTime]);
@@ -166,7 +202,6 @@ function App(){
     const {data} = await sb.from('teams').select('*').eq('id',id).maybeSingle(); 
     if(data) setTeam(data);
     else {
-      // Team was deleted, reset user's team_id
       await sb.from('profiles').update({team_id: null}).eq('id', user);
       setProfile(p => ({...p, team_id: null}));
     }
@@ -181,8 +216,8 @@ function App(){
     if(data && data.length > 0) {
       setCustomTasks(data);
     } else {
-      const seedMandatory = MANDATORY_TASKS.map(t => ({...t, user_id:user, active:true, is_mandatory:true}));
-      const seedExtras = EXTRA_TASKS.map(t => ({...t, user_id:user, active:true, is_mandatory:false}));
+      const seedMandatory = MANDATORY_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:true}));
+      const seedExtras = EXTRA_TASKS.map(t => ({key:t.key, label: t.label, user_id:user, active:true, is_mandatory:false}));
       const {data:s} = await sb.from('custom_tasks').insert([...seedMandatory, ...seedExtras]).select();
       setCustomTasks(s||[]);
     }
@@ -214,13 +249,13 @@ function App(){
   }
   async function joinTeam(){
     const {data,error}=await sb.from('teams').select('*').eq('invite_code',inviteCode.toUpperCase()).single();
-    if(error) return alert('Invalid code');
+    if(error) return alert(lang==='ar'?'كود غير صحيح':'Invalid code');
     await sb.from('profiles').update({team_id:data.id}).eq('id',user); loadProfile(); setTeam(data);
   }
 
   async function toggleTask(key, checked){
-    if(key === 'study' && checked && studyTime < 1800) return alert("You must study for at least 30 minutes to check this task!");
-    if(key === 'quran' && checked && quranTime < 600) return alert("You must read Quran for at least 10 minutes to check this task!");
+    if(key === 'study' && checked && studyTime < 1800) return alert(lang==='ar'?"يجب أن تدرس ٣٠ دقيقة على الأقل!":"You must study for at least 30 minutes!");
+    if(key === 'quran' && checked && quranTime < 600) return alert(lang==='ar'?"يجب أن تقرأ القرآن ١٠ دقائق على الأقل!":"You must read Quran for at least 10 minutes!");
 
     const existing=tasks.find(t=>t.task_key===key);
     if(existing) await sb.from('tasks').update({done:checked}).eq('id',existing.id);
@@ -235,7 +270,7 @@ function App(){
       const allMandatoryDone = MANDATORY_TASKS.every(t => newDoneTasks.includes(t.key));
       if(allMandatoryDone && !existing?.done) {
         bonus = 25;
-        alert("🔥 PERFECT DAY! +25 Bonus XP");
+        alert(lang==='ar'?"🔥 يوم مثالي! +٢٥ نقطة إضافية":"🔥 PERFECT DAY! +25 Bonus XP");
       }
     }
 
@@ -247,7 +282,7 @@ function App(){
   async function addTask() {
     if (!newTaskLabel.trim()) return;
     const extraTasks = customTasks.filter(t => !t.is_mandatory);
-    if (extraTasks.length >= 8) return alert("You can only have 8 custom tasks max.");
+    if (extraTasks.length >= 8) return alert(lang==='ar'?"الحد الأقصى ٨ مهام إضافية":"Max 8 custom tasks allowed.");
     
     const key = 'custom_' + Date.now();
     const {data} = await sb.from('custom_tasks').insert({
@@ -259,7 +294,7 @@ function App(){
   }
 
   async function deleteTask(id) {
-    if(!confirm("Delete this task?")) return;
+    if(!confirm(lang==='ar'?"حذف هذه المهمة؟":"Delete this task?")) return;
     await sb.from('custom_tasks').delete().eq('id', id);
     setCustomTasks(customTasks.filter(t => t.id !== id));
   }
@@ -282,15 +317,15 @@ function App(){
   }
 
   async function buyItem(item){
-    if((profile.xp||0) < item.price) return alert('Not enough XP!');
+    if((profile.xp||0) < item.price) return alert(lang==='ar'?'نقاطك غير كافية!':'Not enough XP!');
     const newInv=[...(profile.inventory||[]), item.id];
     await sb.from('profiles').update({xp:profile.xp-item.price, inventory:newInv}).eq('id',user);
     setProfile(p=>({...p,xp:p.xp-item.price, inventory:newInv}));
-    alert(`Purchased ${item.name}!`);
+    alert(lang==='ar'?`تم شراء ${item.nameAr}!`:`Purchased ${item.name}!`);
   }
 
   async function sendNudge(){
-    const msg = prompt("Enter a message to your team:");
+    const msg = prompt(lang==='ar'?"اكتب رسالة للفريق:":"Enter a message to your team:");
     if(!msg) return;
     await sb.from('feed').insert({team_id:team.id, user_id:user, message:msg});
     loadFeed();
@@ -316,31 +351,35 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  if(loading) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>LOADING...</div>;
+  const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
+
+  if(loading) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loading')}</div>;
 
   if(!user) return (
     <div className="container" style={{marginTop:80}}>
-      <h1>TEAM <span>1%</span></h1><p style={{color:'#666',fontSize:12,marginBottom:30}}>82-DAY TRANSFORMATION</p>
-      <input placeholder="ENTER YOUR NAME" value={nameInput} onChange={e=>setNameInput(e.target.value)}/>
-      <button className="primary" onClick={handleAuth} style={{width:'100%'}}>START</button>
+      <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
+      <h1>TEAM <span>1%</span></h1><p style={{color:'#666',fontSize:12,marginBottom:30}}>{t('tagline')}</p>
+      <input placeholder={t('enterName')} value={nameInput} onChange={e=>setNameInput(e.target.value)}/>
+      <button className="primary" onClick={handleAuth} style={{width:'100%'}}>{t('start')}</button>
     </div>
   );
 
-  if(!profile) return <div className="container">Loading Profile...</div>;
+  if(!profile) return <div className="container">{t('loadingProfile')}</div>;
 
   if(!profile.team_id) return (
     <div className="container" style={{marginTop:50}}>
-      <h1>JOIN A TEAM</h1>
-      <input placeholder="TEAM NAME" value={teamName} onChange={e=>setTeamName(e.target.value)}/>
-      <button className="primary" onClick={createTeam} style={{width:'100%'}}>CREATE</button>
+      <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
+      <h1>{t('joinTeam')}</h1>
+      <input placeholder={t('teamName')} value={teamName} onChange={e=>setTeamName(e.target.value)}/>
+      <button className="primary" onClick={createTeam} style={{width:'100%'}}>{t('create')}</button>
       <h2 style={{marginTop:30}}>OR</h2>
-      <input placeholder="INVITE CODE" value={inviteCode} onChange={e=>setInviteCode(e.target.value)}/>
-      <button className="primary" onClick={joinTeam} style={{width:'100%'}}>JOIN</button>
-      <button onClick={handleLogout} style={{marginTop:30,background:'none',color:'#ff4f4f'}}>Logout</button>
+      <input placeholder={t('inviteCode')} value={inviteCode} onChange={e=>setInviteCode(e.target.value)}/>
+      <button className="primary" onClick={joinTeam} style={{width:'100%'}}>{t('join')}</button>
+      <button onClick={handleLogout} style={{marginTop:30,background:'none',color:'#ff4f4f'}}>{t('logout')}</button>
     </div>
   );
 
-  if(!team) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>LOADING TEAM...</div>;
+  if(!team) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loadingTeam')}</div>;
 
   const rank = RANKS.slice().reverse().find(r => (profile.xp||0) >= r.min) || RANKS[0];
   const nextRank = RANKS.find(r => (profile.xp||0) < r.min);
@@ -353,18 +392,21 @@ function App(){
     <div className="container">
       <div className="header">
         <h1>TEAM <span>1%</span></h1>
-        <div className="streak">🔥 {streak}</div>
+        <div className="header-actions">
+          {langBtn}
+          <div className="streak">🔥 {streak}</div>
+        </div>
       </div>
 
       {page === 'home' && (
         <>
           <div className="nonce">
-            <div style={{fontSize:10,color:'#888',marginBottom:5}}>TODAY'S PROOF CODE</div>
+            <div style={{fontSize:10,color:'#888',marginBottom:5}}>{t('proofCode')}</div>
             <div className="nonce-code">{nonce}</div>
-            <div style={{fontSize:10,color:'#7CFF4F',marginTop:5}}>Write this in your photos!</div>
+            <div style={{fontSize:10,color:'#7CFF4F',marginTop:5}}>{t('proofHint')}</div>
           </div>
 
-          <h2>82-DAY GRID</h2>
+          <h2>{t('grid')}</h2>
           <div className="grid">
             {Array.from({length:82}).map((_,i)=>{
               const d = new Date(team.created_at || Date.now()); d.setDate(d.getDate() + i);
@@ -376,9 +418,9 @@ function App(){
 
           <div className="timer-box">
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>📚 STUDY STOPWATCH</div>
+              <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('studyTimer')}</div>
               <div style={{fontSize:10,color:studyTime>=1800?'#7CFF4F':'#ff4f4f'}}>
-                {studyTime>=1800 ? '✅ TARGET REACHED' : '30 MIN REQUIRED'}
+                {studyTime>=1800 ? t('targetReached') : '30 ' + t('minReq')}
               </div>
             </div>
             <div className="timer-val">
@@ -386,17 +428,17 @@ function App(){
             </div>
             <div style={{display:'flex',gap:10}}>
               <button onClick={()=>setStudyRunning(!studyRunning)} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000'}}>
-                {studyRunning?'PAUSE':'START'}
+                {studyRunning?t('pauseBtn'):t('startBtn')}
               </button>
-              <button onClick={()=>{setStudyRunning(false); setStudyTime(0);}} style={{flex:1}}>RESET</button>
+              <button onClick={()=>{setStudyRunning(false); setStudyTime(0);}} style={{flex:1}}>{t('resetBtn')}</button>
             </div>
           </div>
 
           <div className="timer-box">
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>📖 QURAN STOPWATCH</div>
+              <div style={{fontSize:12,color:'#888',fontWeight:'bold'}}>{t('quranTimer')}</div>
               <div style={{fontSize:10,color:quranTime>=600?'#7CFF4F':'#ff4f4f'}}>
-                {quranTime>=600 ? '✅ TARGET REACHED' : '10 MIN REQUIRED'}
+                {quranTime>=600 ? t('targetReached') : '10 ' + t('minReq')}
               </div>
             </div>
             <div className="timer-val">
@@ -404,34 +446,43 @@ function App(){
             </div>
             <div style={{display:'flex',gap:10}}>
               <button onClick={()=>setQuranRunning(!quranRunning)} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000'}}>
-                {quranRunning?'PAUSE':'START'}
+                {quranRunning?t('pauseBtn'):t('startBtn')}
               </button>
-              <button onClick={()=>{setQuranRunning(false); setQuranTime(0);}} style={{flex:1}}>RESET</button>
+              <button onClick={()=>{setQuranRunning(false); setQuranTime(0);}} style={{flex:1}}>{t('resetBtn')}</button>
             </div>
           </div>
 
-          <h2 style={{color:'#ff4f4f'}}>NON-NEGOTIABLE ({mandatoryDoneCount}/{MANDATORY_TASKS.length})</h2>
-          {MANDATORY_TASKS.map(t=>{
-            const isDone = tasks.find(x=>x.task_key===t.key)?.done;
+          <h2 style={{color:'#ff4f4f'}}>{t('mandatory')} ({mandatoryDoneCount}/{MANDATORY_TASKS.length})</h2>
+          {MANDATORY_TASKS.map(task=>{
+            const isDone = tasks.find(x=>x.task_key===task.key)?.done;
+            const label = lang==='ar' ? task.labelAr : task.label;
             return (
-              <div className={`task ${isDone?'done':''}`} key={t.key}>
-                <span className="icon">{t.icon}</span><span className="label">{t.label}</span>
-                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(t.key,e.target.files[0])}}/></label>
-                <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(t.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
+              <div className={`task ${isDone?'done':''}`} key={task.key}>
+                <span className="icon">{task.icon}</span><span className="label">{label}</span>
+                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(task.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
               </div>
             );
           })}
 
-          <h2 style={{color:'#888'}}>EXTRA XP</h2>
-          {extraTasks.map(t=>{
-            const isDone = tasks.find(x=>x.task_key===t.key)?.done;
+          <h2 style={{color:'#888'}}>{t('extraXp')}</h2>
+          {extraTasks.map(task=>{
+            const isDone = tasks.find(x=>x.task_key===task.key)?.done;
+            
+            // Translate default extras if they match the keys, otherwise use custom label
+            let label = task.label;
+            if (lang==='ar') {
+              const found = EXTRA_TASKS.find(x=>x.key===task.key);
+              if (found) label = found.labelAr;
+            }
+
             return (
-              <div className={`task ${isDone?'done':''}`} key={t.key}>
-                <span className="icon">{t.icon}</span><span className="label">{t.label}</span>
-                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(t.key,e.target.files[0])}}/></label>
-                <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(t.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
-                {t.key.startsWith('custom_') && (
-                  <button className="delete-btn" onClick={()=>deleteTask(t.id)}>✕</button>
+              <div className={`task ${isDone?'done':''}`} key={task.key}>
+                <span className="icon">{task.icon}</span><span className="label">{label}</span>
+                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(task.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
+                {task.key.startsWith('custom_') && (
+                  <button className="delete-btn" onClick={()=>deleteTask(task.id)}>✕</button>
                 )}
               </div>
             );
@@ -439,7 +490,7 @@ function App(){
 
           {extraTasks.length < 8 && (
             <div className="add-task">
-              <input placeholder="Add your own task... (Max 8)" value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
+              <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
               <button onClick={addTask}>+</button>
             </div>
           )}
@@ -449,16 +500,16 @@ function App(){
       {page === 'store' && (
         <>
           <div className="rank-card">
-            <div style={{fontSize:10,color:'#888'}}>CURRENT RANK</div>
-            <div style={{fontSize:20,fontWeight:'bold'}}>{rank.name} • {(profile.xp||0)} XP</div>
+            <div style={{fontSize:10,color:'#888'}}>{t('currentRank')}</div>
+            <div style={{fontSize:20,fontWeight:'bold'}}>{rank.name} • {(profile.xp||0)} {t('xp')}</div>
             <div className="xp-bar"><div className="xp-bar-fill" style={{width:progress+'%'}}/></div>
           </div>
-          <h2>STORE</h2>
+          <h2>{t('store')}</h2>
           {STORE.map(item=>(
             <div className="card" key={item.id}>
-              <div style={{fontWeight:'bold',color:'#7CFF4F'}}>{item.name}</div>
-              <div style={{fontSize:12,color:'#888',margin:'5px 0'}}>{item.desc}</div>
-              <button onClick={()=>buyItem(item)} disabled={(profile.xp||0)<item.price} style={{width:'100%',marginTop:10}}>BUY {item.price} XP</button>
+              <div style={{fontWeight:'bold',color:'#7CFF4F'}}>{lang==='ar'?item.nameAr:item.name}</div>
+              <div style={{fontSize:12,color:'#888',margin:'5px 0'}}>{lang==='ar'?item.descAr:item.desc}</div>
+              <button onClick={()=>buyItem(item)} disabled={(profile.xp||0)<item.price} style={{width:'100%',marginTop:10}}>{t('buy')} {item.price} {t('xp')}</button>
             </div>
           ))}
         </>
@@ -467,12 +518,12 @@ function App(){
       {page === 'feed' && (
         <>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:15}}>
-            <h2 style={{margin:0}}>TEAM FEED</h2>
-            <button onClick={sendNudge} style={{background:'#7CFF4F',color:'#000',padding:'5px 10px',fontSize:12}}>+ POST</button>
+            <h2 style={{margin:0}}>{t('teamFeed')}</h2>
+            <button onClick={sendNudge} style={{background:'#7CFF4F',color:'#000',padding:'5px 10px',fontSize:12}}>{t('post')}</button>
           </div>
           {feed.map(f=>(
             <div className="card" key={f.id}>
-              <div style={{fontSize:11,color:'#7CFF4F',marginBottom:5}}>USER</div>
+              <div style={{fontSize:11,color:'#7CFF4F',marginBottom:5}}>{t('user')}</div>
               <div>{f.message}</div>
             </div>
           ))}
@@ -481,13 +532,13 @@ function App(){
 
       {page === 'ranks' && (
         <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <thead><tr><th style={{textAlign:'left',color:'#888',fontSize:10}}>#</th><th style={{textAlign:'left',color:'#888',fontSize:10}}>MEMBER</th><th style={{textAlign:'right',color:'#888',fontSize:10}}>XP</th></tr></thead>
+          <thead><tr><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>#</th><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>{t('member')}</th><th style={{textAlign:lang==='ar'?'left':'right',color:'#888',fontSize:10}}>{t('xp')}</th></tr></thead>
           <tbody>
             {leaderboard.map((r,i)=>(
               <tr key={r.user_id} style={{borderBottom:'1px solid #222'}}>
                 <td style={{padding:15}}>{i+1}</td>
                 <td style={{padding:15,fontWeight:r.user_id===user?'bold':'normal',color:r.user_id===user?'#7CFF4F':'#fff'}}>{r.username}<br/><span style={{fontSize:10,color:'#888'}}>{r.title||'Rookie'}</span></td>
-                <td style={{padding:15,textAlign:'right'}}>{r.xp}</td>
+                <td style={{padding:15,textAlign:lang==='ar'?'left':'right'}}>{r.xp}</td>
               </tr>
             ))}
           </tbody>
@@ -495,10 +546,10 @@ function App(){
       )}
 
       <nav>
-        <button className={page==='home'?'active':''} onClick={()=>setPage('home')}><span>🏠</span>HOME</button>
-        <button className={page==='store'?'active':''} onClick={()=>setPage('store')}><span>🛒</span>STORE</button>
-        <button className={page==='feed'?'active':''} onClick={()=>setPage('feed')}><span>💬</span>FEED</button>
-        <button className={page==='ranks'?'active':''} onClick={()=>setPage('ranks')}><span>🏆</span>RANKS</button>
+        <button className={page==='home'?'active':''} onClick={()=>setPage('home')}><span>🏠</span>{t('home')}</button>
+        <button className={page==='store'?'active':''} onClick={()=>setPage('store')}><span>🛒</span>{t('store')}</button>
+        <button className={page==='feed'?'active':''} onClick={()=>setPage('feed')}><span>💬</span>{t('feed')}</button>
+        <button className={page==='ranks'?'active':''} onClick={()=>setPage('ranks')}><span>🏆</span>{t('ranks')}</button>
       </nav>
     </div>
   );
