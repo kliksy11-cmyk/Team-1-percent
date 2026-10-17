@@ -7,6 +7,7 @@
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Changed to unpkg to fix the mobile loading issue -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
@@ -77,101 +78,65 @@ nav button span{font-size:20px}
 <div id="root"></div>
 <script type="text/babel">
 const { createClient } = supabase;
-// Safe storage fallback for mobile browsers
-const memoryStorage = {};
-const safeStorage = {
-  getItem: (key) => { try { return window.localStorage.getItem(key); } catch { return memoryStorage[key] || null; } },
-  setItem: (key, value) => { try { window.localStorage.setItem(key, value); } catch { memoryStorage[key] = value; } },
-  removeItem: (key) => { try { window.localStorage.removeItem(key); } catch { delete memoryStorage[key]; } }
-};
 
-const sb = createClient(
-  'https://ufwrdfsovhbjxghuwijz.supabase.co', 
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig', 
-  { auth: { storage: safeStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }
-);
+// ⚠️ PUT YOUR SUPABASE URL AND KEY HERE
+const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
+
 const STRINGS = {
   en: {
-    tagline:'82 days. Real change.',
-    email:'Email', password:'Password', login:'Login', signup:'Sign Up',
+    tagline:'82 days. Real change.', name:'Name', password:'Password', login:'Login', signup:'Sign Up',
     needAccount:'Need an account? Sign Up', haveAccount:'Have an account? Login',
     loading:'Loading...', loadingProfile:'Loading profile...', welcome:'Welcome',
-    createTeam:'Create a team', joinTeam:'Or join a team',
-    teamName:'Team name', inviteCode:'Invite code',
-    createTeamBtn:'Create Team', joinTeamBtn:'Join Team', logout:'Logout',
-    today:'today', to:'to', max:'MAX', xp:'XP',
-    day:'day', days:'days',
-    currentStreak:'Current streak · complete all tasks daily to keep it',
-    myDailyTasks:'My daily tasks', addNewTask:'Add new task',
-    taskName:'Task name', add:'Add', min:'min',
+    createTeam:'Create a team', joinTeam:'Or join a team', teamName:'Team name', inviteCode:'Invite code',
+    createTeamBtn:'Create Team', joinTeamBtn:'Join Team', logout:'Logout', today:'today', to:'to', max:'MAX', xp:'XP',
+    day:'day', days:'days', currentStreak:'Current streak · complete all tasks daily to keep it',
+    myDailyTasks:'My daily tasks', addNewTask:'Add new task', taskName:'Task name', add:'Add', min:'min',
     taskHint:'Leave minutes empty for simple checkoff. Set minutes to enable a timer.',
     todaysProof:"Today's proof code:", proofHint:'Write this on paper and include it in every photo.',
-    todaysTasks:"Today's tasks", noTasks:'No tasks yet. Open ⚙️ to add some.',
-    done:'Done', keepsRunning:'Keeps running if you close the page.',
-    longTermGoals:'Long-term goals', noGoals:'No goals yet. Add one below.',
-    addGoal:'Add a goal', goalTitle:'Goal title (e.g. Finish 3 books)',
-    goalWhy:'Why does this matter? (optional)', addGoalBtn:'Add Goal',
-    markDone:'Mark done', delete:'Delete', dLeft:'d left', dOverdue:'d overdue',
-    store:'Store', buy:'Buy', equip:'Equip', equipped:'✓ Equipped',
-    notEnoughXp:'Not enough XP', purchased:'Purchased',
-    leaderboard:'Leaderboard', member:'Member', rank:'Rank', streak:'Streak',
-    home:'Home', goals:'Goals', ranks:'Ranks',
-    invalidCode:'Invalid invite code', taskAdded:'Task added', goalAdded:'Goal added',
-    deleteTask:'Delete this task?', deleteGoal:'Delete this goal?', resetTimer:'Reset timer?',
-    sport:'Sport', study:'Study', nutrition:'Nutrition', reading:'Reading', nightRoutine:'Night routine',
-    icons:'Icon', task:'Task', active:'On', inactive:'Off'
+    todaysTasks:"Today's tasks", noTasks:'No tasks yet. Open ⚙️ to add some.', done:'Done', keepsRunning:'Keeps running if you close the page.',
+    longTermGoals:'Long-term goals', noGoals:'No goals yet. Add one below.', addGoal:'Add a goal', goalTitle:'Goal title (e.g. Finish 3 books)',
+    goalWhy:'Why does this matter? (optional)', addGoalBtn:'Add Goal', markDone:'Mark done', delete:'Delete', dLeft:'d left', dOverdue:'d overdue',
+    store:'Store', buy:'Buy', equip:'Equip', equipped:'✓ Equipped', notEnoughXp:'Not enough XP', purchased:'Purchased',
+    leaderboard:'Leaderboard', member:'Member', rank:'Rank', streak:'Streak', home:'Home', goals:'Goals', ranks:'Ranks',
+    invalidCode:'Invalid invite code', taskAdded:'Task added', goalAdded:'Goal added', deleteTask:'Delete this task?', deleteGoal:'Delete this goal?',
+    resetTimer:'Reset timer?', sport:'Sport', study:'Study', nutrition:'Nutrition', reading:'Reading', nightRoutine:'Night routine', active:'On', inactive:'Off'
   },
   ar: {
-    tagline:'٨٢ يوم. تغيير حقيقي.',
-    email:'الإيميل', password:'كلمة السر', login:'دخول', signup:'حساب جديد',
+    tagline:'٨٢ يوم. تغيير حقيقي.', name:'الاسم', password:'كلمة السر', login:'دخول', signup:'حساب جديد',
     needAccount:'ما عندك حساب؟ سجّل', haveAccount:'عندك حساب؟ ادخل',
     loading:'جاري التحميل...', loadingProfile:'جاري تحميل الملف...', welcome:'أهلاً',
-    createTeam:'أنشئ فريق', joinTeam:'أو انضم لفريق',
-    teamName:'اسم الفريق', inviteCode:'كود الدعوة',
-    createTeamBtn:'إنشاء فريق', joinTeamBtn:'انضم', logout:'خروج',
-    today:'اليوم', to:'باقي', max:'الأعلى', xp:'نقطة',
-    day:'يوم', days:'أيام',
-    currentStreak:'السلسلة الحالية · أكمل كل المهام يومياً للحفاظ عليها',
-    myDailyTasks:'مهامي اليومية', addNewTask:'أضف مهمة جديدة',
-    taskName:'اسم المهمة', add:'أضف', min:'دقيقة',
+    createTeam:'أنشئ فريق', joinTeam:'أو انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
+    createTeamBtn:'إنشاء فريق', joinTeamBtn:'انضم', logout:'خروج', today:'اليوم', to:'باقي', max:'الأعلى', xp:'نقطة',
+    day:'يوم', days:'أيام', currentStreak:'السلسلة الحالية · أكمل كل المهام يومياً للحفاظ عليها',
+    myDailyTasks:'مهامي اليومية', addNewTask:'أضف مهمة جديدة', taskName:'اسم المهمة', add:'أضف', min:'دقيقة',
     taskHint:'اترك الدقائق فارغة للمهام بدون مؤقت. حدد دقائق لتشغيل المؤقت.',
     todaysProof:'كود الإثبات اليوم:', proofHint:'اكتبه على ورقة وضعها في كل صورة ترفعها.',
-    todaysTasks:'مهام اليوم', noTasks:'ما في مهام. افتح ⚙️ وأضف.',
-    done:'خلص', keepsRunning:'المؤقت يكمل حتى لو سكرت الصفحة.',
-    longTermGoals:'الأهداف طويلة المدى', noGoals:'ما في أهداف. أضف هدف تحت.',
-    addGoal:'أضف هدف', goalTitle:'عنوان الهدف (مثال: أخلص ٣ كتب)',
-    goalWhy:'ليش هذا مهم؟ (اختياري)', addGoalBtn:'إضافة هدف',
-    markDone:'تم', delete:'حذف', dLeft:'يوم باقي', dOverdue:'يوم متأخر',
-    store:'المتجر', buy:'اشتر', equip:'استخدم', equipped:'✓ مستخدم',
-    notEnoughXp:'نقاطك ما تكفي', purchased:'تم الشراء',
-    leaderboard:'المتصدرين', member:'عضو', rank:'الترتيب', streak:'سلسلة',
-    home:'الرئيسية', goals:'الأهداف', ranks:'الترتيب',
-    invalidCode:'كود الدعوة غلط', taskAdded:'تم إضافة المهمة', goalAdded:'تم إضافة الهدف',
-    deleteTask:'احذف هذه المهمة؟', deleteGoal:'احذف هذا الهدف؟', resetTimer:'تصفير المؤقت؟',
-    sport:'رياضة', study:'دراسة', nutrition:'تغذية', reading:'قراءة', nightRoutine:'روتين ليلي',
-    icons:'أيقونة', task:'مهمة', active:'مفعّل', inactive:'موقوف'
+    todaysTasks:'مهام اليوم', noTasks:'ما في مهام. افتح ⚙️ وأضف.', done:'خلص', keepsRunning:'المؤقت يكمل حتى لو سكرت الصفحة.',
+    longTermGoals:'الأهداف طويلة المدى', noGoals:'ما في أهداف. أضف هدف تحت.', addGoal:'أضف هدف', goalTitle:'عنوان الهدف (مثال: أخلص ٣ كتب)',
+    goalWhy:'ليش هذا مهم؟ (اختياري)', addGoalBtn:'إضافة هدف', markDone:'تم', delete:'حذف', dLeft:'يوم باقي', dOverdue:'يوم متأخر',
+    store:'المتجر', buy:'اشتر', equip:'استخدم', equipped:'✓ مستخدم', notEnoughXp:'نقاطك ما تكفي', purchased:'تم الشراء',
+    leaderboard:'المتصدرين', member:'عضو', rank:'الترتيب', streak:'سلسلة', home:'الرئيسية', goals:'الأهداف', ranks:'الترتيب',
+    invalidCode:'كود الدعوة غلط', taskAdded:'تم إضافة المهمة', goalAdded:'تم إضافة الهدف', deleteTask:'احذف هذه المهمة؟', deleteGoal:'احذف هذا الهدف؟',
+    resetTimer:'تصفير المؤقت؟', sport:'رياضة', study:'دراسة', nutrition:'تغذية', reading:'قراءة', nightRoutine:'روتين ليلي', active:'مفعّل', inactive:'موقوف'
   }
 };
 
 const RANKS = [
-  { name:'Bronze',   nameAr:'برونزي',  icon:'🥉', min:0    },
-  { name:'Silver',   nameAr:'فضي',     icon:'🥈', min:300  },
-  { name:'Gold',     nameAr:'ذهبي',    icon:'🥇', min:800  },
-  { name:'Platinum', nameAr:'بلاتيني', icon:'💎', min:1800 },
-  { name:'Diamond',  nameAr:'ألماسي',  icon:'💠', min:3000 },
-  { name:'Master',   nameAr:'ماستر',   icon:'🏆', min:5000 },
-  { name:'Legend',   nameAr:'أسطورة',  icon:'👑', min:8000 },
+  { name:'Bronze', nameAr:'برونزي', icon:'🥉', min:0 }, { name:'Silver', nameAr:'فضي', icon:'🥈', min:300 },
+  { name:'Gold', nameAr:'ذهبي', icon:'🥇', min:800 }, { name:'Platinum', nameAr:'بلاتيني', icon:'💎', min:1800 },
+  { name:'Diamond', nameAr:'ألماسي', icon:'💠', min:3000 }, { name:'Master', nameAr:'ماستر', icon:'🏆', min:5000 },
+  { name:'Legend', nameAr:'أسطورة', icon:'👑', min:8000 },
 ];
 
 const STORE_ITEMS = [
-  { key:'skip_day',         icon:'🎫', price:500,  type:'buff', name:'Skip Day Pass',    nameAr:'تخطي يوم',      desc:'Skip one day, streak safe',        descAr:'تخطى يوم بدون ما تنكسر السلسلة' },
-  { key:'streak_freeze',    icon:'❄️', price:300,  type:'buff', name:'Streak Freeze',    nameAr:'تجميد السلسلة', desc:'Freeze streak for one day',        descAr:'جمّد السلسلة يوم واحد' },
-  { key:'double_xp',        icon:'⚡', price:400,  type:'buff', name:'Double XP Day',    nameAr:'مضاعفة النقاط', desc:'2x XP for 24h',                    descAr:'ضاعف النقاط لمدة ٢٤ ساعة' },
-  { key:'min_day',          icon:'🛌', price:250,  type:'buff', name:'Minimum Day Pass', nameAr:'يوم الحد الأدنى', desc:'Rough day mode',                 descAr:'وضع اليوم الصعب' },
-  { key:'streak_insurance', icon:'🛡️', price:600,  type:'buff', name:'Streak Insurance', nameAr:'تأمين السلسلة', desc:'Protects streak for 2 missed days', descAr:'يحمي السلسلة ليومين مفقودين' },
-  { key:'title_warrior',    icon:'⚔️', price:200,  type:'title',value:'Warrior', name:'Title: Warrior', nameAr:'لقب: محارب', desc:'Cosmetic title', descAr:'لقب شكلي' },
-  { key:'title_beast',      icon:'🔥', price:500,  type:'title',value:'Beast',   name:'Title: Beast',   nameAr:'لقب: وحش',   desc:'Cosmetic title', descAr:'لقب شكلي' },
-  { key:'title_legend',     icon:'👑', price:1000, type:'title',value:'Legend',  name:'Title: Legend',  nameAr:'لقب: أسطورة', desc:'Cosmetic title', descAr:'لقب شكلي' },
+  { key:'skip_day', icon:'🎫', price:500, type:'buff', name:'Skip Day Pass', nameAr:'تخطي يوم', desc:'Skip one day, streak safe', descAr:'تخطى يوم بدون ما تنكسر السلسلة' },
+  { key:'streak_freeze', icon:'❄️', price:300, type:'buff', name:'Streak Freeze', nameAr:'تجميد السلسلة', desc:'Freeze streak for one day', descAr:'جمّد السلسلة يوم واحد' },
+  { key:'double_xp', icon:'⚡', price:400, type:'buff', name:'Double XP Day', nameAr:'مضاعفة النقاط', desc:'2x XP for 24h', descAr:'ضاعف النقاط لمدة ٢٤ ساعة' },
+  { key:'min_day', icon:'🛌', price:250, type:'buff', name:'Minimum Day Pass', nameAr:'يوم الحد الأدنى', desc:'Rough day mode', descAr:'وضع اليوم الصعب' },
+  { key:'streak_insurance', icon:'🛡️', price:600, type:'buff', name:'Streak Insurance', nameAr:'تأمين السلسلة', desc:'Protects streak for 2 missed days', descAr:'يحمي السلسلة ليومين مفقودين' },
+  { key:'title_warrior', icon:'⚔️', price:200, type:'title', value:'Warrior', name:'Title: Warrior', nameAr:'لقب: محارب', desc:'Cosmetic title', descAr:'لقب شكلي' },
+  { key:'title_beast', icon:'🔥', price:500, type:'title', value:'Beast', name:'Title: Beast', nameAr:'لقب: وحش', desc:'Cosmetic title', descAr:'لقب شكلي' },
+  { key:'title_legend', icon:'👑', price:1000, type:'title', value:'Legend', name:'Title: Legend', nameAr:'لقب: أسطورة', desc:'Cosmetic title', descAr:'لقب شكلي' },
 ];
 
 function rankFor(xp, lang){ let r=RANKS[0]; for(const k of RANKS) if(xp>=k.min) r=k; return { ...r, display: lang==='ar'?r.nameAr:r.name }; }
@@ -184,7 +149,7 @@ function App(){
   const t = (k)=>STRINGS[lang][k]||k;
   const T = (obj, field) => lang==='ar' && obj[field+'Ar'] ? obj[field+'Ar'] : obj[field];
 
-  const [session,setSession]=React.useState(null);
+  const [currentUser,setCurrentUser]=React.useState(null);
   const [profile,setProfile]=React.useState(null);
   const [team,setTeam]=React.useState(null);
   const [tasks,setTasks]=React.useState([]);
@@ -194,9 +159,12 @@ function App(){
   const [leaderboard,setLeaderboard]=React.useState([]);
   const [page,setPage]=React.useState('home');
   const [loading,setLoading]=React.useState(true);
-  const [email,setEmail]=React.useState('');
-  const [password,setPassword]=React.useState('');
-  const [authMode,setAuthMode]=React.useState('login');
+  
+  // Auth fields
+  const [nameInput,setNameInput]=React.useState('');
+  const [passwordInput,setPasswordInput]=React.useState('');
+  const [isSignup,setIsSignup]=React.useState(false);
+
   const [teamName,setTeamName]=React.useState('');
   const [inviteCode,setInviteCode]=React.useState('');
   const [error,setError]=React.useState('');
@@ -224,13 +192,14 @@ function App(){
     return n;
   });
 
+  // Restore simple auth session
   React.useEffect(()=>{
-    sb.auth.getSession().then(({data:{session}})=>{ setSession(session); setLoading(false); });
-    const {data:{subscription}}=sb.auth.onAuthStateChange((_e,s)=>setSession(s));
-    return ()=>subscription.unsubscribe();
+    const saved = localStorage.getItem('team_user_id');
+    if(saved) setCurrentUser(saved);
+    setLoading(false);
   },[]);
 
-  React.useEffect(()=>{ if(session?.user) loadProfile(); else reset(); },[session]);
+  React.useEffect(()=>{ if(currentUser) loadProfile(); else reset(); },[currentUser]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); else setTeam(null); },[profile]);
   React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadLeaderboard(); } },[team]);
 
@@ -280,40 +249,40 @@ function App(){
   function reset(){ setProfile(null); setTeam(null); setTasks([]); setCustomTasks([]); setGoals([]); setHistory([]); setLeaderboard([]); }
 
   async function loadProfile(){
-    const {data}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
-    setProfile(data);
+    const {data}=await sb.from('profiles').select('*').eq('id',currentUser).single();
+    if(data) setProfile(data); else setCurrentUser(null); // user doesn't exist anymore
   }
   async function loadTeam(id){
     const {data}=await sb.from('teams').select('*').eq('id',id).single();
     setTeam(data);
   }
   async function loadTasks(){
-    const {data}=await sb.from('tasks').select('*').eq('user_id',session.user.id).eq('date',today);
+    const {data}=await sb.from('tasks').select('*').eq('user_id',currentUser).eq('date',today);
     setTasks(data||[]);
   }
   async function loadCustomTasks(){
-    const {data}=await sb.from('custom_tasks').select('*').eq('user_id',session.user.id).order('sort_order');
+    const {data}=await sb.from('custom_tasks').select('*').eq('user_id',currentUser).order('sort_order');
     if(data && data.length){ setCustomTasks(data); }
     else {
       const seeds=[
-        { key:'sport',     label:STRINGS[lang].sport,        icon:'🥋', duration_min:null },
-        { key:'study',     label:STRINGS[lang].study,        icon:'📚', duration_min:60   },
-        { key:'nutrition', label:STRINGS[lang].nutrition,    icon:'🥗', duration_min:null },
-        { key:'reading',   label:STRINGS[lang].reading,      icon:'📖', duration_min:null },
-        { key:'night',     label:STRINGS[lang].nightRoutine, icon:'🌙', duration_min:null },
+        { key:'sport', label:STRINGS[lang].sport, icon:'🥋', duration_min:null },
+        { key:'study', label:STRINGS[lang].study, icon:'📚', duration_min:60 },
+        { key:'nutrition', label:STRINGS[lang].nutrition, icon:'🥗', duration_min:null },
+        { key:'reading', label:STRINGS[lang].reading, icon:'📖', duration_min:null },
+        { key:'night', label:STRINGS[lang].nightRoutine, icon:'🌙', duration_min:null },
       ];
-      const rows=seeds.map((x,i)=>({user_id:session.user.id, ...x, sort_order:i}));
+      const rows=seeds.map((x,i)=>({user_id:currentUser, ...x, sort_order:i}));
       const {data:seeded}=await sb.from('custom_tasks').insert(rows).select();
       setCustomTasks(seeded||[]);
     }
   }
   async function loadGoals(){
-    const {data}=await sb.from('goals').select('*').eq('user_id',session.user.id).order('created_at',{ascending:false});
+    const {data}=await sb.from('goals').select('*').eq('user_id',currentUser).order('created_at',{ascending:false});
     setGoals(data||[]);
   }
   async function loadHistory(){
     const since=new Date(Date.now()-90*86400000).toLocaleDateString('en-CA');
-    const {data}=await sb.from('tasks').select('date, done').eq('user_id',session.user.id).gte('date',since);
+    const {data}=await sb.from('tasks').select('date, done').eq('user_id',currentUser).gte('date',since);
     setHistory(data||[]);
   }
   async function loadLeaderboard(){
@@ -352,50 +321,75 @@ function App(){
   async function awardXP(amount, reason){
     const newXP=Math.max(0,(profile.xp||0)+amount);
     const newTotal=(profile.total_xp||0)+Math.max(0,amount);
-    await sb.from('profiles').update({xp:newXP, total_xp:newTotal}).eq('id',session.user.id);
-    await sb.from('xp_events').insert({user_id:session.user.id, amount, reason});
+    await sb.from('profiles').update({xp:newXP, total_xp:newTotal}).eq('id',currentUser);
+    await sb.from('xp_events').insert({user_id:currentUser, amount, reason});
     await loadProfile();
   }
-async function handleAuth(e){
-  e.preventDefault(); setError('');
-  try {
-    const fn = authMode==='signup' ? sb.auth.signUp : sb.auth.signInWithPassword;
-    const res = await fn({ email, password });
-    if (res.error) { alert('SUPABASE ERROR:\n' + res.error.message); setError(res.error.message); return; }
-    alert('SUCCESS!\nUser: ' + (res.data.user ? res.data.user.email : 'none') + '\nSession: ' + (res.data.session ? 'yes' : 'no'));
-  } catch (err) {
-    alert('JS EXCEPTION:\n' + (err && err.message ? err.message : String(err)));
+
+  // NEW SIMPLE AUTH LOGIC
+  async function handleAuth(e) {
+    e.preventDefault(); 
+    setError('');
+    const uname = nameInput.trim();
+    const pass = passwordInput.trim();
+    if(!uname || !pass) { setError('Enter name and password'); return; }
+
+    if (isSignup) {
+      // Check if exists
+      const {data: exists} = await sb.from('profiles').select('id').eq('username', uname).single();
+      if (exists) { setError('Name already taken. Try logging in.'); return; }
+      
+      // Create
+      const newId = crypto.randomUUID();
+      const { error } = await sb.from('profiles').insert({ id: newId, username: uname, password: pass });
+      if (error) { setError('Error: ' + error.message); return; }
+      
+      localStorage.setItem('team_user_id', newId);
+      setCurrentUser(newId);
+    } else {
+      // Login
+      const { data, error } = await sb.from('profiles').select('id, password').eq('username', uname).single();
+      if (error || !data) { setError('Name not found.'); return; }
+      if (data.password !== pass) { setError('Wrong password.'); return; }
+      
+      localStorage.setItem('team_user_id', data.id);
+      setCurrentUser(data.id);
+    }
   }
-}
-  async function handleLogout(){ await sb.auth.signOut(); }
+
+  async function handleLogout(){ 
+    localStorage.removeItem('team_user_id');
+    setCurrentUser(null); 
+  }
+
   async function createTeam(){
     const code=Math.random().toString(36).substring(2,8).toUpperCase();
-    const {data,error}=await sb.from('teams').insert({name:teamName, invite_code:code, created_by:session.user.id}).select().single();
+    const {data,error}=await sb.from('teams').insert({name:teamName, invite_code:code, created_by:currentUser}).select().single();
     if(error){ setError(error.message); return; }
-    await sb.from('profiles').update({team_id:data.id}).eq('id',session.user.id);
+    await sb.from('profiles').update({team_id:data.id}).eq('id',currentUser);
     setTeam(data); setProfile(p=>p?{...p,team_id:data.id}:p);
   }
   async function joinTeam(){
     const {data,error}=await sb.from('teams').select('*').eq('invite_code',inviteCode.toUpperCase()).single();
     if(error){ setError(t('invalidCode')); return; }
-    await sb.from('profiles').update({team_id:data.id}).eq('id',session.user.id);
+    await sb.from('profiles').update({team_id:data.id}).eq('id',currentUser);
     setTeam(data); setProfile(p=>p?{...p,team_id:data.id}:p);
   }
   async function toggleTask(taskKey, done){
     const existing=tasks.find(x=>x.task_key===taskKey);
     const wasDone=existing?.done;
     if(existing) await sb.from('tasks').update({done}).eq('id',existing.id);
-    else await sb.from('tasks').insert({user_id:session.user.id, team_id:team.id, date:today, task_key:taskKey, done});
+    else await sb.from('tasks').insert({user_id:currentUser, team_id:team.id, date:today, task_key:taskKey, done});
     if(!wasDone && done){
       await awardXP(10,'task:'+taskKey);
-      const {data:after}=await sb.from('tasks').select('*').eq('user_id',session.user.id).eq('date',today);
+      const {data:after}=await sb.from('tasks').select('*').eq('user_id',currentUser).eq('date',today);
       const count=(after||[]).filter(x=>x.done).length;
       if(count>=activeTasks.length) await awardXP(25,'perfect-day');
     } else if(wasDone && !done){ await awardXP(-10,'untask:'+taskKey); }
     await loadTasks(); await loadHistory(); await loadLeaderboard();
   }
   async function uploadProof(taskKey, file){
-    const path=`${team.id}/${session.user.id}/${today}/${taskKey}-${Date.now()}.jpg`;
+    const path=`${team.id}/${currentUser}/${today}/${taskKey}-${Date.now()}.jpg`;
     const {error}=await sb.storage.from('proofs').upload(path,file);
     if(error){ setError(error.message); return; }
     const {data:{publicUrl}}=sb.storage.from('proofs').getPublicUrl(path);
@@ -404,7 +398,7 @@ async function handleAuth(e){
       await sb.from('tasks').update({proof_url:publicUrl, nonce}).eq('id',existing.id);
       if(!existing.done){ await sb.from('tasks').update({done:true}).eq('id',existing.id); await awardXP(10,'task:'+taskKey); }
     } else {
-      await sb.from('tasks').insert({user_id:session.user.id, team_id:team.id, date:today, task_key:taskKey, done:true, proof_url:publicUrl, nonce});
+      await sb.from('tasks').insert({user_id:currentUser, team_id:team.id, date:today, task_key:taskKey, done:true, proof_url:publicUrl, nonce});
       await awardXP(10,'task:'+taskKey);
     }
     await loadTasks(); await loadHistory(); await loadLeaderboard();
@@ -412,7 +406,7 @@ async function handleAuth(e){
   async function addCustomTask(){
     if(!newTask.label.trim()) return;
     const key = newTask.label.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]+/g,'_').slice(0,20) + '_' + Math.random().toString(36).slice(2,5);
-    const row={ user_id:session.user.id, key, label:newTask.label.trim(), icon:newTask.icon||'✅',
+    const row={ user_id:currentUser, key, label:newTask.label.trim(), icon:newTask.icon||'✅',
       duration_min: newTask.duration_min? parseInt(newTask.duration_min): null, sort_order: customTasks.length };
     const {data,error}=await sb.from('custom_tasks').insert(row).select().single();
     if(error){ setError(error.message); return; }
@@ -430,7 +424,7 @@ async function handleAuth(e){
   }
   async function addGoal(){
     if(!newGoal.title.trim()) return;
-    const row={ user_id:session.user.id, team_id:team.id, title:newGoal.title.trim(),
+    const row={ user_id:currentUser, team_id:team.id, title:newGoal.title.trim(),
       description:newGoal.description.trim()||null, target_date:newGoal.target_date||null };
     const {data,error}=await sb.from('goals').insert(row).select().single();
     if(error){ setError(error.message); return; }
@@ -452,9 +446,9 @@ async function handleAuth(e){
     const newInv=[...(profile.inventory||[]), item.key];
     const updates={ xp: profile.xp-item.price, inventory:newInv };
     if(item.type==='title') updates.title=item.value;
-    await sb.from('profiles').update(updates).eq('id',session.user.id);
-    await sb.from('purchases').insert({user_id:session.user.id, item_key:item.key, price:item.price});
-    if(item.type==='buff') await sb.from('buffs').insert({user_id:session.user.id, type:item.key, date:today});
+    await sb.from('profiles').update(updates).eq('id',currentUser);
+    await sb.from('purchases').insert({user_id:currentUser, item_key:item.key, price:item.price});
+    if(item.type==='buff') await sb.from('buffs').insert({user_id:currentUser, type:item.key, date:today});
     setMessage(t('purchased')+' · '+T(item,'name')); setTimeout(()=>setMessage(''),2500);
     await loadProfile();
   }
@@ -467,7 +461,7 @@ async function handleAuth(e){
 
   const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
 
-  if(!session){
+  if(!currentUser){
     return (
       <div className="container auth">
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -475,12 +469,12 @@ async function handleAuth(e){
         </div>
         <p style={{color:'#94a3b8'}}>{t('tagline')}</p>
         <form onSubmit={handleAuth}>
-          <input type="email" placeholder={t('email')} value={email} onChange={e=>setEmail(e.target.value)} required/>
-          <input type="password" placeholder={t('password')} value={password} onChange={e=>setPassword(e.target.value)} required/>
-          <button type="submit" className="primary" style={{width:'100%'}}>{authMode==='login'?t('login'):t('signup')}</button>
+          <input type="text" placeholder={t('name')} value={nameInput} onChange={e=>setNameInput(e.target.value)} required/>
+          <input type="password" placeholder={t('password')} value={passwordInput} onChange={e=>setPasswordInput(e.target.value)} required/>
+          <button type="submit" className="primary" style={{width:'100%'}}>{isSignup?t('signup'):t('login')}</button>
         </form>
-        <button className="link" onClick={()=>setAuthMode(authMode==='login'?'signup':'login')}>
-          {authMode==='login'?t('needAccount'):t('haveAccount')}
+        <button className="link" onClick={()=>setIsSignup(!isSignup)}>
+          {isSignup?t('haveAccount'):t('needAccount')}
         </button>
         {error && <p className="error">{error}</p>}
       </div>
@@ -678,7 +672,7 @@ async function handleAuth(e){
                 </div>
                 <span className="price">{item.price} {t('xp')}</span>
                 {isTitle && owned ? (
-                  <button onClick={()=>{ sb.from('profiles').update({title:item.value}).eq('id',session.user.id).then(loadProfile); }}>
+                  <button onClick={()=>{ sb.from('profiles').update({title:item.value}).eq('id',currentUser).then(loadProfile); }}>
                     {equipped?t('equipped'):t('equip')}
                   </button>
                 ) : (
@@ -697,7 +691,7 @@ async function handleAuth(e){
             <thead><tr><th>#</th><th>{t('member')}</th><th>🔥</th><th>{t('days')}</th><th>{t('xp')}</th></tr></thead>
             <tbody>
               {leaderboard.map((row,i)=>(
-                <tr key={row.user_id} className={row.user_id===session.user.id?'you':''}>
+                <tr key={row.user_id} className={row.user_id===currentUser?'you':''}>
                   <td>{i+1}</td>
                   <td>{row.username}{row.title&&row.title!=='Rookie'?<span style={{color:'#fbbf24',fontSize:11}}> · {row.title}</span>:''}</td>
                   <td>{row.streak}</td>
