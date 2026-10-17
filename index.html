@@ -183,12 +183,55 @@ const STORE = [
 
 // TUTORIAL CONTENT
 const TUTORIAL_STEPS = [
-  { icon: '🚀', enTitle: 'Welcome to TEAM 1%!', arTitle: 'مرحباً بك في TEAM 1%!', enText: 'Your 82-day transformation starts now. Let us show you how to use the app.', arText: 'تحولك لمدة ٨٢ يوم يبدأ الآن. دعنا نريك كيف تستخدم التطبيق.' },
-  { icon: '🕌', enTitle: 'Non-Negotiable Tasks', arTitle: 'المهام غير القابلة للتفاوض', enText: 'Every day, you must complete 5 prayers, exercise, study, and read Quran. Complete all 8 for a "Perfect Day" bonus!', arText: 'كل يوم، يجب أن تكمل 5 صلوات، رياضة، دراسة، وقراءة القرآن. أكمل الـ 8 للحصول على مكافأة "اليوم المثالي"!' },
-  { icon: '⏱️', enTitle: 'Stopwatches', arTitle: 'المؤقتات', enText: 'Use the Study and Quran stopwatches to track your time. You need at least 30 mins for Study and 10 mins for Quran.', arText: 'استخدم مؤقتات الدراسة والقرآن لتتبع وقتك. تحتاج إلى 30 دقيقة على الأقل للدراسة و 10 دقائق للقرآن.' },
-  { icon: '📸', enTitle: 'Photo Proofs', arTitle: 'صور الإثبات', enText: 'Tap the camera icon to upload a photo proof. You and your team can see these in the Feed tab.', arText: 'اضغط على أيقونة الكاميرا لرفع صورة إثبات. يمكنك أنت وفريقك رؤية هذه الصور في قسم المنشورات.' },
-  { icon: '🪙', enTitle: 'Earn Coins & XP', arTitle: 'اكسب العملات والنقاط', enText: 'Complete tasks to earn Coins. Spend them in the Store on Streak Freezes and Titles. XP decides your Rank!', arText: 'أكمل المهام لتكسب العملات. اصرفها في المتجر على تجميد السلسلة والألقاب. النقاط تحدد رتبتك!' },
-  { icon: '🔥', enTitle: 'The 82-Day Timeline', arTitle: 'الجدول الزمني ٨٢ يوم', enText: 'Watch your timeline turn green. Claim daily login rewards every time you open the app!', arText: 'شاهد جدولك الزمني يتحول للأخضر. احصل على مكافآت الدخول اليومية كلما فتحت التطبيق!' }
+  { 
+    icon: '🚀', 
+    enTitle: 'Welcome to TEAM 1%!', 
+    arTitle: 'مرحباً بك في TEAM 1%!', 
+    enText: 'Your 82-day transformation starts now. Let us show you how to navigate the app.', 
+    arText: 'تحولك لمدة ٨٢ يوم يبدأ الآن. دعنا نريك كيف تتنقل في التطبيق.' 
+  },
+  { 
+    icon: '📱', 
+    enTitle: 'The Navigation Bar', 
+    arTitle: 'شريط التنقل', 
+    enText: 'At the bottom, you have 5 tabs: Home (tasks), Goals (long-term), Store (buy items), Feed (team proofs), and Ranks (global leaderboard). Swipe left/right to move between them!', 
+    arText: 'في الأسفل، لديك 5 علامات تبويب: الرئيسية (المهام)، الأهداف (طويلة المدى)، المتجر (شراء العناصر)، المنشورات (إثباتات الفريق)، والترتيب (لوحة الصدارة). اسحب يميناً/يساراً للتنقل بينها!' 
+  },
+  { 
+    icon: '🏠', 
+    enTitle: 'Home Tab', 
+    arTitle: 'قسم الرئيسية', 
+    enText: 'This is where you check off your daily mandatory tasks (5 prayers, exercise, study, Quran) and use the stopwatches.', 
+    arText: 'هنا تقوم بتحديد مهامك اليومية الإلزامية (5 صلوات، رياضة، دراسة، قرآن) وتستخدم المؤقتات.' 
+  },
+  { 
+    icon: '🎯', 
+    enTitle: 'Goals Tab', 
+    arTitle: 'قسم الأهداف', 
+    enText: 'Write down what you want to achieve by the end of the 82 days. Check them off as you complete them.', 
+    arText: 'اكتب ما تريد تحقيقه بنهاية الـ 82 يوماً. ضع علامة صح عند إنجازها.' 
+  },
+  { 
+    icon: '🛒', 
+    enTitle: 'Store Tab', 
+    arTitle: 'قسم المتجر', 
+    enText: 'Use your Coins to buy Streak Freezes (save your streak if you miss a day) and Epic Titles. Your XP Rank is unaffected by purchases.', 
+    arText: 'استخدم عملاتك لشراء تجميد السلسلة (لحفظ سلسلتك إذا فوّت يوماً) وألقاب ملحمية. رتبتك لا تتأثر بالمشتريات.' 
+  },
+  { 
+    icon: '💬', 
+    enTitle: 'Feed Tab', 
+    arTitle: 'قسم المنشورات', 
+    enText: 'Tap the camera icon on any task to upload proof. You and your team can see all the photos here to keep each other accountable.', 
+    arText: 'اضغط على أيقونة الكاميرا في أي مهمة لرفع الإثبات. يمكنك أنت وفريقك رؤية جميع الصور هنا لتحفيز بعضكم البعض.' 
+  },
+  { 
+    icon: '🏆', 
+    enTitle: 'Ranks Tab', 
+    arTitle: 'قسم الترتيب', 
+    enText: 'See how you compare to everyone else using the app globally. Your rank is based on Lifetime XP, not Coins.', 
+    arText: 'شاهد كيف تقارن مع كل من يستخدم التطبيق عالمياً. رتبتك مبنية على مجموع النقاط، وليس العملات.' 
+  }
 ];
 
 const STRINGS = {
@@ -216,7 +259,7 @@ const STRINGS = {
     skipApplied:'Skip Day used! Enjoy your break.', alreadyUsed:'Already applied.', notEnoughItems:'You don\'t have this item. Buy it in the Store!',
     uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!', perfectDay:'🔥 PERFECT DAY! +25 Bonus XP & Coins',
     dailyReward:'Daily Login Reward', weeklyReward:'Weekly Bonus!', monthlyReward:'Monthly Mega Bonus!', claim:'CLAIM REWARD',
-    loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!'
+    loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!', back:'BACK'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -242,7 +285,7 @@ const STRINGS = {
     skipApplied:'تم استخدام التخطي! استمتع بالراحة.', alreadyUsed:'تم الاستخدام بالفعل.', notEnoughItems:'ليس لديك هذا العنصر. اشتره من المتجر!',
     uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!', perfectDay:'🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية',
     dailyReward:'مكافأة الدخول اليومية', weeklyReward:'مكافأة أسبوعية!', monthlyReward:'مكافأة شهرية ضخمة!', claim:'استلام المكافأة',
-    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!'
+    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!', back:'رجوع'
   }
 };
 
@@ -1032,7 +1075,7 @@ function App(){
             <div style={{display:'flex', gap:10, marginTop:20}}>
               {tutorialStep > 0 && (
                 <button style={{flex:1, background:'#222', border:'none'}} onClick={() => setTutorialStep(s => s - 1)}>
-                  Back
+                  {t('back')}
                 </button>
               )}
               {tutorialStep < TUTORIAL_STEPS.length - 1 ? (
