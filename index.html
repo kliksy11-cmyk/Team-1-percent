@@ -685,7 +685,8 @@ function App(){
   }
 
   // Check if missed yesterday
-  const missedYesterday = !completeDates.has(yesterday) && history.length > 0;
+  const teamStartDate = new Date(team.created_at || Date.now()).toLocaleDateString('en-CA');
+const missedYesterday = !completeDates.has(yesterday) && yesterday >= teamStartDate;
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
   const hasSkip = (profile?.inventory||[]).includes('skip');
   
