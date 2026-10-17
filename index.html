@@ -132,13 +132,20 @@ nav button.active::after { content:''; position:absolute; bottom:-8px; width:4px
 .toast{background:#1e293b;color:#fff;padding:14px 20px;border-radius:10px;border-left:4px solid #7CFF4F;font-weight:bold;font-size:14px;box-shadow:0 10px 25px rgba(0,0,0,0.8);animation: slideDown 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;}
 @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* Modal Popup */
+/* Modal Popup (Reward & Tutorial) */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px);animation:fadeIn 0.3s ease-out;}
 .modal-content{background:#0a0a0a;border:2px solid #7CFF4F;border-radius:20px;padding:30px 20px;width:100%;max-width:350px;text-align:center;position:relative;box-shadow:0 0 40px rgba(124,255,79,0.2);animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
 @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .reward-icon{font-size:60px;margin-bottom:15px;animation: float 2s infinite ease-in-out;}
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* Tutorial Specific */
+.tutorial-step-icon { font-size: 64px; margin-bottom: 20px; animation: popIn 0.5s ease-out; }
+@keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+.tutorial-dots { display: flex; justify-content: center; gap: 6px; margin: 20px 0; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
+.dot.active { background: #7CFF4F; width: 20px; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -174,6 +181,16 @@ const STORE = [
   { id:'title_machine', name:'Title: The Machine 🤖', nameAr:'لقب: الآلة 🤖', price:800, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' }
 ];
 
+// TUTORIAL CONTENT
+const TUTORIAL_STEPS = [
+  { icon: '🚀', enTitle: 'Welcome to TEAM 1%!', arTitle: 'مرحباً بك في TEAM 1%!', enText: 'Your 82-day transformation starts now. Let us show you how to use the app.', arText: 'تحولك لمدة ٨٢ يوم يبدأ الآن. دعنا نريك كيف تستخدم التطبيق.' },
+  { icon: '🕌', enTitle: 'Non-Negotiable Tasks', arTitle: 'المهام غير القابلة للتفاوض', enText: 'Every day, you must complete 5 prayers, exercise, study, and read Quran. Complete all 8 for a "Perfect Day" bonus!', arText: 'كل يوم، يجب أن تكمل 5 صلوات، رياضة، دراسة، وقراءة القرآن. أكمل الـ 8 للحصول على مكافأة "اليوم المثالي"!' },
+  { icon: '⏱️', enTitle: 'Stopwatches', arTitle: 'المؤقتات', enText: 'Use the Study and Quran stopwatches to track your time. You need at least 30 mins for Study and 10 mins for Quran.', arText: 'استخدم مؤقتات الدراسة والقرآن لتتبع وقتك. تحتاج إلى 30 دقيقة على الأقل للدراسة و 10 دقائق للقرآن.' },
+  { icon: '📸', enTitle: 'Photo Proofs', arTitle: 'صور الإثبات', enText: 'Tap the camera icon to upload a photo proof. You and your team can see these in the Feed tab.', arText: 'اضغط على أيقونة الكاميرا لرفع صورة إثبات. يمكنك أنت وفريقك رؤية هذه الصور في قسم المنشورات.' },
+  { icon: '🪙', enTitle: 'Earn Coins & XP', arTitle: 'اكسب العملات والنقاط', enText: 'Complete tasks to earn Coins. Spend them in the Store on Streak Freezes and Titles. XP decides your Rank!', arText: 'أكمل المهام لتكسب العملات. اصرفها في المتجر على تجميد السلسلة والألقاب. النقاط تحدد رتبتك!' },
+  { icon: '🔥', enTitle: 'The 82-Day Timeline', arTitle: 'الجدول الزمني ٨٢ يوم', enText: 'Watch your timeline turn green. Claim daily login rewards every time you open the app!', arText: 'شاهد جدولك الزمني يتحول للأخضر. احصل على مكافآت الدخول اليومية كلما فتحت التطبيق!' }
+];
+
 const STRINGS = {
   en: {
     tagline:'82-DAY TRANSFORMATION', enterName:'ENTER YOUR NAME', enterPass:'PASSWORD', start:'START',
@@ -199,7 +216,7 @@ const STRINGS = {
     skipApplied:'Skip Day used! Enjoy your break.', alreadyUsed:'Already applied.', notEnoughItems:'You don\'t have this item. Buy it in the Store!',
     uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!', perfectDay:'🔥 PERFECT DAY! +25 Bonus XP & Coins',
     dailyReward:'Daily Login Reward', weeklyReward:'Weekly Bonus!', monthlyReward:'Monthly Mega Bonus!', claim:'CLAIM REWARD',
-    loginStreak:'Login Streak', claimed:'Claimed'
+    loginStreak:'Login Streak', claimed:'Claimed', next:'NEXT', skip:'SKIP', letsGo:'LET\'S GO!'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -225,7 +242,7 @@ const STRINGS = {
     skipApplied:'تم استخدام التخطي! استمتع بالراحة.', alreadyUsed:'تم الاستخدام بالفعل.', notEnoughItems:'ليس لديك هذا العنصر. اشتره من المتجر!',
     uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!', perfectDay:'🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية',
     dailyReward:'مكافأة الدخول اليومية', weeklyReward:'مكافأة أسبوعية!', monthlyReward:'مكافأة شهرية ضخمة!', claim:'استلام المكافأة',
-    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام'
+    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام', next:'التالي', skip:'تخطي', letsGo:'هيا بنا!'
   }
 };
 
@@ -263,6 +280,8 @@ function App(){
 
   const [showReward, setShowReward] = React.useState(false);
   const [rewardInfo, setRewardInfo] = React.useState({ amount: 0, streak: 0, type: 'daily' });
+  const [tutorialStep, setTutorialStep] = React.useState(0);
+  const [showTutorial, setShowTutorial] = React.useState(false);
 
   const [nameInput, setNameInput] = React.useState('');
   const [passInput, setPassInput] = React.useState('');
@@ -294,16 +313,14 @@ function App(){
     return { type: 'daily', amount: 10 };
   };
 
-  // Swipe & Drag Logic
-  const touchStart = React.useRef({ x: 0, y: 0 });
-  const isDragging = React.useRef(false);
-
   const handleDragStart = (e) => {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     touchStart.current = { x: clientX, y: clientY };
     isDragging.current = true;
   };
+  const touchStart = React.useRef({ x: 0, y: 0 });
+  const isDragging = React.useRef(false);
 
   const handleDragEnd = (e) => {
     if (!isDragging.current) return;
@@ -345,7 +362,14 @@ function App(){
 
   React.useEffect(()=>{ if(user) loadProfile(); },[user]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); },[profile]);
-  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadTeamProofs(); loadLeaderboard(); } },[team]);
+  React.useEffect(()=>{ 
+    if(team){ 
+      loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadTeamProofs(); loadLeaderboard(); 
+      if(!localStorage.getItem('tutorial_done_'+user)) {
+        setShowTutorial(true);
+      }
+    } 
+  },[team]);
   React.useEffect(()=>{ 
     if(page==='ranks') loadLeaderboard(); 
     if(page==='feed') { loadFeed(); loadTeamProofs(); }
@@ -966,6 +990,7 @@ function App(){
     >
       {toast && <div className="toast-container"><div className="toast">{toast}</div></div>}
       
+      {/* REWARD MODAL */}
       {showReward && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -982,6 +1007,49 @@ function App(){
             <button className="primary" onClick={claimReward} style={{width:'100%', padding:15, fontSize:16}}>
               {t('claim')}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* TUTORIAL MODAL */}
+      {showTutorial && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{padding:'40px 25px'}}>
+            <div className="tutorial-step-icon">{TUTORIAL_STEPS[tutorialStep].icon}</div>
+            <h2 style={{color:'#7CFF4F', fontSize:22, margin:'0 0 15px 0', textTransform:'none', letterSpacing:0}}>
+              {lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arTitle : TUTORIAL_STEPS[tutorialStep].enTitle}
+            </h2>
+            <p style={{color:'#ccc', fontSize:15, lineHeight:1.5, marginBottom:30, minHeight:70}}>
+              {lang === 'ar' ? TUTORIAL_STEPS[tutorialStep].arText : TUTORIAL_STEPS[tutorialStep].enText}
+            </p>
+            
+            <div className="tutorial-dots">
+              {TUTORIAL_STEPS.map((_, i) => (
+                <div key={i} className={`dot ${i === tutorialStep ? 'active' : ''}`} />
+              ))}
+            </div>
+
+            <div style={{display:'flex', gap:10, marginTop:20}}>
+              {tutorialStep > 0 && (
+                <button style={{flex:1, background:'#222', border:'none'}} onClick={() => setTutorialStep(s => s - 1)}>
+                  Back
+                </button>
+              )}
+              {tutorialStep < TUTORIAL_STEPS.length - 1 ? (
+                <>
+                  <button style={{flex:1, background:'#111', color:'#888', border:'1px solid #333'}} onClick={() => {
+                    localStorage.setItem('tutorial_done_'+user, 'true');
+                    setShowTutorial(false);
+                  }}>{t('skip')}</button>
+                  <button className="primary" style={{flex:2}} onClick={() => setTutorialStep(s => s + 1)}>{t('next')}</button>
+                </>
+              ) : (
+                <button className="primary" style={{flex:1, padding:16}} onClick={() => {
+                  localStorage.setItem('tutorial_done_'+user, 'true');
+                  setShowTutorial(false);
+                }}>{t('letsGo')} 🚀</button>
+              )}
+            </div>
           </div>
         </div>
       )}
