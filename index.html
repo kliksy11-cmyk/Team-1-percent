@@ -42,14 +42,15 @@ button:disabled{opacity:0.5;}
 .xp-bar{height:6px;background:#111;border-radius:3px;margin-top:10px;overflow:hidden;}
 .xp-bar-fill{height:100%;background:#7CFF4F;transition:0.3s;}
 nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0;z-index:10;}
-nav button{background:none;color:#666;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;}
+nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;}
 nav button.active{color:#7CFF4F;}
-nav button span{font-size:20px;}
+nav button span{font-size:22px;}
 .add-task{display:flex;gap:5px;margin-top:10px;}
 .add-task input{margin-bottom:0;flex:1;}
 .add-task button{width:auto;padding:0 15px;background:#7CFF4F;color:#000;}
 .delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;}
 .invite-box{background:#111; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #333; text-align:center;}
+.goal-card{background:#111; padding:15px; border-radius:8px; margin-bottom:10px; border-left:3px solid #7CFF4F;}
 </style>
 </head>
 <body>
@@ -66,7 +67,7 @@ const MANDATORY_TASKS = [
   { key:'asr', label:'Asr Prayer', labelAr:'صلاة العصر', icon:'🕌' },
   { key:'maghrib', label:'Maghrib Prayer', labelAr:'صلاة المغرب', icon:'🕌' },
   { key:'isha', label:'Isha Prayer', labelAr:'صلاة العشاء', icon:'🕌' },
-  { key:'sport', label:'Exercise', labelAr:'رياضة', icon:'🥋' },
+  { key:'sport', label:'Exercise', labelAr:'رياضة', icon:'💪' },
   { key:'study', label:'Study', labelAr:'دراسة', icon:'📚' },
   { key:'quran', label:'Quran Reading', labelAr:'قراءة قرآن', icon:'📖' }
 ];
@@ -92,10 +93,15 @@ const STRINGS = {
     proofCode:"TODAY'S PROOF CODE", proofHint:'Write this in your photos!', grid:'82-DAY GRID',
     studyTimer:'📚 STUDY STOPWATCH', quranTimer:'📖 QURAN STOPWATCH', targetReached:'✅ TARGET REACHED', 
     minReq:'MIN REQUIRED', startBtn:'START', pauseBtn:'PAUSE', resetBtn:'RESET',
-    mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA XP', addTaskPlaceholder:'Add your own task... (Max 8)',
+    mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA XP', addTaskPlaceholder:'Add your own task...',
     currentRank:'CURRENT RANK', buy:'BUY', post:'+ POST', teamFeed:'TEAM FEED', user:'USER',
-    home:'HOME', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP',
-    inviteTitle:'TEAM INVITE CODE', inviteHint:'Share this code with your friends to let them join!'
+    home:'HOME', goalsTab:'GOALS', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP',
+    inviteTitle:'TEAM INVITE CODE', inviteHint:'Share this code with your friends to let them join!',
+    globalRanks:'GLOBAL LEADERBOARD',
+    
+    goalSetupTitle:'WHAT IS YOUR ULTIMATE GOAL?', goalSetupSub:'What do you want to achieve by the end of these 82 days?',
+    goalPlaceholder:'e.g., Lose 10kg, Finish 3 books, Memorize Juz 30...', addGoal:'Add Goal', startChallenge:'START CHALLENGE',
+    myGoals:'MY 82-DAY GOALS', noGoals:'No goals set yet.', markDone:'Mark Done', deleteGoal:'Delete'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', start:'ابدأ',
@@ -104,10 +110,15 @@ const STRINGS = {
     proofCode:"كود الإثبات اليوم", proofHint:'اكتب هذا في صورك!', grid:'شبكة ٨٢ يوم',
     studyTimer:'📚 مؤقت الدراسة', quranTimer:'📖 مؤقت القرآن', targetReached:'✅ تم الوصول للهدف', 
     minReq:'دقيقة مطلوبة', startBtn:'ابدأ', pauseBtn:'إيقاف', resetBtn:'تصفير',
-    mandatory:'غير قابل للتفاوض', extraXp:'نقاط إضافية', addTaskPlaceholder:'أضف مهمتك... (حد أقصى ٨)',
+    mandatory:'غير قابل للتفاوض', extraXp:'نقاط إضافية', addTaskPlaceholder:'أضف مهمتك...',
     currentRank:'الرتبة الحالية', buy:'شراء', post:'+ نشر', teamFeed:'منشورات الفريق', user:'مستخدم',
-    home:'الرئيسية', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة',
-    inviteTitle:'كود دعوة الفريق', inviteHint:'شارك هذا الكود مع أصدقائك للانضمام!'
+    home:'الرئيسية', goalsTab:'الأهداف', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة',
+    inviteTitle:'كود دعوة الفريق', inviteHint:'شارك هذا الكود مع أصدقائك للانضمام!',
+    globalRanks:'لوحة الصدارة العالمية',
+    
+    goalSetupTitle:'ما هو هدفك الأسمى؟', goalSetupSub:'ماذا تريد أن تحقق بنهاية هذه الـ ٨٢ يوم؟',
+    goalPlaceholder:'مثال: أخسر ١٠ كيلو، أخلص ٣ كتب، أحفظ جزء عم...', addGoal:'إضافة هدف', startChallenge:'ابدأ التحدي',
+    myGoals:'أهدافي لـ ٨٢ يوم', noGoals:'لم يتم تعيين أهداف بعد.', markDone:'تم الإنجاز', deleteGoal:'حذف'
   }
 };
 
@@ -129,16 +140,22 @@ function App(){
   const [team, setTeam] = React.useState(null);
   const [tasks, setTasks] = React.useState([]);
   const [customTasks, setCustomTasks] = React.useState([]);
+  const [goals, setGoals] = React.useState([]);
   const [history, setHistory] = React.useState([]);
   const [feed, setFeed] = React.useState([]);
   const [leaderboard, setLeaderboard] = React.useState([]);
+  
   const [page, setPage] = React.useState('home');
   const [loading, setLoading] = React.useState(true);
   
+  // Onboarding state
+  const [isOnboarding, setIsOnboarding] = React.useState(false);
+
   const [nameInput, setNameInput] = React.useState('');
   const [teamName, setTeamName] = React.useState('');
   const [inviteCode, setInviteCode] = React.useState('');
   const [newTaskLabel, setNewTaskLabel] = React.useState('');
+  const [newGoalLabel, setNewGoalLabel] = React.useState('');
 
   const [studyTime, setStudyTime] = React.useState(0);
   const [studyRunning, setStudyRunning] = React.useState(false);
@@ -162,10 +179,8 @@ function App(){
 
   React.useEffect(()=>{ if(user) loadProfile(); },[user]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); },[profile]);
-  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
-
-  // Refresh leaderboard when tab is clicked
-  React.useEffect(()=>{ if(page==='ranks' && team) loadLeaderboard(); }, [page]);
+  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
+  React.useEffect(()=>{ if(page==='ranks') loadLeaderboard(); }, [page]);
 
   React.useEffect(()=>{
     let int;
@@ -218,8 +233,17 @@ function App(){
   async function loadHistory(){ const {data}=await sb.from('tasks').select('date, done, task_key').eq('user_id',user); setHistory(data||[]); }
   async function loadFeed(){ const {data}=await sb.from('feed').select('*').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
   
+  async function loadGoals() {
+    const {data} = await sb.from('goals').select('*').eq('user_id', user).order('created_at', {ascending: true});
+    setGoals(data || []);
+    // If they have no goals and haven't seen onboarding, show it
+    if((!data || data.length === 0) && !localStorage.getItem('onboarding_done_'+user)) {
+      setIsOnboarding(true);
+    }
+  }
+
   async function loadCustomTasks(){
-    const {data}=await sb.from('custom_tasks').select('*').eq('user_id',user);
+    const {data}=await sb.from('custom_tasks').select('*').eq('user_id',user).order('id', {ascending: true});
     if(data && data.length > 0) {
       setCustomTasks(data);
     } else {
@@ -231,10 +255,19 @@ function App(){
   }
 
   async function loadLeaderboard(){
-    const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title').eq('team_id',team.id);
+    const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title, teams(name)');
     if(error) return console.log(error);
-    const rows=(ps||[]).map(p=>({ user_id:p.id, username:p.username, xp:p.xp||0, title:p.title }));
-    rows.sort((a,b)=>b.xp-a.xp); setLeaderboard(rows);
+    
+    const rows=(ps||[]).map(p=>({ 
+      user_id: p.id, 
+      username: p.username, 
+      xp: p.xp || 0, 
+      title: p.title,
+      team_name: p.teams?.name || 'No Team'
+    }));
+    
+    rows.sort((a,b)=>b.xp-a.xp); 
+    setLeaderboard(rows);
   }
 
   async function handleAuth(){
@@ -277,9 +310,16 @@ function App(){
     else await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, done:checked});
     
     const isMandatory = MANDATORY_TASKS.some(t=>t.key===key);
-    let xpChange = checked ? 10 : -10;
-    let bonus = 0;
+    let xpChange = 10;
 
+    if (key.startsWith('custom_')) {
+      const userCustoms = customTasks.filter(t => !t.is_mandatory);
+      const taskIndex = userCustoms.findIndex(t => t.key === key);
+      if (taskIndex >= 8) xpChange = 2;
+    }
+    if (!checked) xpChange = -xpChange;
+
+    let bonus = 0;
     if(checked && isMandatory) {
       const newDoneTasks = [...tasks.filter(t=>t.done).map(t=>t.task_key), key];
       const allMandatoryDone = MANDATORY_TASKS.every(t => newDoneTasks.includes(t.key));
@@ -296,19 +336,12 @@ function App(){
 
   async function addTask() {
     if (!newTaskLabel.trim()) return;
-    const extraTasks = customTasks.filter(t => !t.is_mandatory);
-    if (extraTasks.length >= 8) return alert(lang==='ar'?"الحد الأقصى ٨ مهام إضافية":"Max 8 custom tasks allowed.");
-    
     const key = 'custom_' + Date.now();
     const {data, error} = await sb.from('custom_tasks').insert({
       user_id: user, key: key, label: newTaskLabel.trim(), icon: '⭐', active: true, is_mandatory: false
     }).select().single();
 
-    if (error || !data) {
-      alert("Database Error: " + (error ? error.message : "Unknown error"));
-      return;
-    }
-    
+    if (error || !data) return alert("Error: " + error?.message);
     setCustomTasks([...customTasks, data]);
     setNewTaskLabel('');
   }
@@ -317,6 +350,33 @@ function App(){
     if(!confirm(lang==='ar'?"حذف هذه المهمة؟":"Delete this task?")) return;
     await sb.from('custom_tasks').delete().eq('id', id);
     setCustomTasks(customTasks.filter(t => t.id !== id));
+  }
+
+  async function addGoal(){
+    if(!newGoalLabel.trim()) return;
+    const {data, error} = await sb.from('goals').insert({
+      user_id: user, title: newGoalLabel.trim()
+    }).select().single();
+    if(error) return alert(error.message);
+    setGoals([...goals, data]);
+    setNewGoalLabel('');
+  }
+
+  async function completeGoal(id) {
+    await sb.from('goals').update({status: 'done'}).eq('id', id);
+    setGoals(goals.map(g => g.id === id ? { ...g, status: 'done' } : g));
+  }
+
+  async function deleteGoal(id) {
+    if(!confirm(lang==='ar'?"حذف هذا الهدف؟":"Delete this goal?")) return;
+    await sb.from('goals').delete().eq('id', id);
+    setGoals(goals.filter(g => g.id !== id));
+  }
+
+  function finishOnboarding() {
+    if(goals.length === 0) return alert(lang==='ar'?"الرجاء إضافة هدف واحد على الأقل.":"Please add at least one goal.");
+    localStorage.setItem('onboarding_done_'+user, 'true');
+    setIsOnboarding(false);
   }
 
   function formatTime(seconds) {
@@ -401,6 +461,36 @@ function App(){
 
   if(!team) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loadingTeam')}</div>;
 
+  // ONBOARDING SCREEN
+  if (isOnboarding) {
+    return (
+      <div className="container" style={{marginTop:40}}>
+        <div className="header" style={{justifyContent:'flex-end'}}>{langBtn}</div>
+        <h1 style={{textAlign:'center',color:'#7CFF4F',fontSize:20}}>{t('goalSetupTitle')}</h1>
+        <p style={{textAlign:'center',color:'#888',marginBottom:30}}>{t('goalSetupSub')}</p>
+        
+        <div style={{marginBottom:20}}>
+          {goals.map(g => (
+            <div key={g.id} className="goal-card" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span>{g.title}</span>
+              <button className="delete-btn" onClick={()=>deleteGoal(g.id)}>✕</button>
+            </div>
+          ))}
+        </div>
+
+        <div className="add-task" style={{marginBottom:40}}>
+          <input placeholder={t('goalPlaceholder')} value={newGoalLabel} onChange={e=>setNewGoalLabel(e.target.value)} />
+          <button onClick={addGoal}>+</button>
+        </div>
+
+        <button className="primary" onClick={finishOnboarding} style={{width:'100%',padding:20,fontSize:16}}>
+          {t('startChallenge')} 🚀
+        </button>
+      </div>
+    );
+  }
+
+  // MAIN APP
   const rank = RANKS.slice().reverse().find(r => (profile.xp||0) >= r.min) || RANKS[0];
   const nextRank = RANKS.find(r => (profile.xp||0) < r.min);
   const progress = nextRank ? (((profile.xp||0)-rank.min)/(nextRank.min-rank.min))*100 : 100;
@@ -421,6 +511,7 @@ function App(){
 
       {page === 'home' && (
         <>
+          <h2 style={{color:'#7CFF4F', marginTop:0, marginBottom:10, textAlign:'center'}}>{team.name}</h2>
           <div className="invite-box">
             <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>{t('inviteTitle')}</div>
             <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
@@ -450,9 +541,7 @@ function App(){
                 {studyTime>=1800 ? t('targetReached') : '30 ' + t('minReq')}
               </div>
             </div>
-            <div className="timer-val">
-              {formatTime(studyTime)}
-            </div>
+            <div className="timer-val">{formatTime(studyTime)}</div>
             <div style={{display:'flex',gap:10}}>
               <button onClick={()=>setStudyRunning(!studyRunning)} style={{flex:2,background:studyRunning?'#ff4f4f':'#7CFF4F',color:studyRunning?'#fff':'#000'}}>
                 {studyRunning?t('pauseBtn'):t('startBtn')}
@@ -468,9 +557,7 @@ function App(){
                 {quranTime>=600 ? t('targetReached') : '10 ' + t('minReq')}
               </div>
             </div>
-            <div className="timer-val">
-              {formatTime(quranTime)}
-            </div>
+            <div className="timer-val">{formatTime(quranTime)}</div>
             <div style={{display:'flex',gap:10}}>
               <button onClick={()=>setQuranRunning(!quranRunning)} style={{flex:2,background:quranRunning?'#ff4f4f':'#7CFF4F',color:quranRunning?'#fff':'#000'}}>
                 {quranRunning?t('pauseBtn'):t('startBtn')}
@@ -481,12 +568,16 @@ function App(){
 
           <h2 style={{color:'#ff4f4f'}}>{t('mandatory')} ({mandatoryDoneCount}/{MANDATORY_TASKS.length})</h2>
           {MANDATORY_TASKS.map(task=>{
-            const isDone = tasks.find(x=>x.task_key===task.key)?.done;
+            const taskData = tasks.find(x=>x.task_key===task.key); 
+            const isDone = taskData?.done;
             const label = lang==='ar' ? task.labelAr : task.label;
             return (
               <div className={`task ${isDone?'done':''}`} key={task.key}>
                 <span className="icon">{task.icon}</span><span className="label">{label}</span>
-                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                {taskData?.proof_url && (
+                  <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
+                )}
+                <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
                 <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(task.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
               </div>
             );
@@ -494,17 +585,24 @@ function App(){
 
           <h2 style={{color:'#888'}}>{t('extraXp')}</h2>
           {extraTasks.map(task=>{
-            const isDone = tasks.find(x=>x.task_key===task.key)?.done;
+            const taskData = tasks.find(x=>x.task_key===task.key); 
+            const isDone = taskData?.done;
             let label = task.label;
             if (lang==='ar') {
               const found = EXTRA_TASKS.find(x=>x.key===task.key);
               if (found) label = found.labelAr;
             }
+            const index = extraTasks.findIndex(t => t.key === task.key);
+            const xpValue = index < 8 ? 10 : 2;
 
             return (
               <div className={`task ${isDone?'done':''}`} key={task.key}>
-                <span className="icon">{task.icon}</span><span className="label">{label}</span>
-                <label className="upload-btn">📷 <input type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
+                <span className="icon">{task.icon}</span>
+                <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{xpValue} XP)</span></span>
+                {taskData?.proof_url && (
+                  <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
+                )}
+                <label className="upload-btn">📷 <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadProof(task.key,e.target.files[0])}}/></label>
                 <input type="checkbox" checked={isDone||false} onChange={e=>toggleTask(task.key,e.target.checked)} style={{width:20,height:20,accentColor:'#7CFF4F'}}/>
                 {task.key.startsWith('custom_') && (
                   <button className="delete-btn" onClick={()=>deleteTask(task.id)}>✕</button>
@@ -513,12 +611,38 @@ function App(){
             );
           })}
 
-          {extraTasks.length < 8 && (
-            <div className="add-task">
-              <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
-              <button onClick={addTask}>+</button>
+          <div className="add-task">
+            <input placeholder={t('addTaskPlaceholder')} value={newTaskLabel} onChange={e=>setNewTaskLabel(e.target.value)} />
+            <button onClick={addTask}>+</button>
+          </div>
+        </>
+      )}
+
+      {page === 'goals' && (
+        <>
+          <h2 style={{color:'#7CFF4F', textAlign:'center'}}>{t('myGoals')}</h2>
+          {goals.length === 0 && <p style={{textAlign:'center',color:'#888'}}>{t('noGoals')}</p>}
+          
+          {goals.map(g => (
+            <div key={g.id} className="goal-card" style={{borderLeftColor: g.status === 'done' ? '#7CFF4F' : '#ff4f4f'}}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:10}}>
+                <span style={{fontSize:15, fontWeight:'bold', textDecoration: g.status === 'done' ? 'line-through' : 'none', color: g.status === 'done' ? '#888' : '#fff'}}>
+                  {g.title}
+                </span>
+                <button className="delete-btn" onClick={()=>deleteGoal(g.id)}>✕</button>
+              </div>
+              {g.status !== 'done' && (
+                <button onClick={()=>completeGoal(g.id)} style={{marginTop:10, background:'#7CFF4F', color:'#000', padding:'6px 12px', fontSize:12, border:'none'}}>
+                  {t('markDone')}
+                </button>
+              )}
             </div>
-          )}
+          ))}
+
+          <div className="add-task" style={{marginTop:20}}>
+            <input placeholder={t('goalPlaceholder')} value={newGoalLabel} onChange={e=>setNewGoalLabel(e.target.value)} />
+            <button onClick={addGoal}>+</button>
+          </div>
         </>
       )}
 
@@ -556,22 +680,30 @@ function App(){
       )}
 
       {page === 'ranks' && (
-        <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <thead><tr><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>#</th><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>{t('member')}</th><th style={{textAlign:lang==='ar'?'left':'right',color:'#888',fontSize:10}}>{t('xp')}</th></tr></thead>
-          <tbody>
-            {leaderboard.map((r,i)=>(
-              <tr key={r.user_id} style={{borderBottom:'1px solid #222'}}>
-                <td style={{padding:15}}>{i+1}</td>
-                <td style={{padding:15,fontWeight:r.user_id===user?'bold':'normal',color:r.user_id===user?'#7CFF4F':'#fff'}}>{r.username}<br/><span style={{fontSize:10,color:'#888'}}>{r.title||'Rookie'}</span></td>
-                <td style={{padding:15,textAlign:lang==='ar'?'left':'right'}}>{r.xp}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <h2 style={{textAlign:'center', color:'#7CFF4F'}}>{t('globalRanks')}</h2>
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead><tr><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>#</th><th style={{textAlign:lang==='ar'?'right':'left',color:'#888',fontSize:10}}>{t('member')}</th><th style={{textAlign:lang==='ar'?'left':'right',color:'#888',fontSize:10}}>{t('xp')}</th></tr></thead>
+            <tbody>
+              {leaderboard.map((r,i)=>(
+                <tr key={r.user_id} style={{borderBottom:'1px solid #222'}}>
+                  <td style={{padding:15}}>{i+1}</td>
+                  <td style={{padding:15,fontWeight:r.user_id===user?'bold':'normal',color:r.user_id===user?'#7CFF4F':'#fff'}}>
+                    {r.username}
+                    <br/>
+                    <span style={{fontSize:10,color:'#888'}}>{r.team_name} • {r.title||'Rookie'}</span>
+                  </td>
+                  <td style={{padding:15,textAlign:lang==='ar'?'left':'right'}}>{r.xp}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
 
       <nav>
         <button className={page==='home'?'active':''} onClick={()=>setPage('home')}><span>🏠</span>{t('home')}</button>
+        <button className={page==='goals'?'active':''} onClick={()=>setPage('goals')}><span>🎯</span>{t('goalsTab')}</button>
         <button className={page==='store'?'active':''} onClick={()=>setPage('store')}><span>🛒</span>{t('store')}</button>
         <button className={page==='feed'?'active':''} onClick={()=>setPage('feed')}><span>💬</span>{t('feed')}</button>
         <button className={page==='ranks'?'active':''} onClick={()=>setPage('ranks')}><span>🏆</span>{t('ranks')}</button>
