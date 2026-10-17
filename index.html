@@ -174,7 +174,7 @@ const STRINGS = {
     skipApplied:'Skip Day used! Enjoy your break.', alreadyUsed:'Already applied.', notEnoughItems:'You don\'t have this item. Buy it in the Store!',
     uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!', perfectDay:'🔥 PERFECT DAY! +25 Bonus XP & Coins',
     dailyReward:'Daily Login Reward', weeklyReward:'Weekly Bonus!', monthlyReward:'Monthly Mega Bonus!', claim:'CLAIM REWARD',
-    loginStreak:'Login Streak'
+    loginStreak:'Login Streak', claimed:'Claimed'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
@@ -200,7 +200,7 @@ const STRINGS = {
     skipApplied:'تم استخدام التخطي! استمتع بالراحة.', alreadyUsed:'تم الاستخدام بالفعل.', notEnoughItems:'ليس لديك هذا العنصر. اشتره من المتجر!',
     uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!', perfectDay:'🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية',
     dailyReward:'مكافأة الدخول اليومية', weeklyReward:'مكافأة أسبوعية!', monthlyReward:'مكافأة شهرية ضخمة!', claim:'استلام المكافأة',
-    loginStreak:'سلسلة الدخول'
+    loginStreak:'سلسلة الدخول', claimed:'تم الاستلام'
   }
 };
 
@@ -236,7 +236,6 @@ function App(){
   const [isOnboarding, setIsOnboarding] = React.useState(false);
   const [notifEnabled, setNotifEnabled] = React.useState(localStorage.getItem('notifEnabled') === 'true');
 
-  // Reward State
   const [showReward, setShowReward] = React.useState(false);
   const [rewardInfo, setRewardInfo] = React.useState({ amount: 0, streak: 0, type: 'daily' });
 
@@ -426,7 +425,6 @@ function App(){
       setProfile(data);
       if(data.team_id) loadTeam(data.team_id);
 
-      // Check Daily Reward
       if (data.last_claimed !== today) {
         let newStreak = 1;
         if (data.last_claimed === yesterday) newStreak = (data.login_streak || 0) + 1;
@@ -477,17 +475,31 @@ function App(){
 
   async function loadTasks(){ const {data}=await sb.from('tasks').select('*').eq('user_id',user).eq('date',today); setTasks(data||[]); }
   async function loadHistory(){ const {data}=await sb.from('tasks').select('date, done, task_key').eq('user_id',user); setHistory(data||[]); }
-  async function loadFeed(){ const {data}=await sb.from('feed').select('*, profiles(username, avatar_url)').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
+  
+  async function loadFeed(){ 
+    const {data:fd} = await sb.from('feed').select('*').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); 
+    const {data:ps} = await sb.from('profiles').select('id, username, avatar_url').eq('team_id', team.id);
+    
+    const pMap = (ps||[]).reduce((acc,p)=>{ acc[p.id]=p; return acc; }, {});
+    const merged = (fd||[]).map(f => ({...f, profile: pMap[f.user_id] || {username: 'User', avatar_url: null}}));
+    setFeed(merged);
+  }
   
   async function loadTeamProofs(){
-    const {data, error} = await sb.from('tasks')
-      .select('*, profiles(username, avatar_url)')
+    const {data:pr, error} = await sb.from('tasks')
+      .select('*')
       .eq('team_id', team.id)
       .eq('date', today)
       .not('proof_url', 'is', null)
       .order('id', {ascending: false});
+      
     if(error) console.log(error);
-    setTeamProofs(data || []);
+    
+    const {data:ps} = await sb.from('profiles').select('id, username, avatar_url').eq('team_id', team.id);
+    const pMap = (ps||[]).reduce((acc,p)=>{ acc[p.id]=p; return acc; }, {});
+    
+    const merged = (pr||[]).map(p => ({...p, profile: pMap[p.user_id] || {username: 'User', avatar_url: null}}));
+    setTeamProofs(merged);
   }
 
   async function loadGoals() {
@@ -1136,8 +1148,8 @@ function App(){
             {feed.map((f, i)=>(
               <div className="card" key={f.id} style={{animationDelay: `${i*0.05}s`}}>
                 <div style={{display:'flex', alignItems:'center', marginBottom:5}}>
-                  <img src={f.profiles?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(f.profiles?.username||'User')} className="avatar-sm" alt="avatar" />
-                  <span style={{fontSize:11,color:'#7CFF4F', fontWeight:'bold'}}>{f.profiles?.username || 'User'}</span>
+                  <img src={f.profile?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(f.profile?.username||'User')} className="avatar-sm" alt="avatar" />
+                  <span style={{fontSize:11,color:'#7CFF4F', fontWeight:'bold'}}>{f.profile?.username || 'User'}</span>
                 </div>
                 <div>{f.message}</div>
               </div>
@@ -1160,9 +1172,9 @@ function App(){
                   <img src={p.proof_url} alt="Proof" className="proof-img" onClick={()=>window.open(p.proof_url, '_blank')} />
                   <div className="proof-info">
                     <div style={{display:'flex', alignItems:'center'}}>
-                      <img src={p.profiles?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(p.profiles?.username||'User')} className="avatar-sm" alt="avatar" />
+                      <img src={p.profile?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(p.profile?.username||'User')} className="avatar-sm" alt="avatar" />
                       <div>
-                        <div style={{fontWeight:'bold', color:'#fff'}}>{p.profiles?.username || 'User'}</div>
+                        <div style={{fontWeight:'bold', color:'#fff'}}>{p.profile?.username || 'User'}</div>
                         <div style={{fontSize:11, color:'#888'}}>{taskLabel}</div>
                       </div>
                     </div>
