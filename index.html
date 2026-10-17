@@ -21,13 +21,18 @@ button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;fon
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
 button:disabled{opacity:0.5;}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.header-actions{display:flex;align-items:center;gap:8px;}
+.header-actions{display:flex;align-items:center;gap:5px;}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;}
+.avatar-sm{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#222;border:1px solid #444;margin-right:8px;vertical-align:middle;}
 .lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
+.coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
 .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:20px;}
 .box{aspect-ratio:1;background:#111;border-radius:3px;border:1px solid #222;}
 .box.done{background:#7CFF4F;border-color:#7CFF4F;box-shadow:0 0 5px #7CFF4F;}
+.box.freeze{background:#3b82f6;border-color:#60a5fa;box-shadow:0 0 5px #3b82f6;}
 .task{display:flex;align-items:center;gap:10px;padding:14px;background:#0a0a0a;border-radius:8px;margin-bottom:10px;border:1px solid #222;}
 .task.done{border-color:#7CFF4F;background:#7CFF4F11;}
 .task .icon{font-size:20px;}
@@ -35,8 +40,6 @@ button:disabled{opacity:0.5;}
 .upload-btn{background:#111;padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid #333;}
 .timer-box{background:#0a0a0a;padding:15px;border-radius:10px;margin-bottom:15px;border:1px dashed #7CFF4F;}
 .timer-val{font-family:monospace;font-size:36px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;letter-spacing:2px;}
-.nonce{background:#7CFF4F11;border:1px dashed #7CFF4F;padding:15px;border-radius:8px;text-align:center;margin-bottom:20px;}
-.nonce-code{font-size:24px;font-weight:900;letter-spacing:5px;color:#7CFF4F;font-family:monospace;}
 .card{background:#0a0a0a;padding:15px;border-radius:8px;margin-bottom:10px;border:1px solid #222;}
 .rank-card{background:#0a0a0a;padding:20px;border-radius:12px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
 .xp-bar{height:6px;background:#111;border-radius:3px;margin-top:10px;overflow:hidden;}
@@ -51,6 +54,11 @@ nav button span{font-size:22px;}
 .delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;}
 .invite-box{background:#111; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #333; text-align:center;}
 .goal-card{background:#111; padding:15px; border-radius:8px; margin-bottom:10px; border-left:3px solid #7CFF4F;}
+.notify-btn{background:#1e293b; color:#7CFF4F; border:1px solid #7CFF4F; padding:6px 10px; border-radius:20px; font-size:12px; cursor:pointer; font-weight:bold; margin-bottom:10px;}
+.proof-card{background:#111; border-radius:8px; overflow:hidden; margin-bottom:15px; border:1px solid #333;}
+.proof-img{width:100%; height:auto; max-height:300px; object-fit:cover; display:block;}
+.proof-info{padding:10px; display:flex; justify-content:space-between; align-items:center;}
+.freeze-alert{background:#3b82f622; border:1px solid #3b82f6; padding:12px; border-radius:8px; margin-bottom:15px; text-align:center; font-size:13px;}
 </style>
 </head>
 <body>
@@ -58,7 +66,7 @@ nav button span{font-size:22px;}
 <script type="text/babel">
 const { createClient } = supabase;
 
-// ⚠️ PUT YOUR URL AND KEY HERE
+// ⚠️ YOUR KEYS ARE ALREADY IN HERE
 const sb = createClient('https://ufwrdfsovhbjxghuwijz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmd3JkZnNvdmhianhnaHV3aWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzAxNzAsImV4cCI6MjEwNzc0NjE3MH0.x00xff1c0ZGy5nHEHswkBrjrwcWokv-nKB_uqqsGiig');
 
 const MANDATORY_TASKS = [
@@ -79,8 +87,11 @@ const EXTRA_TASKS = [
 ];
 
 const RANKS = [{ name:'BRONZE', min:0 },{ name:'SILVER', min:300 },{ name:'GOLD', min:800 },{ name:'PLATINUM', min:1800 },{ name:'DIAMOND', min:3000 },{ name:'MASTER', min:5000 }];
+
+// STORE NOW COSTS COINS (not XP)
 const STORE = [
-  { id:'freeze', name:'Streak Freeze ❄️', nameAr:'تجميد السلسلة ❄️', price:300, desc:'Protects streak if you miss a day.', descAr:'يحمي السلسلة إذا فوّت يوم.' },
+  { id:'freeze', name:'Streak Freeze ❄️', nameAr:'تجميد السلسلة ❄️', price:300, desc:'Missed a day? Use this to keep your streak alive.', descAr:'فوّت يوم؟ استخدم هذا للحفاظ على سلسلتك.' },
+  { id:'skip', name:'Skip Day 🎫', nameAr:'تخطي يوم 🎫', price:500, desc:'Take a day off. Streak stays alive today.', descAr:'خذ يوم راحة. تبقى السلسلة حية اليوم.' },
   { id:'title_beast', name:'Title: The Beast 🔥', nameAr:'لقب: الوحش 🔥', price:500, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' },
   { id:'title_machine', name:'Title: The Machine 🤖', nameAr:'لقب: الآلة 🤖', price:800, desc:'Shows on leaderboard.', descAr:'يظهر في لوحة الصدارة.' }
 ];
@@ -90,41 +101,49 @@ const STRINGS = {
     tagline:'82-DAY TRANSFORMATION', enterName:'ENTER YOUR NAME', enterPass:'PASSWORD', start:'START',
     createTeam:'CREATE A TEAM', joinTeam:'JOIN A TEAM', teamName:'TEAM NAME', inviteCode:'INVITE CODE',
     create:'CREATE', join:'JOIN', logout:'Logout', loading:'LOADING...', loadingTeam:'LOADING TEAM...', loadingProfile:'Loading Profile...',
-    proofCode:"TODAY'S PROOF CODE", proofHint:'Write this in your photos!', grid:'82-DAY GRID',
-    studyTimer:'📚 STUDY STOPWATCH', quranTimer:'📖 QURAN STOPWATCH', targetReached:'✅ TARGET REACHED', 
+    grid:'82-DAY GRID', studyTimer:'📚 STUDY STOPWATCH', quranTimer:'📖 QURAN STOPWATCH', targetReached:'✅ TARGET REACHED', 
     minReq:'MIN REQUIRED', startBtn:'START', pauseBtn:'PAUSE', resetBtn:'RESET',
-    mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA XP', addTaskPlaceholder:'Add your own task...',
-    currentRank:'CURRENT RANK', buy:'BUY', post:'+ POST', teamFeed:'TEAM FEED', user:'USER',
-    home:'HOME', goalsTab:'GOALS', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP',
+    mandatory:'NON-NEGOTIABLE', extraXp:'EXTRA TASKS', addTaskPlaceholder:'Add your own task...',
+    currentRank:'CURRENT RANK', buy:'BUY', post:'+ POST', teamFeed:'TEAM PROOFS & FEED', user:'USER',
+    home:'HOME', goalsTab:'GOALS', store:'STORE', feed:'FEED', ranks:'RANKS', member:'MEMBER', xp:'XP', coins:'Coins',
     inviteTitle:'TEAM INVITE CODE', inviteHint:'Share this code with your friends to let them join!',
     globalRanks:'GLOBAL LEADERBOARD',
-    
     goalSetupTitle:'WHAT IS YOUR ULTIMATE GOAL?', goalSetupSub:'What do you want to achieve by the end of these 82 days?',
-    goalPlaceholder:'e.g., Lose 10kg, Finish 3 books, Memorize Juz 30...', addGoal:'Add Goal', startChallenge:'START CHALLENGE',
+    goalPlaceholder:'e.g., Lose 10kg, Finish 3 books...', addGoal:'Add Goal', startChallenge:'START CHALLENGE',
     myGoals:'MY 82-DAY GOALS', noGoals:'No goals set yet.', markDone:'Mark Done', deleteGoal:'Delete',
     wrongPass:'Wrong password', enterBoth:'Please enter a name and password',
     welcomeBack:'Welcome back,', setupPassMsg:'You need to create a password to secure your account.',
-    newPass:'New Password', saveLogin:'Save & Login'
+    newPass:'New Password', saveLogin:'Save & Login',
+    enableNotify:'🔔 Enable Reminders', notifyOn:'🔔 Reminders Active', notifTitle:'TEAM 1%', notifBody:'You still have tasks to complete today!',
+    noProofs:'No photo proofs uploaded yet today.', teamChat:'TEAM CHAT', teamProofs:'TODAY\'S PROOFS',
+    missedYesterday:'You missed yesterday!', useFreeze:'Use a Streak Freeze to save it?', useFreezeBtn:'Use Freeze ❄️',
+    skipToday:'Use a Skip Day?', useSkipBtn:'Use Skip Day 🎫', freezeApplied:'Streak Freeze used! Streak saved.',
+    skipApplied:'Skip Day used! Enjoy your break.', alreadyUsed:'Already applied.', notEnoughItems:'You don\'t have this item. Buy it in the Store!',
+    uploadAvatar:'Tap to change picture', notEnoughCoins:'Not enough coins!'
   },
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
     createTeam:'أنشئ فريق', joinTeam:'انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
-    create:'إنشاء', join:'انضمام', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
-    proofCode:"كود الإثبات اليوم", proofHint:'اكتب هذا في صورك!', grid:'شبكة ٨٢ يوم',
-    studyTimer:'📚 مؤقت الدراسة', quranTimer:'📖 مؤقت القرآن', targetReached:'✅ تم الوصول للهدف', 
+    create:'إنشاء', join:'انضم', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
+    grid:'شبكة ٨٢ يوم', studyTimer:'📚 مؤقت الدراسة', quranTimer:'📖 مؤقت القرآن', targetReached:'✅ تم الوصول للهدف', 
     minReq:'دقيقة مطلوبة', startBtn:'ابدأ', pauseBtn:'إيقاف', resetBtn:'تصفير',
-    mandatory:'غير قابل للتفاوض', extraXp:'نقاط إضافية', addTaskPlaceholder:'أضف مهمتك...',
-    currentRank:'الرتبة الحالية', buy:'شراء', post:'+ نشر', teamFeed:'منشورات الفريق', user:'مستخدم',
-    home:'الرئيسية', goalsTab:'الأهداف', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة',
+    mandatory:'غير قابل للتفاوض', extraXp:'مهام إضافية', addTaskPlaceholder:'أضف مهمتك...',
+    currentRank:'الرتبة الحالية', buy:'شراء', post:'+ نشر', teamFeed:'إثباتات ومنشورات الفريق', user:'مستخدم',
+    home:'الرئيسية', goalsTab:'الأهداف', store:'المتجر', feed:'المنشورات', ranks:'الترتيب', member:'عضو', xp:'نقطة', coins:'عملة',
     inviteTitle:'كود دعوة الفريق', inviteHint:'شارك هذا الكود مع أصدقائك للانضمام!',
     globalRanks:'لوحة الصدارة العالمية',
-    
     goalSetupTitle:'ما هو هدفك الأسمى؟', goalSetupSub:'ماذا تريد أن تحقق بنهاية هذه الـ ٨٢ يوم؟',
-    goalPlaceholder:'مثال: أخسر ١٠ كيلو، أخلص ٣ كتب، أحفظ جزء عم...', addGoal:'إضافة هدف', startChallenge:'ابدأ التحدي',
+    goalPlaceholder:'مثال: أخسر ١٠ كيلو، أخلص ٣ كتب...', addGoal:'إضافة هدف', startChallenge:'ابدأ التحدي',
     myGoals:'أهدافي لـ ٨٢ يوم', noGoals:'لم يتم تعيين أهداف بعد.', markDone:'تم الإنجاز', deleteGoal:'حذف',
     wrongPass:'كلمة المرور غير صحيحة', enterBoth:'الرجاء إدخال الاسم وكلمة المرور',
     welcomeBack:'أهلاً بعودتك،', setupPassMsg:'تحتاج إلى إنشاء كلمة مرور لتأمين حسابك.',
-    newPass:'كلمة مرور جديدة', saveLogin:'حفظ ودخول'
+    newPass:'كلمة مرور جديدة', saveLogin:'حفظ ودخول',
+    enableNotify:'🔔 تفعيل التذكيرات', notifyOn:'🔔 التذكيرات مفعلة', notifTitle:'TEAM 1%', notifBody:'لا يزال لديك مهام يجب إكمالها اليوم!',
+    noProofs:'لم يتم رفع أي صور إثبات اليوم.', teamChat:'دردشة الفريق', teamProofs:'إثباتات اليوم',
+    missedYesterday:'لقد فوّت يوم أمس!', useFreeze:'هل تريد استخدام تجميد السلسلة لحفظها؟', useFreezeBtn:'استخدم التجميد ❄️',
+    skipToday:'هل تريد استخدام تخطي يوم؟', useSkipBtn:'استخدم التخطي 🎫', freezeApplied:'تم استخدام التجميد! تم حفظ السلسلة.',
+    skipApplied:'تم استخدام التخطي! استمتع بالراحة.', alreadyUsed:'تم الاستخدام بالفعل.', notEnoughItems:'ليس لديك هذا العنصر. اشتره من المتجر!',
+    uploadAvatar:'اضغط لتغيير الصورة', notEnoughCoins:'نقاطك غير كافية!'
   }
 };
 
@@ -149,12 +168,13 @@ function App(){
   const [goals, setGoals] = React.useState([]);
   const [history, setHistory] = React.useState([]);
   const [feed, setFeed] = React.useState([]);
+  const [teamProofs, setTeamProofs] = React.useState([]);
   const [leaderboard, setLeaderboard] = React.useState([]);
   
   const [page, setPage] = React.useState('home');
   const [loading, setLoading] = React.useState(true);
-  
   const [isOnboarding, setIsOnboarding] = React.useState(false);
+  const [notifEnabled, setNotifEnabled] = React.useState(localStorage.getItem('notifEnabled') === 'true');
 
   const [nameInput, setNameInput] = React.useState('');
   const [passInput, setPassInput] = React.useState('');
@@ -163,11 +183,9 @@ function App(){
   const [newTaskLabel, setNewTaskLabel] = React.useState('');
   const [newGoalLabel, setNewGoalLabel] = React.useState('');
 
-  // Forced Password Setup for old accounts
   const [setupPassUser, setSetupPassUser] = React.useState(null);
   const [newPassSetup, setNewPassSetup] = React.useState('');
 
-  // Background-Proof Timer States
   const [studyTime, setStudyTime] = React.useState(0);
   const [studyRunning, setStudyRunning] = React.useState(false);
   const [studyStartTime, setStudyStartTime] = React.useState(null);
@@ -177,7 +195,7 @@ function App(){
   const [quranStartTime, setQuranStartTime] = React.useState(null);
 
   const today = new Date().toLocaleDateString('en-CA');
-  const nonce = React.useMemo(()=>{ let n=localStorage.getItem('nonce-'+today); if(!n){n=Math.random().toString(36).substring(2,6).toUpperCase();localStorage.setItem('nonce-'+today,n);} return n; },[today]);
+  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
 
   React.useEffect(()=>{
     localStorage.setItem('lang', lang);
@@ -193,8 +211,39 @@ function App(){
 
   React.useEffect(()=>{ if(user) loadProfile(); },[user]);
   React.useEffect(()=>{ if(profile?.team_id) loadTeam(profile.team_id); },[profile]);
-  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadLeaderboard(); } },[team]);
-  React.useEffect(()=>{ if(page==='ranks') loadLeaderboard(); }, [page]);
+  React.useEffect(()=>{ if(team){ loadTasks(); loadCustomTasks(); loadGoals(); loadHistory(); loadFeed(); loadTeamProofs(); loadLeaderboard(); } },[team]);
+  React.useEffect(()=>{ 
+    if(page==='ranks') loadLeaderboard(); 
+    if(page==='feed') { loadFeed(); loadTeamProofs(); }
+  }, [page]);
+
+  // NOTIFICATION TIMER
+  React.useEffect(() => {
+    let interval;
+    if (notifEnabled && team) {
+      interval = setInterval(() => {
+        const doneCount = tasks.filter(t => t.done && MANDATORY_TASKS.some(m => m.key === t.task_key)).length;
+        if (doneCount < MANDATORY_TASKS.length) {
+          if (Notification.permission === 'granted') {
+            new Notification(t('notifTitle'), { body: t('notifBody'), icon: '/icon.png' });
+          }
+        }
+      }, 60 * 60 * 1000);
+    }
+    return () => clearInterval(interval);
+  }, [notifEnabled, tasks, team, lang]);
+
+  async function enableNotifications() {
+    if (!("Notification" in window)) return alert("This browser does not support notifications.");
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      setNotifEnabled(true);
+      localStorage.setItem('notifEnabled', 'true');
+      new Notification(t('notifTitle'), { body: t('notifBody') });
+    } else {
+      alert("Notifications blocked. Please enable them in your browser settings.");
+    }
+  }
 
   React.useEffect(() => {
     const sDate = localStorage.getItem('studyDate');
@@ -306,8 +355,18 @@ function App(){
 
   async function loadTasks(){ const {data}=await sb.from('tasks').select('*').eq('user_id',user).eq('date',today); setTasks(data||[]); }
   async function loadHistory(){ const {data}=await sb.from('tasks').select('date, done, task_key').eq('user_id',user); setHistory(data||[]); }
-  async function loadFeed(){ const {data}=await sb.from('feed').select('*').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
+  async function loadFeed(){ const {data}=await sb.from('feed').select('*, profiles(username, avatar_url)').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
   
+  async function loadTeamProofs(){
+    const {data} = await sb.from('tasks')
+      .select('*, profiles(username, avatar_url)')
+      .eq('team_id', team.id)
+      .eq('date', today)
+      .not('proof_url', 'is', null)
+      .order('id', {ascending: false});
+    setTeamProofs(data || []);
+  }
+
   async function loadGoals() {
     const {data} = await sb.from('goals').select('*').eq('user_id', user).order('created_at', {ascending: true});
     setGoals(data || []);
@@ -329,7 +388,7 @@ function App(){
   }
 
   async function loadLeaderboard(){
-    const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title, teams(name)');
+    const {data:ps, error}=await sb.from('profiles').select('id, username, xp, title, avatar_url, teams(name)');
     if(error) return console.log(error);
     
     const rows=(ps||[]).map(p=>({ 
@@ -337,11 +396,22 @@ function App(){
       username: p.username, 
       xp: p.xp || 0, 
       title: p.title,
+      avatar_url: p.avatar_url,
       team_name: p.teams?.name || 'No Team'
     }));
     
     rows.sort((a,b)=>b.xp-a.xp); 
     setLeaderboard(rows);
+  }
+
+  async function uploadAvatar(file) {
+    const path = `${user}/avatar.jpg`;
+    await sb.storage.from('avatars').upload(path, file, {upsert:true});
+    const {data:{publicUrl}} = sb.storage.from('avatars').getPublicUrl(path);
+    const urlWithBuster = publicUrl + '?t=' + Date.now();
+    await sb.from('profiles').update({avatar_url: urlWithBuster}).eq('id', user);
+    setProfile(p => ({...p, avatar_url: urlWithBuster}));
+    loadLeaderboard(); loadFeed(); loadTeamProofs();
   }
 
   async function handleAuth(){
@@ -423,12 +493,16 @@ function App(){
       const allMandatoryDone = MANDATORY_TASKS.every(t => newDoneTasks.includes(t.key));
       if(allMandatoryDone && !existing?.done) {
         bonus = 25;
-        alert(lang==='ar'?"🔥 يوم مثالي! +٢٥ نقطة إضافية":"🔥 PERFECT DAY! +25 Bonus XP");
+        alert(lang==='ar'?"🔥 يوم مثالي! +٢٥ نقطة وعملة إضافية":"🔥 PERFECT DAY! +25 Bonus XP & Coins");
       }
     }
 
-    await sb.from('profiles').update({xp:Math.max(0,(profile.xp||0)+xpChange+bonus)}).eq('id',user);
-    setProfile(p=>({...p,xp:Math.max(0,(p.xp||0)+xpChange+bonus)}));
+    // Award BOTH XP and Coins
+    const newXp = Math.max(0, (profile.xp||0) + xpChange + bonus);
+    const newCoins = Math.max(0, (profile.coins||0) + xpChange + bonus);
+
+    await sb.from('profiles').update({xp: newXp, coins: newCoins}).eq('id',user);
+    setProfile(p=>({...p, xp: newXp, coins: newCoins}));
     await loadTasks(); loadHistory(); loadLeaderboard();
   }
 
@@ -491,15 +565,38 @@ function App(){
     const existing=tasks.find(t=>t.task_key===key);
     if(existing) await sb.from('tasks').update({proof_url:publicUrl,done:true}).eq('id',existing.id);
     else await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, proof_url:publicUrl, done:true});
-    loadTasks(); loadHistory();
+    loadTasks(); loadHistory(); loadTeamProofs();
   }
 
   async function buyItem(item){
-    if((profile.xp||0) < item.price) return alert(lang==='ar'?'نقاطك غير كافية!':'Not enough XP!');
+    // Check COINS instead of XP
+    if((profile.coins||0) < item.price) return alert(t('notEnoughCoins'));
     const newInv=[...(profile.inventory||[]), item.id];
-    await sb.from('profiles').update({xp:profile.xp-item.price, inventory:newInv}).eq('id',user);
-    setProfile(p=>({...p,xp:p.xp-item.price, inventory:newInv}));
+    const updates = {coins: profile.coins-item.price, inventory: newInv};
+    
+    if(item.id === 'title_beast') updates.title = 'The Beast 🔥';
+    if(item.id === 'title_machine') updates.title = 'The Machine 🤖';
+    
+    await sb.from('profiles').update(updates).eq('id',user);
+    setProfile(p=>({...p,...updates}));
     alert(lang==='ar'?`تم شراء ${item.nameAr}!`:`Purchased ${item.name}!`);
+  }
+
+  // --- STORE LOGIC: Use Freeze & Skip ---
+  async function useItem(itemId, targetDate) {
+    const inv = [...(profile.inventory||[])];
+    const idx = inv.indexOf(itemId);
+    if(idx === -1) return alert(t('notEnoughItems'));
+    
+    inv.splice(idx, 1); // Remove 1 item
+    await sb.from('profiles').update({inventory: inv}).eq('id', user);
+    
+    // Create a fake task record so the streak logic counts it
+    await sb.from('tasks').insert({user_id:user, team_id:team.id, date:targetDate, task_key:itemId, done:true});
+    
+    setProfile(p => ({...p, inventory: inv}));
+    loadHistory(); loadTasks();
+    alert(itemId === 'freeze' ? t('freezeApplied') : t('skipApplied'));
   }
 
   async function sendNudge(){
@@ -555,9 +652,19 @@ function App(){
 
   const mandatoryKeys = MANDATORY_TASKS.map(t=>t.key);
   const doneMandatoryByDate = {};
+  
+  // Track Freezes & Skips
+  const freezesUsed = new Set();
+  const skipsUsed = new Set();
+
   history.forEach(h => {
-    if(h.done && mandatoryKeys.includes(h.task_key)) {
-      doneMandatoryByDate[h.date] = (doneMandatoryByDate[h.date] || 0) + 1;
+    if(h.done) {
+      if(h.task_key === 'freeze') freezesUsed.add(h.date);
+      if(h.task_key === 'skip') skipsUsed.add(h.date);
+      
+      if(mandatoryKeys.includes(h.task_key)) {
+        doneMandatoryByDate[h.date] = (doneMandatoryByDate[h.date] || 0) + 1;
+      }
     }
   });
   
@@ -565,6 +672,10 @@ function App(){
   Object.entries(doneMandatoryByDate).forEach(([date,count])=>{
     if(count === mandatoryKeys.length) completeDates.add(date);
   });
+  
+  // Merge Freeze/Skip dates into completeDates
+  freezesUsed.forEach(d => completeDates.add(d));
+  skipsUsed.forEach(d => completeDates.add(d));
 
   let streak=0; let d=new Date();
   while(true){ 
@@ -573,11 +684,19 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
+  // Check if missed yesterday
+  const missedYesterday = !completeDates.has(yesterday) && history.length > 0;
+  const hasFreeze = (profile?.inventory||[]).includes('freeze');
+  const hasSkip = (profile?.inventory||[]).includes('skip');
+  
+  // Check if today is already skipped
+  const todayIsSkipped = skipsUsed.has(today);
+  const todayIsFrozen = freezesUsed.has(today);
+
   const langBtn = <button className="lang-btn" onClick={()=>setLang(lang==='en'?'ar':'en')}>🌐 {lang==='en'?'العربية':'English'}</button>;
 
   if(loading) return <div className="container" style={{textAlign:'center',marginTop:50,color:'#7CFF4F'}}>{t('loading')}</div>;
 
-  // FORCED PASSWORD SETUP SCREEN
   if (setupPassUser) {
     return (
       <div className="container" style={{marginTop:80}}>
@@ -659,9 +778,16 @@ function App(){
   return (
     <div className="container">
       <div className="header">
-        <h1>TEAM <span>1%</span></h1>
+        <div style={{display:'flex', alignItems:'center', gap:10}}>
+          <label>
+            <img src={profile.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+profile.username} alt="Avatar" className="avatar" />
+            <input type="file" accept="image/*" style={{display:'none'}} onChange={e=>{if(e.target.files[0]) uploadAvatar(e.target.files[0])}} />
+          </label>
+          <h1>TEAM <span>1%</span></h1>
+        </div>
         <div className="header-actions">
           {langBtn}
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
           <button className="leave-btn" onClick={leaveTeam}>{lang==='ar'?'مغادرة':'Leave'}</button>
           <div className="streak">🔥 {streak}</div>
         </div>
@@ -670,16 +796,35 @@ function App(){
       {page === 'home' && (
         <>
           <h2 style={{color:'#7CFF4F', marginTop:0, marginBottom:10, textAlign:'center'}}>{team.name}</h2>
+          
+          <div style={{display:'flex', justifyContent:'center', gap:10, marginBottom:20}}>
+            <div className="coins">🪙 {profile.coins || 0} {t('coins')}</div>
+            <div className="streak" style={{background:'#fff', color:'#000'}}>{profile.xp || 0} {t('xp')}</div>
+          </div>
+
+          {!notifEnabled && (
+            <div style={{textAlign:'center', marginBottom:20}}>
+              <button className="notify-btn" onClick={enableNotifications}>{t('enableNotify')}</button>
+            </div>
+          )}
+
+          {missedYesterday && !hasFreeze && (
+             <div className="freeze-alert" style={{borderColor:'#ff4f4f', background:'#ff4f4f22', color:'#fca5a5'}}>
+               ⚠️ {t('missedYesterday')} {lang==='ar'?'(تحتاج إلى شراء تجميد)':'(Buy a Freeze in Store)'}
+             </div>
+          )}
+
+          {missedYesterday && hasFreeze && (
+            <div className="freeze-alert">
+              ⚠️ {t('missedYesterday')} {t('useFreeze')}
+              <button onClick={()=>useItem('freeze', yesterday)} style={{background:'#3b82f6', color:'#fff', padding:'6px 10px', marginTop:10, width:'100%'}}>{t('useFreezeBtn')}</button>
+            </div>
+          )}
+
           <div className="invite-box">
             <div style={{fontSize:'12px', color:'#888', fontWeight:'bold'}}>{t('inviteTitle')}</div>
             <div style={{fontSize:'28px', fontWeight:'900', color:'#7CFF4F', letterSpacing:'4px', margin:'5px 0'}}>{team.invite_code}</div>
             <div style={{fontSize:'11px', color:'#666'}}>{t('inviteHint')}</div>
-          </div>
-
-          <div className="nonce">
-            <div style={{fontSize:10,color:'#888',marginBottom:5}}>{t('proofCode')}</div>
-            <div className="nonce-code">{nonce}</div>
-            <div style={{fontSize:10,color:'#7CFF4F',marginTop:5}}>{t('proofHint')}</div>
           </div>
 
           <h2>{t('grid')}</h2>
@@ -688,7 +833,8 @@ function App(){
               const d = new Date(team.created_at || Date.now()); d.setDate(d.getDate() + i);
               const ds = d.toLocaleDateString('en-CA');
               const isDone = completeDates.has(ds);
-              return <div key={i} className={`box ${isDone?'done':''}`} title={ds}></div>
+              const isFreeze = freezesUsed.has(ds);
+              return <div key={i} className={`box ${isDone?(isFreeze?'freeze':'done'):''}`} title={ds}></div>
             })}
           </div>
 
@@ -751,12 +897,12 @@ function App(){
               if (found) label = found.labelAr;
             }
             const index = extraTasks.findIndex(t => t.key === task.key);
-            const xpValue = index < 8 ? 10 : 2;
+            const reward = index < 8 ? 10 : 2;
 
             return (
               <div className={`task ${isDone?'done':''}`} key={task.key}>
                 <span className="icon">{task.icon}</span>
-                <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{xpValue} XP)</span></span>
+                <span className="label">{label} <span style={{fontSize:10, color:'#7CFF4F'}}>(+{reward})</span></span>
                 {taskData?.proof_url && (
                   <a href={taskData.proof_url} target="_blank" rel="noreferrer" style={{color:'#7CFF4F', fontSize:12, textDecoration:'underline', marginRight:5}}>View</a>
                 )}
@@ -810,13 +956,16 @@ function App(){
             <div style={{fontSize:10,color:'#888'}}>{t('currentRank')}</div>
             <div style={{fontSize:20,fontWeight:'bold'}}>{rank.name} • {(profile.xp||0)} {t('xp')}</div>
             <div className="xp-bar"><div className="xp-bar-fill" style={{width:progress+'%'}}/></div>
+            <div style={{marginTop:15, fontSize:16, fontWeight:'bold', color:'#fbbf24'}}>🪙 {profile.coins||0} {t('coins')}</div>
           </div>
           <h2>{t('store')}</h2>
           {STORE.map(item=>(
             <div className="card" key={item.id}>
               <div style={{fontWeight:'bold',color:'#7CFF4F'}}>{lang==='ar'?item.nameAr:item.name}</div>
               <div style={{fontSize:12,color:'#888',margin:'5px 0'}}>{lang==='ar'?item.descAr:item.desc}</div>
-              <button onClick={()=>buyItem(item)} disabled={(profile.xp||0)<item.price} style={{width:'100%',marginTop:10}}>{t('buy')} {item.price} {t('xp')}</button>
+              <button onClick={()=>buyItem(item)} disabled={(profile.coins||0)<item.price} style={{width:'100%',marginTop:10}}>
+                {t('buy')} {item.price} 🪙 {t('coins')}
+              </button>
             </div>
           ))}
         </>
@@ -825,15 +974,46 @@ function App(){
       {page === 'feed' && (
         <>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:15}}>
-            <h2 style={{margin:0}}>{t('teamFeed')}</h2>
+            <h2 style={{margin:0}}>{t('teamChat')}</h2>
             <button onClick={sendNudge} style={{background:'#7CFF4F',color:'#000',padding:'5px 10px',fontSize:12}}>{t('post')}</button>
           </div>
           {feed.map(f=>(
             <div className="card" key={f.id}>
-              <div style={{fontSize:11,color:'#7CFF4F',marginBottom:5}}>{t('user')}</div>
+              <div style={{display:'flex', alignItems:'center', marginBottom:5}}>
+                <img src={f.profiles?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(f.profiles?.username||'User')} className="avatar-sm" alt="avatar" />
+                <span style={{fontSize:11,color:'#7CFF4F', fontWeight:'bold'}}>{f.profiles?.username || 'User'}</span>
+              </div>
               <div>{f.message}</div>
             </div>
           ))}
+
+          <h2 style={{marginTop:30}}>{t('teamProofs')}</h2>
+          {teamProofs.length === 0 && <p style={{textAlign:'center',color:'#888'}}>{t('noProofs')}</p>}
+          {teamProofs.map(p => {
+            let taskLabel = p.task_key;
+            const mTask = MANDATORY_TASKS.find(m => m.key === p.task_key);
+            if (mTask) taskLabel = lang==='ar' ? mTask.labelAr : mTask.label;
+            else {
+              const eTask = EXTRA_TASKS.find(e => e.key === p.task_key);
+              if (eTask) taskLabel = lang==='ar' ? eTask.labelAr : eTask.label;
+              else taskLabel = p.task_key.replace('custom_', 'Custom Task ');
+            }
+
+            return (
+              <div className="proof-card" key={p.id}>
+                <img src={p.proof_url} alt="Proof" className="proof-img" onClick={()=>window.open(p.proof_url, '_blank')} />
+                <div className="proof-info">
+                  <div style={{display:'flex', alignItems:'center'}}>
+                    <img src={p.profiles?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+(p.profiles?.username||'User')} className="avatar-sm" alt="avatar" />
+                    <div>
+                      <div style={{fontWeight:'bold', color:'#fff'}}>{p.profiles?.username || 'User'}</div>
+                      <div style={{fontSize:11, color:'#888'}}>{taskLabel}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </>
       )}
 
@@ -847,9 +1027,14 @@ function App(){
                 <tr key={r.user_id} style={{borderBottom:'1px solid #222'}}>
                   <td style={{padding:15}}>{i+1}</td>
                   <td style={{padding:15,fontWeight:r.user_id===user?'bold':'normal',color:r.user_id===user?'#7CFF4F':'#fff'}}>
-                    {r.username}
-                    <br/>
-                    <span style={{fontSize:10,color:'#888'}}>{r.team_name} • {r.title||'Rookie'}</span>
+                    <div style={{display:'flex', alignItems:'center'}}>
+                      <img src={r.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed='+r.username} className="avatar-sm" alt="avatar" />
+                      <div>
+                        {r.username}
+                        <br/>
+                        <span style={{fontSize:10,color:'#888'}}>{r.team_name} • {r.title||'Rookie'}</span>
+                      </div>
+                    </div>
                   </td>
                   <td style={{padding:15,textAlign:lang==='ar'?'left':'right'}}>{r.xp}</td>
                 </tr>
