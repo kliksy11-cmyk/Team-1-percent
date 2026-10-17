@@ -88,7 +88,6 @@ const EXTRA_TASKS = [
 
 const RANKS = [{ name:'BRONZE', min:0 },{ name:'SILVER', min:300 },{ name:'GOLD', min:800 },{ name:'PLATINUM', min:1800 },{ name:'DIAMOND', min:3000 },{ name:'MASTER', min:5000 }];
 
-// STORE NOW COSTS COINS (not XP)
 const STORE = [
   { id:'freeze', name:'Streak Freeze ❄️', nameAr:'تجميد السلسلة ❄️', price:300, desc:'Missed a day? Use this to keep your streak alive.', descAr:'فوّت يوم؟ استخدم هذا للحفاظ على سلسلتك.' },
   { id:'skip', name:'Skip Day 🎫', nameAr:'تخطي يوم 🎫', price:500, desc:'Take a day off. Streak stays alive today.', descAr:'خذ يوم راحة. تبقى السلسلة حية اليوم.' },
@@ -151,7 +150,7 @@ class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { hasError: false, error: null }; }
   static getDerivedStateFromError(error) { return { hasError: true, error }; }
   render() {
-    if (this.state.hasError) return <div style={{padding:20,color:'#ff4f4f',background:'#000',height:'100vh'}}><h2>CRASH</h2><pre>{this.state.error.toString()}</pre><button onClick={()=>{localStorage.clear();window.location.reload();}}>RESET</button></div>;
+    if (this.state.hasError) return <div style={{padding:20,color:'#ff4f4f',background:'#000',height:'100vh'}}><h2>CRASH</h2><pre>{this.state.error.toString()}</pre><button onClick={()=>{localStorage.clear(); window.location.href = window.location.pathname + '?v=' + Date.now();}} style={{padding:10,background:'#7CFF4F',color:'#000',border:'none',marginTop:10}}>RESET</button></div>;
     return this.props.children;
   }
 }
@@ -217,7 +216,6 @@ function App(){
     if(page==='feed') { loadFeed(); loadTeamProofs(); }
   }, [page]);
 
-  // NOTIFICATION TIMER
   React.useEffect(() => {
     let interval;
     if (notifEnabled && team) {
@@ -580,16 +578,14 @@ function App(){
     alert(lang==='ar'?`تم شراء ${item.nameAr}!`:`Purchased ${item.name}!`);
   }
 
-  // --- STORE LOGIC: Use Freeze & Skip ---
   async function useItem(itemId, targetDate) {
     const inv = [...(profile.inventory||[])];
     const idx = inv.indexOf(itemId);
     if(idx === -1) return alert(t('notEnoughItems'));
     
-    inv.splice(idx, 1); // Remove 1 item
+    inv.splice(idx, 1);
     await sb.from('profiles').update({inventory: inv}).eq('id', user);
     
-    // Create a fake task record so the streak logic counts it
     await sb.from('tasks').insert({user_id:user, team_id:team.id, date:targetDate, task_key:itemId, done:true});
     
     setProfile(p => ({...p, inventory: inv}));
@@ -680,9 +676,8 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  // FIXED LOGIC FOR MISSED YESTERDAY WARNING
-  const teamStartDate = new Date(team.created_at || Date.now()).toLocaleDateString('en-CA');
-  const missedYesterday = !completeDates.has(yesterday) && yesterday >= teamStartDate;
+  const teamStartDate = team ? new Date(team.created_at || Date.now()).toLocaleDateString('en-CA') : today;
+  const missedYesterday = team && !completeDates.has(yesterday) && yesterday >= teamStartDate;
   
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
   const hasSkip = (profile?.inventory||[]).includes('skip');
@@ -827,7 +822,7 @@ function App(){
           <h2>{t('grid')}</h2>
           <div className="grid">
             {Array.from({length:82}).map((_,i)=>{
-              const d = new Date(team.created_at || Date.now()); d.setDate(d.getDate() + i);
+              const d = new Date(team?.created_at || Date.now()); d.setDate(d.getDate() + i);
               const ds = d.toLocaleDateString('en-CA');
               const isDone = completeDates.has(ds);
               const isFreeze = freezesUsed.has(ds);
