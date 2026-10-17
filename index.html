@@ -10,19 +10,22 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:#000;color:#fff;min-height:100vh;}
-.container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;}
+body{margin:0;font-family:system-ui,sans-serif;background:#000;color:#fff;min-height:100vh;overflow-x:hidden;}
+.container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;animation: fadeIn 0.4s ease-out;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;}
 h1 span{color:#7CFF4F;}
 h2{margin:24px 0 12px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:2px;font-family:monospace;}
-input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;}
-input:focus,select:focus{border-color:#7CFF4F;}
-button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;}
+input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;transition:0.2s;}
+input:focus,select:focus{border-color:#7CFF4F;box-shadow:0 0 8px rgba(124,255,79,0.2);}
+button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:0.2s;}
+button:active{transform:scale(0.96);}
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
 button:disabled{opacity:0.5;}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .header-actions{display:flex;align-items:center;gap:5px;}
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;transition:0.2s;}
+.avatar:active{transform:scale(0.9);}
 .avatar-sm{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#222;border:1px solid #444;margin-right:8px;vertical-align:middle;}
 .lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
 .leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
@@ -30,10 +33,11 @@ button:disabled{opacity:0.5;}
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
 .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:20px;}
-.box{aspect-ratio:1;background:#111;border-radius:3px;border:1px solid #222;}
+.box{aspect-ratio:1;background:#111;border-radius:3px;border:1px solid #222;transition:0.3s;}
 .box.done{background:#7CFF4F;border-color:#7CFF4F;box-shadow:0 0 5px #7CFF4F;}
 .box.freeze{background:#3b82f6;border-color:#60a5fa;box-shadow:0 0 5px #3b82f6;}
-.task{display:flex;align-items:center;gap:10px;padding:14px;background:#0a0a0a;border-radius:8px;margin-bottom:10px;border:1px solid #222;}
+.task{display:flex;align-items:center;gap:10px;padding:14px;background:#0a0a0a;border-radius:8px;margin-bottom:10px;border:1px solid #222;transition:0.2s;}
+.task:active{background:#111;}
 .task.done{border-color:#7CFF4F;background:#7CFF4F11;}
 .task .icon{font-size:20px;}
 .task .label{flex:1;font-weight:600;font-size:14px;}
@@ -43,10 +47,11 @@ button:disabled{opacity:0.5;}
 .card{background:#0a0a0a;padding:15px;border-radius:8px;margin-bottom:10px;border:1px solid #222;}
 .rank-card{background:#0a0a0a;padding:20px;border-radius:12px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
 .xp-bar{height:6px;background:#111;border-radius:3px;margin-top:10px;overflow:hidden;}
-.xp-bar-fill{height:100%;background:#7CFF4F;transition:0.3s;}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0;z-index:10;}
-nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;}
-nav button.active{color:#7CFF4F;}
+.xp-bar-fill{height:100%;background:#7CFF4F;transition:width 0.5s ease-out;}
+nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0ae6;backdrop-filter:blur(10px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0;z-index:10;animation: slideUp 0.3s ease-out;}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;width:auto;padding:0;transition:0.2s;}
+nav button.active{color:#7CFF4F;transform:translateY(-2px);}
 nav button span{font-size:22px;}
 .add-task{display:flex;gap:5px;margin-top:10px;}
 .add-task input{margin-bottom:0;flex:1;}
@@ -155,6 +160,8 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+const pagesOrder = ['home', 'goals', 'store', 'feed', 'ranks'];
+
 function App(){
   const [lang, setLang] = React.useState(()=>localStorage.getItem('lang') || 'en');
   const t = (k) => STRINGS[lang][k] || k;
@@ -192,6 +199,20 @@ function App(){
   const [quranTime, setQuranTime] = React.useState(0);
   const [quranRunning, setQuranRunning] = React.useState(false);
   const [quranStartTime, setQuranStartTime] = React.useState(null);
+
+  // Swipe Logic
+  const touchStart = React.useRef({ x: 0, y: 0 });
+  const handleTouchStart = (e) => { touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
+  const handleTouchEnd = (e) => {
+    const dx = e.changedTouches[0].clientX - touchStart.current.x;
+    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+    // Check if it's a horizontal swipe (not scrolling up/down)
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+      const idx = pagesOrder.indexOf(page);
+      if (dx > 0 && idx > 0) setPage(pagesOrder[idx - 1]); // Swipe Right
+      if (dx < 0 && idx < pagesOrder.length - 1) setPage(pagesOrder[idx + 1]); // Swipe Left
+    }
+  };
 
   const today = new Date().toLocaleDateString('en-CA');
   const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
@@ -356,12 +377,13 @@ function App(){
   async function loadFeed(){ const {data}=await sb.from('feed').select('*, profiles(username, avatar_url)').eq('team_id',team.id).order('created_at',{ascending:false}).limit(20); setFeed(data||[]); }
   
   async function loadTeamProofs(){
-    const {data} = await sb.from('tasks')
+    const {data, error} = await sb.from('tasks')
       .select('*, profiles(username, avatar_url)')
       .eq('team_id', team.id)
       .eq('date', today)
       .not('proof_url', 'is', null)
       .order('id', {ascending: false});
+    if(error) console.log(error);
     setTeamProofs(data || []);
   }
 
@@ -557,11 +579,23 @@ function App(){
 
   async function uploadProof(key, file){
     const path=`${team.id}/${user}/${today}/${key}.jpg`;
-    await sb.storage.from('proofs').upload(path,file,{upsert:true});
+    const {error: uploadError} = await sb.storage.from('proofs').upload(path,file,{upsert:true});
+    if(uploadError) return alert("Upload Error: " + uploadError.message);
+
     const {data:{publicUrl}}=sb.storage.from('proofs').getPublicUrl(path);
     const existing=tasks.find(t=>t.task_key===key);
-    if(existing) await sb.from('tasks').update({proof_url:publicUrl,done:true}).eq('id',existing.id);
-    else await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, proof_url:publicUrl, done:true});
+    
+    let dbError;
+    if(existing) {
+      const {error} = await sb.from('tasks').update({proof_url:publicUrl,done:true}).eq('id',existing.id);
+      dbError = error;
+    } else {
+      const {error} = await sb.from('tasks').insert({user_id:user, team_id:team.id, date:today, task_key:key, proof_url:publicUrl, done:true});
+      dbError = error;
+    }
+    
+    if(dbError) return alert("Database Error: " + dbError.message);
+
     loadTasks(); loadHistory(); loadTeamProofs();
   }
 
@@ -768,7 +802,11 @@ function App(){
   const extraTasks = customTasks.filter(t => !t.is_mandatory && t.active);
 
   return (
-    <div className="container">
+    <div 
+      className="container" 
+      onTouchStart={handleTouchStart} 
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="header">
         <div style={{display:'flex', alignItems:'center', gap:10}}>
           <label>
