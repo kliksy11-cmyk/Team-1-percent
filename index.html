@@ -323,34 +323,38 @@ function App(){
 
   // NO PASSWORD AUTH
   async function handleAuth(e) {
-    if (e) e.preventDefault(); 
-    setError('');
-    const uname = nameInput.trim();
-    if(!uname) { alert('Please enter a name'); return; }
+  if (e) e.preventDefault(); 
+  setError('');
+  const uname = nameInput.trim();
+  if(!uname) { alert('Please enter a name'); return; }
 
-    try {
-      // Check if user exists
-      const { data: exists, error: findErr } = await sb.from('profiles').select('id').eq('username', uname).maybeSingle();
+  try {
+    // Check if user exists
+    const { data: exists, error: findErr } = await sb.from('profiles').select('id').eq('username', uname).maybeSingle();
+    
+    if (findErr) { alert('Error checking name: ' + findErr.message); return; }
+
+    if (exists) {
+      // Log in
+      localStorage.setItem('team_user_id', exists.id);
+      setCurrentUser(exists.id);
+    } else {
+      // Create a REAL UUID for the database
+      const newId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
       
-      if (findErr) { alert('Error checking name: ' + findErr.message); return; }
-
-      if (exists) {
-        // Log in
-        localStorage.setItem('team_user_id', exists.id);
-        setCurrentUser(exists.id);
-      } else {
-        // Create
-        const newId = Date.now().toString(36) + Math.random().toString(36).substring(2);
-        const { error: insErr } = await sb.from('profiles').insert({ id: newId, username: uname });
-        
-        if (insErr) { alert('Database Error: ' + insErr.message); setError(insErr.message); return; }
-        
-        localStorage.setItem('team_user_id', newId);
-        setCurrentUser(newId);
-      }
-    } catch(err) {
-      alert('JS Crash: ' + err.message);
+      const { error: insErr } = await sb.from('profiles').insert({ id: newId, username: uname });
+      
+      if (insErr) { alert('Database Error: ' + insErr.message); setError(insErr.message); return; }
+      
+      localStorage.setItem('team_user_id', newId);
+      setCurrentUser(newId);
     }
+  } catch(err) {
+    alert('JS Crash: ' + err.message);
+  }
   }
 
   async function handleLogout(){ 
