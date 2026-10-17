@@ -124,7 +124,7 @@ const STRINGS = {
   ar: {
     tagline:'تحول ٨٢ يوم', enterName:'أدخل اسمك', enterPass:'كلمة المرور', start:'ابدأ',
     createTeam:'أنشئ فريق', joinTeam:'انضم لفريق', teamName:'اسم الفريق', inviteCode:'كود الدعوة',
-    create:'إنشاء', join:'انضم', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
+    create:'إنشاء', join:'انضمام', logout:'خروج', loading:'جاري التحميل...', loadingTeam:'جاري تحميل الفريق...', loadingProfile:'جاري تحميل الملف...',
     grid:'شبكة ٨٢ يوم', studyTimer:'📚 مؤقت الدراسة', quranTimer:'📖 مؤقت القرآن', targetReached:'✅ تم الوصول للهدف', 
     minReq:'دقيقة مطلوبة', startBtn:'ابدأ', pauseBtn:'إيقاف', resetBtn:'تصفير',
     mandatory:'غير قابل للتفاوض', extraXp:'مهام إضافية', addTaskPlaceholder:'أضف مهمتك...',
@@ -497,7 +497,6 @@ function App(){
       }
     }
 
-    // Award BOTH XP and Coins
     const newXp = Math.max(0, (profile.xp||0) + xpChange + bonus);
     const newCoins = Math.max(0, (profile.coins||0) + xpChange + bonus);
 
@@ -569,7 +568,6 @@ function App(){
   }
 
   async function buyItem(item){
-    // Check COINS instead of XP
     if((profile.coins||0) < item.price) return alert(t('notEnoughCoins'));
     const newInv=[...(profile.inventory||[]), item.id];
     const updates = {coins: profile.coins-item.price, inventory: newInv};
@@ -653,7 +651,6 @@ function App(){
   const mandatoryKeys = MANDATORY_TASKS.map(t=>t.key);
   const doneMandatoryByDate = {};
   
-  // Track Freezes & Skips
   const freezesUsed = new Set();
   const skipsUsed = new Set();
 
@@ -673,7 +670,6 @@ function App(){
     if(count === mandatoryKeys.length) completeDates.add(date);
   });
   
-  // Merge Freeze/Skip dates into completeDates
   freezesUsed.forEach(d => completeDates.add(d));
   skipsUsed.forEach(d => completeDates.add(d));
 
@@ -684,13 +680,13 @@ function App(){
     else { if(streak===0 && ds===today){ d.setDate(d.getDate()-1); } else break; } 
   }
 
-  // Check if missed yesterday
+  // FIXED LOGIC FOR MISSED YESTERDAY WARNING
   const teamStartDate = new Date(team.created_at || Date.now()).toLocaleDateString('en-CA');
-const missedYesterday = !completeDates.has(yesterday) && yesterday >= teamStartDate;
+  const missedYesterday = !completeDates.has(yesterday) && yesterday >= teamStartDate;
+  
   const hasFreeze = (profile?.inventory||[]).includes('freeze');
   const hasSkip = (profile?.inventory||[]).includes('skip');
   
-  // Check if today is already skipped
   const todayIsSkipped = skipsUsed.has(today);
   const todayIsFrozen = freezesUsed.has(today);
 
