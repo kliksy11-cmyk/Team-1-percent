@@ -10,45 +10,91 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;}
-.container{max-width:500px;margin:0 auto;padding:20px;padding-bottom:100px;position:relative;background:#000;min-height:100vh;transition:0.3s;}
-@media (min-width: 768px) { .container { max-width: 700px; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 40px 30px; padding-bottom: 120px; box-shadow: 0 0 50px rgba(0,0,0,0.8); } }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden; /* STOPS SIDE TO SIDE SCROLLING */
+  overscroll-behavior-y: none; /* STOPS PULL TO REFRESH */
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;min-height:100vh;}
+
+/* Desktop Container */
+.container{
+  max-width:500px;
+  margin:0 auto;
+  padding:20px;
+  padding-bottom:100px;
+  position:relative;
+  background:#000;
+  min-height:100vh;
+  transition:0.3s;
+  touch-action: pan-y; /* Lets browser scroll vertically, we handle horizontal swipe */
+}
+
+@media (min-width: 768px) {
+  .container { max-width: 700px; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 40px 30px; padding-bottom: 120px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+  .header h1 { font-size: 28px; }
+}
+
+/* Page Animations */
 .page-wrapper { animation-duration: 0.35s; animation-fill-mode: both; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-.slide-left { animation-name: slideLeft; } .slide-right { animation-name: slideRight; }
+.slide-left { animation-name: slideLeft; }
+.slide-right { animation-name: slideRight; }
 @keyframes slideLeft { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Staggered Tasks */
 .task, .card, .goal-card { animation: fadeInUp 0.4s ease-out both; transition: background 0.2s, transform 0.2s; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;} h1 span{color:#7CFF4F;}
+
+h1{margin:0;font-family:monospace;font-size:24px;font-weight:900;letter-spacing:2px;color:#fff;}
+h1 span{color:#7CFF4F;}
 h2{margin:24px 0 12px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:2px;font-family:monospace;}
-input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;}
-input:focus{border-color:#7CFF4F; box-shadow:0 0 8px rgba(124,255,79,0.2);}
-button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:0.2s;}
-button:active{transform:scale(0.94);} button:hover{background:#1a1a1a;}
+input,select,textarea{width:100%;padding:14px;margin-bottom:10px;border:1px solid #222;border-radius:8px;background:#0a0a0a;color:#fff;font-size:15px;outline:none;transition:0.2s;}
+input:focus,select:focus{border-color:#7CFF4F;box-shadow:0 0 8px rgba(124,255,79,0.2);}
+
+button{padding:14px;border:none;border-radius:8px;background:#111;color:#fff;font-size:14px;cursor:pointer;font-weight:bold;border:1px solid #222;transition:transform 0.1s, background 0.2s, border-color 0.2s;}
+button:active{transform:scale(0.94);}
+button:hover{background:#1a1a1a; border-color:#333;}
 button.primary{background:#7CFF4F;color:#000;border:none;box-shadow:0 0 10px rgba(124,255,79,0.2);}
+button.primary:hover{background:#95ff70;}
 button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.header-actions{display:flex;align-items:center;gap:5px;}
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;}
+
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.header-actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#222;border:2px solid #333;cursor:pointer;transition:0.2s;}
+.avatar:hover{transform:scale(1.05); border-color:#7CFF4F;}
 .avatar-sm{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#222;border:1px solid #444;margin-right:8px;vertical-align:middle;}
-.lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.lang-btn{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
+.lang-btn:hover{background:#333;}
 .help-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
-.leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
-.logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;}
+.leave-btn{background:#ff4f4f22;color:#ff4f4f;border:1px solid #ff4f4f;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
+.leave-btn:hover{background:#ff4f4f44;}
+.logout-btn{background:#333;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:20px;font-size:12px;cursor:pointer;font-weight:bold;transition:0.2s;}
+.logout-btn:hover{background:#444;}
+
 .streak{background:#7CFF4F22;color:#7CFF4F;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #7CFF4F;}
 .coins{background:#fbbf2422;color:#fbbf24;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:14px;border:1px solid #fbbf24;}
+
 .lock-banner{background:linear-gradient(135deg,#1e293b,#0f172a);border:2px solid #7CFF4F;border-radius:16px;padding:40px 20px;text-align:center;margin-bottom:20px;box-shadow:0 0 30px rgba(124,255,79,0.15); animation:pulseGlow 2s infinite;}
 @keyframes pulseGlow{0%{box-shadow:0 0 10px rgba(124,255,79,0.1);}50%{box-shadow:0 0 30px rgba(124,255,79,0.3);}100%{box-shadow:0 0 10px rgba(124,255,79,0.1);}}
 .lock-icon{font-size:80px;margin-bottom:15px;filter:drop-shadow(0 0 10px #7CFF4F);}
 .countdown{font-family:monospace;font-size:32px;font-weight:900;color:#7CFF4F;letter-spacing:2px;margin-top:15px;}
-.timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:thin; scrollbar-color: #7CFF4F #111;}
-.timeline::-webkit-scrollbar{height:8px;} .timeline::-webkit-scrollbar-track{background:#111;border-radius:4px;} .timeline::-webkit-scrollbar-thumb{background:#7CFF4F;border-radius:4px;}
+
+/* Timeline horizontal scrolling locked */
+.timeline{display:flex;gap:8px;overflow-x:auto;padding-bottom:15px;margin-bottom:20px;scrollbar-width:thin; scrollbar-color: #7CFF4F #111; touch-action: pan-x;}
+.timeline::-webkit-scrollbar{height:8px;}
+.timeline::-webkit-scrollbar-track{background:#111;border-radius:4px;}
+.timeline::-webkit-scrollbar-thumb{background:#7CFF4F;border-radius:4px;}
 .day-box{min-width:48px;height:56px;background:#111;border-radius:8px;border:1px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:monospace;font-size:14px;font-weight:bold;color:#666;flex-shrink:0;}
 .day-box.done{background:#7CFF4F;border-color:#7CFF4F;color:#000;animation:pulseGreen 2s infinite;}
 .day-box.freeze{background:#3b82f6;border-color:#60a5fa;color:#fff;animation:pulseBlue 2s infinite;}
 @keyframes pulseGreen{0%{box-shadow:0 0 0px #7CFF4F;}50%{box-shadow:0 0 12px #7CFF4F;}100%{box-shadow:0 0 0px #7CFF4F;}}
 @keyframes pulseBlue{0%{box-shadow:0 0 0px #3b82f6;}50%{box-shadow:0 0 12px #3b82f6;}100%{box-shadow:0 0 0px #3b82f6;}}
 .day-reward{font-size:10px;margin-top:2px;opacity:0.8;}
+
 .task{display:flex;align-items:center;gap:12px;padding:16px;background:#0a0a0a;border-radius:12px;margin-bottom:12px;border:1px solid #222;}
 .task.done{border-color:#7CFF4F44;background:#7CFF4F0a;}
 .task .icon{font-size:22px;} .task .label{flex:1;font-weight:600;font-size:15px;} .task.done .label{color:#888; text-decoration: line-through;}
@@ -60,11 +106,13 @@ button:disabled{opacity:0.5; transform:none; cursor:not-allowed;}
 .timer-val{font-family:monospace;font-size:40px;color:#7CFF4F;font-weight:bold;text-align:center;margin:15px 0;text-shadow:0 0 10px rgba(124,255,79,0.3);}
 .rank-card{background:#0a0a0a;padding:20px;border-radius:16px;border:1px solid #222;border-left:4px solid #7CFF4F;margin-bottom:20px;}
 .xp-bar{height:8px;background:#111;border-radius:4px;margin-top:12px;overflow:hidden;} .xp-bar-fill{height:100%;background:#7CFF4F;transition:width 0.8s;box-shadow:0 0 10px #7CFF4F;}
+
 nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(15px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:12px 0 20px 0;z-index:10;}
 @media (min-width: 768px) { nav { max-width: 600px; left: 50%; transform: translateX(-50%); bottom: 20px; border: 1px solid #222; border-radius: 30px; padding: 10px 0; background:rgba(10,10,10,0.95); } }
 nav button{background:none;color:#666;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px;border:none;position:relative;}
 nav button.active{color:#7CFF4F;} nav button span{font-size:22px;} nav button.active span { text-shadow: 0 0 8px rgba(124,255,79,0.6); }
 nav button.active::after { content:''; position:absolute; bottom:-8px; width:4px; height:4px; border-radius:50%; background:#7CFF4F; box-shadow:0 0 8px #7CFF4F; }
+
 .add-task{display:flex;gap:5px;margin-top:15px;} .add-task input{margin-bottom:0;flex:1;} .add-task button{width:auto;padding:0 20px;background:#7CFF4F;color:#000;font-size:18px;}
 .delete-btn{background:none;border:none;color:#ff4f4f;font-size:16px;padding:0 5px;cursor:pointer;}
 .invite-box{background:#111; padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid #333; text-align:center;}
@@ -256,25 +304,29 @@ function App(){
     return { type: 'daily', amount: 10 };
   };
 
-  const handleDragStart = (e) => {
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    touchStart.current = { x: clientX, y: clientY };
-    isDragging.current = true;
-  };
+  // TOUCH SWIPE ONLY (No mouse drags to prevent weird desktop scrolling)
   const touchStart = React.useRef({ x: 0, y: 0 });
   const isDragging = React.useRef(false);
 
+  const handleDragStart = (e) => {
+    if (!e.touches) return; // Ignore mouse
+    const clientX = e.touches[0].clientX;
+    const clientY = e.touches[0].clientY;
+    touchStart.current = { x: clientX, y: clientY };
+    isDragging.current = true;
+  };
+
   const handleDragEnd = (e) => {
-    if (!isDragging.current) return;
+    if (!isDragging.current || !e.changedTouches) return;
     isDragging.current = false;
-    const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-    const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
     
+    const clientX = e.changedTouches[0].clientX;
+    const clientY = e.changedTouches[0].clientY;
     const dx = clientX - touchStart.current.x;
     const dy = clientY - touchStart.current.y;
     
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+    // Must be a horizontal swipe (X > Y) and move at least 80px
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 80) {
       const idx = pagesOrder.indexOf(page);
       if (dx > 0 && idx > 0) { setSlideDir('slide-right'); setPage(pagesOrder[idx - 1]); }
       if (dx < 0 && idx < pagesOrder.length - 1) { setSlideDir('slide-left'); setPage(pagesOrder[idx + 1]); }
@@ -842,7 +894,7 @@ function App(){
   const extraTasks = customTasks.filter(t => !t.is_mandatory && t.active);
 
   return (
-    <div className="container" onTouchStart={handleDragStart} onTouchEnd={handleDragEnd} onMouseDown={handleDragStart} onMouseUp={handleDragEnd} onMouseLeave={() => isDragging.current = false}>
+    <div className="container" onTouchStart={handleDragStart} onTouchEnd={handleDragEnd}>
       {toast && <div className="toast-container"><div className="toast">{toast}</div></div>}
       
       {showReward && !isLocked && (
