@@ -10,15 +10,19 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+
+/* FIXED SCROLLING */
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden; /* STOPS SIDE TO SIDE SCROLLING */
-  overscroll-behavior-y: none; /* STOPS PULL TO REFRESH */
+  height: 100%;
+  overflow-x: hidden; /* Stops side to side */
+  overflow-y: auto; /* Allows scrolling down */
+  -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
 }
-body{font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;min-height:100vh;}
+
+body{font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#fff;}
 
 /* Desktop Container */
 .container{
@@ -28,9 +32,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#ff
   padding-bottom:100px;
   position:relative;
   background:#000;
-  min-height:100vh;
+  min-height: 100vh;
   transition:0.3s;
-  touch-action: pan-y; /* Lets browser scroll vertically, we handle horizontal swipe */
 }
 
 @media (min-width: 768px) {
